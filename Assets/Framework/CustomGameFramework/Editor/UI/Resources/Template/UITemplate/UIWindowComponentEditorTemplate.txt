@@ -1,0 +1,19 @@
+﻿using CustomGameFramework.Runtime;
+using GameMain;
+using UnityEditor;
+
+namespace {1}
+{
+	/// <summary>
+	/// {0}
+	/// </summary>
+	[CustomEditor(typeof({2}), true)]
+	public class {3} : UIWindowBaseComponmentEditor
+	{
+	    public override void OnInspectorGUI()
+        {
+            base.OnInspectorGUI();
+        }
+
+	}
+}

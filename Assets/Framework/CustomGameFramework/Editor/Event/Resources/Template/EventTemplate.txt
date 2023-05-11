@@ -1,0 +1,45 @@
+﻿using GameFramework;
+using GameFramework.Event;
+
+namespace {EventNameSpace}
+{
+	/// <summary>
+	/// {EventDes}事件
+	/// </summary>
+	public class {EventName} : GameEventArgs
+	{
+		/// <summary>
+		/// {EventDes}事件编号。
+		/// </summary>
+		public static readonly int EventId = typeof({EventName}).GetHashCode();
+
+		/// <summary>
+		/// 初始化{EventDes}事件的新实例。
+		/// </summary>
+		public {EventName}()
+		{{EventArgs}
+		}
+
+		/// <summary>
+		/// 获取{EventDes}事件编号。
+		/// </summary>
+		public override int Id => EventId;{EventGetSet}
+	
+		/// <summary>
+		/// 创建{EventDes}事件。
+		/// </summary>{EventParams}
+		/// <returns>创建的{EventDes}事件。</returns>
+		public static {EventName} Create({EventCreateArgs})
+		{
+			{EventName} e = ReferencePool.Acquire<{EventName}>();{EventCreate}
+			return e;
+		}
+
+		/// <summary>
+		/// 清理{EventDes}事件。
+		/// </summary>
+		public override void Clear()
+		{{EventArgs}
+		}
+	}
+}

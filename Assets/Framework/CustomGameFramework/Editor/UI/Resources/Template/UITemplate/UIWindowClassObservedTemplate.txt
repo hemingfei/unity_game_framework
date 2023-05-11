@@ -1,0 +1,52 @@
+﻿using System.Collections;
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace {1}
+{
+	/// <summary>
+	/// {0}
+	/// </summary>
+	public partial class {2}
+	{
+		#region 字段 (int,string...)
+		{3}
+		#endregion
+
+		#region Get Componets
+
+		// 获取设定的组件
+		private void GetObservedComponents()
+		{
+			{4}
+		}
+		#endregion
+
+		#region Btn OnClick
+
+		/// <summary>
+		/// 注册按钮点击的事件
+		/// </summary>
+		private void SubscribeObservedBtnEvents()
+		{
+			{5}
+		}
+		
+        /// <summary>
+        /// 取消注册按钮点击的事件
+        /// </summary>
+        private void UnSubscribeObservedBtnEvents()
+        {
+            {6}
+        }
+		#endregion
+
+		#region Btn Func Demo
+
+		/*
+{7}
+		*/
+		#endregion
+
+	}
+}

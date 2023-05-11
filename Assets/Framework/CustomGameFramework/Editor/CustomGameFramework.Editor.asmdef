@@ -1,0 +1,24 @@
+{
+    "name": "CustomGameFramework.Editor",
+    "rootNamespace": "CustomGameFramework.Editor",
+    "references": [
+        "GUID:f34820f76f04e4d5fb50254f332ba35d",
+        "GUID:363c5eb08ff8e6a439b85e37b8c20d96",
+        "GUID:006d8664878236744960861fa7f26293",
+        "GUID:a2d8a19598eca814496b089021d08d60",
+        "GUID:e34a5702dd353724aa315fb8011f08c3",
+        "GUID:4d1926c9df5b052469a1c63448b7609a",
+        "GUID:27549b9575d50294aab915904ad52f24"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

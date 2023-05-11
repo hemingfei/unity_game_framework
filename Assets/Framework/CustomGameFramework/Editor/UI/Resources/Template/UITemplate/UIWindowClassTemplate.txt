@@ -1,0 +1,128 @@
+﻿using CustomGameFramework.Runtime;
+using System.Collections;
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace {1}
+{
+	/// <summary>
+	/// {0}
+	/// </summary>
+	public partial class {2} : UIAnimWindowBase
+	{
+		#region 字段 (int,string...)
+
+		#endregion
+
+		#region 属性 (get,set...)
+
+		#endregion
+
+        #region 内置方法，流海屏适配等
+        /// <summary>
+        /// 是否自动流海屏适配
+        /// </summary>
+        public override bool IsAutoFixNotchScreen
+        {
+            get
+            {
+                return false;
+            }
+        }
+        
+        /// <summary>
+        /// 关闭自己窗口
+        /// </summary>
+        public void CloseSelfWinodw()
+        {
+            UIManager.CloseUIWindow<{2}>(this);
+        }
+        #endregion
+
+		#region UI生命周期，重载方法
+
+		//UI首次创建
+		public override void OnUIInit()
+		{
+			base.OnUIInit();
+			GetObservedComponents();
+			OnUIInit_GetCustomComponents();
+			OnUIInit_InitializeValues();
+		}
+		
+		// UI销毁
+        public override void OnUIDispose()
+        {
+        }
+
+		//UI打开
+		public override void OnOpen()
+		{
+			base.OnOpen();
+			OnOpen_ResetValues();
+			SubscribeObservedBtnEvents(); // 注册自动绑定的Btn的点击事件
+			OnOpen_SubscribeCustomEvents();
+		}
+		
+        // UI彻底打开，打开动画播放完成
+        public override void OnCompleteEnterAnim()
+        {
+        }
+        
+        // UI开始播放关闭动画
+        public override void OnStartExitAnim()
+        {
+        }
+
+		//UI彻底关闭
+		public override void OnClose()
+		{
+            base.OnClose();
+            UnSubscribeObservedBtnEvents(); // 取消注册自动绑定的Btn的点击事件
+			OnClose_UnSubscribeCustomEvents();
+		}
+		
+		//  ————————————————————————————————————————
+
+		// 获取自定义组件
+		private void OnUIInit_GetCustomComponents()
+		{
+
+		}
+		
+		// 初始化变量
+		private void OnUIInit_InitializeValues()
+		{
+
+		}
+
+		// 重置变量
+		private void OnOpen_ResetValues()
+		{
+
+		}
+
+		// 注册事件
+		private void OnOpen_SubscribeCustomEvents()
+		{
+			
+		}
+		
+        // 取消注册事件
+        private void OnClose_UnSubscribeCustomEvents()
+        {
+
+        }
+		#endregion
+
+		#region 公共方法 (public function)
+
+
+		#endregion
+
+		#region 私有方法 (private function)
+
+
+		#endregion
+	}
+}

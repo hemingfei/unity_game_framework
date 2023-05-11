@@ -1,0 +1,75 @@
+﻿namespace {1}
+{
+    /// <summary>
+    /// {0}
+    /// </summary>
+    public partial class {2} : HotfixUIWindowBase
+    {
+        #region 字段
+
+        #endregion
+
+        #region 生命流程
+        //// UI创建
+        //public override void OnInit(App.HotfixWindow instance)
+        //{
+        //    base.OnInit(instance);
+        //}
+
+        //// UI销毁
+        //public virtual void OnUIDestroy()
+        //{
+        //    HotfixUIManager.Instance.UnRegisterUiOnDestroy(this);
+        //}
+
+        //// UI打开
+        //public override void OnOpen()
+        //{
+
+        //}
+
+        //// UI关闭
+        //public override void OnClose()
+        //{
+
+        //}
+
+        //// 动画进入完成
+        //public void OnCompleteEnterAnim()
+        //{
+
+        //}
+
+        //// 动画退出完成
+        //public void OnCompleteExitAnim()
+        //{
+
+        //}
+
+
+        //// 打开和ShowUI时调用
+        //public void OnShow()
+        //{
+
+        //}
+
+        //// 关闭和HideUI时调用
+        //public void OnHide()
+        //{
+
+        //}
+
+        //// 请在这里写UI的更新逻辑，当该UI监听的事件触发时，该函数会被调用
+        //public void OnRefresh()
+        //{
+
+        //}
+
+        #endregion
+
+        #region 逻辑
+
+        #endregion
+    }
+}
+
