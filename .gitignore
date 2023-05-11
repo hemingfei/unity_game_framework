@@ -7,6 +7,8 @@ UserSettings
 .idea
 obj/Debug
 
+unity_game_framework.sln.DotSettings.user
+
 Bundles/
 
 Assets/Scenes
@@ -16,6 +18,7 @@ Assets/StreamingAssets
 Assets/Scripts
 Assets/Customs
 Assets/Resources
+Assets/Framework/Customs
 
 Assets/Scenes.meta
 Assets/ThirdParty.meta
@@ -24,4 +27,4 @@ Assets/StreamingAssets.meta
 Assets/Scripts.meta
 Assets/Customs.meta
 Assets/Resources.meta
-unity_game_framework.sln.DotSettings.user
+Assets/Framework/Customs.meta
