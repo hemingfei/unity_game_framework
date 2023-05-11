@@ -2,6 +2,12 @@
 
 All notable changes to this package will be documented in this file.
 
+## [1.0.3] - 2023-05-11
+
+### Added
+
+- SceneComponent
+
 ## [1.0.2] - 2023-05-11
 
 ### Added
