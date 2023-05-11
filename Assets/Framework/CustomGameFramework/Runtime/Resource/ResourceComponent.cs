@@ -14,6 +14,7 @@ using GameFramework.FileSystem;
 using GameFramework.ObjectPool;
 using GameFramework.Resource;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityGameFramework.Runtime;
 using Object = UnityEngine.Object;
 
@@ -88,8 +89,23 @@ namespace CustomGameFramework.Runtime
 
         public void ReleaseGameObject(GameObject go)
         {
-            YooAssetShim.ReleaseGameObject(go);
+            m_ResourceHelper.ReleaseGameObject(go);
         }
+        #endregion
+        
+        #region 加载场景
+
+        public async UniTask<int> LoadSceneAsync(string location, IProgress<float> progress,
+            LoadSceneMode sceneMode = LoadSceneMode.Single, bool activateOnLoad = true)
+        {
+            return await m_ResourceHelper.LoadSceneAsync(location, progress, sceneMode, activateOnLoad);
+        }
+
+        public void UnloadSceneAsync(int sceneId)
+        {
+            m_ResourceHelper.UnloadSceneAsync(sceneId);
+        }
+        
         #endregion
         
         #region 框架内部使用的加载卸载方法

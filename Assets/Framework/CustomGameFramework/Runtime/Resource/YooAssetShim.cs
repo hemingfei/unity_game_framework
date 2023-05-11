@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.U2D;
 using YooAsset;
 using Object = UnityEngine.Object;
@@ -22,6 +23,10 @@ namespace CustomGameFramework.Runtime
         private static readonly Dictionary<Object, AssetOperationHandle> _OBJ_2_HANDLES = new();
 
         private static readonly Dictionary<GameObject, Object> _GO_2_OBJ = new();
+        
+        private static readonly Dictionary<int, SceneOperationHandle> _SCENEID_2_HANDLES = new();
+
+        private static int _SCENE_ID = 0;
 
         private static ResourceDownloaderOperation _DOWNLOADER;
 
@@ -293,5 +298,31 @@ namespace CustomGameFramework.Runtime
             ReleaseAsset(obj);
         }
 
+        public static async UniTask<int> LoadSceneAsync(string location, IProgress<float> progress, LoadSceneMode sceneMode = LoadSceneMode.Single, bool activateOnLoad = true)
+        {
+            var handle = YooAssets.LoadSceneAsync(location, sceneMode, activateOnLoad);
+
+            await handle.ToUniTask(progress);
+            
+            if (!handle.IsValid)
+            {
+                throw new Exception($"[YooAssetShim] Failed to load scene: {location}");
+            }
+
+            int sceneId = _SCENE_ID++;
+            
+            _SCENEID_2_HANDLES.TryAdd(sceneId, handle);
+
+            return sceneId;
+        }
+
+        public static void UnloadSceneAsync(int sceneId)
+        {
+            if (_SCENEID_2_HANDLES.ContainsKey(sceneId))
+            {
+                _SCENEID_2_HANDLES.Remove(sceneId, out var handle);
+                handle?.UnloadAsync();
+            }
+        }
     }
 }

@@ -11,6 +11,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
 namespace CustomGameFramework.Runtime
@@ -55,6 +56,17 @@ namespace CustomGameFramework.Runtime
         public override void ReleaseGameObject(GameObject go)
         {
             YooAssetShim.ReleaseGameObject(go);
+        }
+
+        public override async UniTask<int> LoadSceneAsync(string location, IProgress<float> progress,
+            LoadSceneMode sceneMode = LoadSceneMode.Single, bool activateOnLoad = true)
+        {
+            return await YooAssetShim.LoadSceneAsync(location, progress, sceneMode, activateOnLoad);
+        }
+
+        public override void UnloadSceneAsync(int sceneId)
+        {
+            YooAssetShim.UnloadSceneAsync(sceneId);
         }
     }
 }

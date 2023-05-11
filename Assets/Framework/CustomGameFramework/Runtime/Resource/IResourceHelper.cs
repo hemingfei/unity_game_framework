@@ -11,6 +11,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
 namespace CustomGameFramework.Runtime
@@ -33,6 +34,10 @@ namespace CustomGameFramework.Runtime
         
         public void ReleaseGameObject(GameObject go);
 
+        public UniTask<int> LoadSceneAsync(string location, IProgress<float> progress,
+            LoadSceneMode sceneMode = LoadSceneMode.Single, bool activateOnLoad = true);
+
+        public void UnloadSceneAsync(int sceneId);
     }
 }
 
