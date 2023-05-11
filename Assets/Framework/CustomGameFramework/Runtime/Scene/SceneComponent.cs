@@ -1,0 +1,166 @@
+/****************************************************
+*	文件：SceneComponent.cs
+*	作者：hemingfei
+*	邮箱：hemingfei@outlook.com
+*	日期：2023/05/11 17:05:06
+*	功能：暂无
+*****************************************************/
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using CustomGameFramework.Runtime.Event;
+using Cysharp.Threading.Tasks;
+using GameFramework;
+using UnityEngine;
+using UnityGameFramework.Runtime;
+
+namespace CustomGameFramework.Runtime
+{
+    public class SceneComponent : GameFrameworkComponent
+    {
+        public class SceneProgressReporter : IProgress<float>, IReference
+        {
+            public float Progress;
+
+            public SceneProgressReporter()
+            {
+                Progress = 0;
+            }
+
+            public void Report(float value)
+            {
+                Progress = value;
+            }
+
+            public static SceneProgressReporter Create()
+            {
+                var reporter = ReferencePool.Acquire<SceneProgressReporter>();
+                reporter.Progress = 0;
+                return reporter;
+            }
+
+            public void Clear()
+            {
+                Progress = 0;
+            }
+        }
+        
+        public static EventComponent Event { get; private set; }
+        public static ResourceComponent Resource { get; private set; }
+        
+        private Dictionary<int, SceneProgressReporter> _sceneLoadingIdInfos = null;
+        private bool _isLoadingScene = false;
+        
+        private SceneProgressReporter _currentProgressReporter = null;
+
+        private void Start()
+        {
+            Event = UnityGameFramework.Runtime.GameEntry.GetComponent<EventComponent>();
+            Resource = UnityGameFramework.Runtime.GameEntry.GetComponent<ResourceComponent>();
+            _sceneLoadingIdInfos = new Dictionary<int, SceneProgressReporter>();
+        }
+
+        private void Update()
+        {
+            if (_isLoadingScene && _currentProgressReporter != null)
+            {
+                OnLoadSceneUpdate(_currentProgressReporter.Progress);
+            }
+        }
+
+        /// <summary>
+        ///  加载场景,仅供切换场景流程使用
+        /// </summary>
+        /// <param name="sceneLocation">场景文件地址</param>
+        /// <returns></returns>
+        public async void LoadScene(string sceneLocation)
+        {
+            var sceneMode = UnityEngine.SceneManagement.LoadSceneMode.Additive;
+            var progress = SceneProgressReporter.Create();
+            _currentProgressReporter = progress;
+            try
+            {
+                _isLoadingScene = true;
+                int sceneId =  await Resource.LoadSceneAsync(sceneLocation, progress, sceneMode, true);
+                _sceneLoadingIdInfos.Add(sceneId, progress);
+                _isLoadingScene = false;
+                OnLoadSceneUpdate(1);
+                OnLoadSceneSuccess(sceneLocation);
+            }
+            catch (Exception e)
+            {
+                OnLoadSceneFailure(e.Message + "-" + sceneLocation);
+                _isLoadingScene = false;
+            }
+        }
+
+        /// <summary>
+        /// 卸载上一个场景,仅供切换场景流程使用
+        /// </summary>
+        public void UnloadLastScene()
+        {
+            if (_sceneLoadingIdInfos.Count > 0)
+            {
+                foreach (var sceneLoaded in _sceneLoadingIdInfos)
+                {
+                    int sceneId = sceneLoaded.Key;
+                    Resource.UnloadSceneAsync(sceneId);
+                    var progress = sceneLoaded.Value;
+                    ReferencePool.Release(progress);
+                }
+            }
+            _sceneLoadingIdInfos.Clear();
+        }
+
+        /// <summary>
+        /// 手动加载场景，自己管理。例如 .Completed 监听成功失败等
+        /// </summary>
+        /// <param name="sceneLocation"></param>
+        /// <returns></returns>
+        public async UniTask<int> Handle_LoadScene(string sceneLocation, SceneProgressReporter progress = null)
+        {
+            return await Handle_LoadScene(sceneLocation, true, progress);
+        }
+        
+        /// <summary>
+        /// 手动加载场景，自己管理。例如 .Completed 监听成功失败等
+        /// </summary>
+        /// <param name="sceneLocation"></param>
+        /// <returns></returns>
+        public async UniTask<int> Handle_LoadScene(string sceneLocation, bool activateOnLoad = true, SceneProgressReporter progress = null)
+        {
+            var sceneMode = UnityEngine.SceneManagement.LoadSceneMode.Additive;
+            int sceneId =  await Resource.LoadSceneAsync(sceneLocation, progress, sceneMode, activateOnLoad);
+            return sceneId;
+        }
+        
+        /// <summary>
+        /// 手动卸载场景
+        /// </summary>
+        /// <param name="handle"></param>
+        public void Handle_UnloadScene(int sceneId)
+        {
+            Resource.UnloadSceneAsync(sceneId);
+        }
+
+        private void OnLoadSceneSuccess(string sceneName)
+        {
+            //Log.Debug($"Load scene success, scene name is {sceneName}");
+            Event.Fire(this, LoadSceneSuccessEventArgs.Create(sceneName));
+        }
+        
+        private void OnLoadSceneFailure(string errorMessage)
+        {
+            //Log.Error("Load scene failure, error message '{0}'.", errorMessage);
+            Event.Fire(this, LoadSceneFailureEventArgs.Create(errorMessage));
+        }
+        
+        private void OnLoadSceneUpdate(float progress)
+        {
+            //Log.Info("Load scene update, progress '{0}'.", progress.ToString("P2"));
+            Event.Fire(this, LoadSceneUpdateEventArgs.Create(progress));
+        }
+    }
+}
+
