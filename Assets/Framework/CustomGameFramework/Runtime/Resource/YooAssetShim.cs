@@ -148,6 +148,11 @@ namespace CustomGameFramework.Runtime
 
         #endregion
 
+        public static void UnloadUnusedAssets(this ResourcePackage package)
+        {
+            package.UnloadUnusedAssets();
+        }
+
         public static async UniTask<T> LoadAssetAsync<T>(string location)
             where T : Object
         {

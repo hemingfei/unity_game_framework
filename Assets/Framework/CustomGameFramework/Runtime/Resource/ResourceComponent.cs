@@ -96,6 +96,11 @@ namespace CustomGameFramework.Runtime
                 progressReporter);
         }
 
+        public void UnloadUnusedAssets()
+        {
+            m_ResourceHelper.UnloadUnusedAssets();
+        }
+
         #region 加载资源对象
         public async UniTask<T> LoadAssetAsync<T>(string location) where T : Object
         {

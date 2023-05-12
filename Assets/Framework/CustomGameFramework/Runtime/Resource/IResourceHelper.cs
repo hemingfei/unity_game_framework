@@ -25,6 +25,8 @@ namespace CustomGameFramework.Runtime
         public long GetDownloadSize();
 
         public void StartDownload(Action success, Action<string> fail, IProgress<float> progress = null);
+
+        public void UnloadUnusedAssets();
         
         public UniTask<T> LoadAssetAsync<T>(string location) where T : Object;
 

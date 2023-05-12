@@ -24,6 +24,11 @@ namespace CustomGameFramework.Runtime
         public abstract IQueryServices GetQueryServices();
         public abstract IDecryptionServices GetDecryptionServices();
 
+        public override void UnloadUnusedAssets()
+        {
+            _package?.UnloadUnusedAssets();
+        }
+
         public override async void Init(IResourceMode mode, Action success, Action<string> fail)
         {
             _package = YooAssetShim.InitializeYooAsset();
