@@ -2,6 +2,12 @@
 
 All notable changes to this package will be documented in this file.
 
+## [1.0.4] - 2023-05-12
+
+### Removed
+
+- Useless Editor Menus
+
 ## [1.0.3] - 2023-05-11
 
 ### Added

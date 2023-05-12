@@ -26,7 +26,7 @@ namespace CustomGameFramework.Editor.DataTable
             var path = FormatPath(workingDir);
             if (!System.IO.File.Exists(path + fileName))
             {
-                Debug.LogError("bat文件不存在：" + path + fileName);
+                Debug.LogError("脚本文件不存在：" + path + fileName);
             }
             else
             {
