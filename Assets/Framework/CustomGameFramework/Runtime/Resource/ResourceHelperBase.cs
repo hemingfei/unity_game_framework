@@ -18,6 +18,14 @@ namespace CustomGameFramework.Runtime
 {
     public abstract class ResourceHelperBase : MonoBehaviour, IResourceHelper
     {
+        public abstract void Init(IResourceMode mode, Action success, Action<string> fail);
+
+        public abstract void UpdateVersionAndManifest(Action success, Action<string> fail);
+
+        public abstract long GetDownloadSize();
+
+        public abstract void StartDownload(Action success, Action<string> fail, IProgress<float> progress = null);
+
         public abstract UniTask<T> LoadAssetAsync<T>(string location) where T : Object;
         
         public abstract void LoadAssetAsync<T>(string location, Action<T> callback) where T : Object;

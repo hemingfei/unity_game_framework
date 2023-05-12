@@ -18,6 +18,14 @@ namespace CustomGameFramework.Runtime
 {
     public interface IResourceHelper
     {
+        public void Init(IResourceMode mode, Action success, Action<string> fail);
+
+        public void UpdateVersionAndManifest(Action success, Action<string> fail);
+
+        public long GetDownloadSize();
+
+        public void StartDownload(Action success, Action<string> fail, IProgress<float> progress = null);
+        
         public UniTask<T> LoadAssetAsync<T>(string location) where T : Object;
 
         public void LoadAssetAsync<T>(string location, Action<T> callback) where T : Object;

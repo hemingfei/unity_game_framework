@@ -35,9 +35,13 @@ namespace CustomGameFramework.Runtime
         private ResourceHelperBase m_CustomResourceHelper = null;
 
         private IResourceHelper m_ResourceHelper = null;
-        
+
+        private EventComponent Event;
+
         private void Start()
         {
+            Event = GameEntry.GetComponent<EventComponent>();
+            
             ResourceHelperBase resourceHelper = Helper.CreateHelper(m_ResourceHelperTypeName, m_CustomResourceHelper);
             if (resourceHelper == null)
             {
@@ -51,6 +55,45 @@ namespace CustomGameFramework.Runtime
             transform.localScale = Vector3.one;
 
             m_ResourceHelper = resourceHelper;
+        }
+
+        public void Init(IResourceMode mode)
+        {
+            m_ResourceHelper.Init(mode,
+                () => Event.Fire(this, ResourceInitSuccessEventArgs.Create()),
+                (msg) => Event.Fire(this, ResourceInitFailEventArgs.Create(msg)));
+        }
+
+        public void UpdateVersionAndManifest()
+        {
+            m_ResourceHelper.UpdateVersionAndManifest(
+                () => Event.Fire(this, ResourceUpdateVersionAndManifestSuccessEventArgs.Create()),
+                (msg) => Event.Fire(this, ResourceUpdateVersionAndManifestFailEventArgs.Create(msg)));
+        }
+
+        public long GetDownloadSize()
+        {
+            return m_ResourceHelper.GetDownloadSize();
+        }
+
+        public void StartDownload()
+        {
+            var progressReporter = ProgressReporter.Create((progress) =>
+            {
+                Event.Fire(this, ResourceUpdateVersionAndManifestProgressEventArgs.Create(progress));
+            });
+            m_ResourceHelper.StartDownload(
+                () =>
+                {
+                    Event.Fire(this, ResourceDownloadSuccessEventArgs.Create());
+                    ReferencePool.Release(progressReporter);
+                },
+                (msg) =>
+                {
+                    Event.Fire(this, ResourceDownloadFailEventArgs.Create(msg));
+                    ReferencePool.Release(progressReporter);
+                },
+                progressReporter);
         }
 
         #region 加载资源对象

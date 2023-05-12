@@ -55,7 +55,7 @@ namespace CustomGameFramework.Runtime
         /// <summary>
         /// 初始化 package
         /// </summary>
-        public static UniTask InitializePackageAsync(this ResourcePackage package, YooAsset.EPlayMode playMode,
+        public static async UniTask InitializePackageAsync(this ResourcePackage package, YooAsset.EPlayMode playMode,
             string cdnURL,
             IQueryServices queryServices,
             IDecryptionServices decryptionServices = null)
@@ -79,7 +79,7 @@ namespace CustomGameFramework.Runtime
                 },
                 _ => throw new ArgumentOutOfRangeException(nameof(playMode), playMode, null)
             };
-            return package.InitializeAsync(parameters).ToUniTask();
+            await package.InitializeAsync(parameters).ToUniTask();
         }
 
         /// <summary>

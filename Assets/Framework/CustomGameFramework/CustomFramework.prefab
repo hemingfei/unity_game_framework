@@ -57,7 +57,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0a79b85c619c4ee49937a35897fdd8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ResourceHelperTypeName: CustomGameFramework.Runtime.YooAssetResourceHelper
+  m_ResourceHelperTypeName: 
   m_CustomResourceHelper: {fileID: 0}
 --- !u!1 &648958558
 GameObject:

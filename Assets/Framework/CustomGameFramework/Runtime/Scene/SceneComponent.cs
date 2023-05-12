@@ -19,46 +19,19 @@ namespace CustomGameFramework.Runtime
 {
     public class SceneComponent : GameFrameworkComponent
     {
-        public class SceneProgressReporter : IProgress<float>, IReference
-        {
-            public float Progress;
-
-            public SceneProgressReporter()
-            {
-                Progress = 0;
-            }
-
-            public void Report(float value)
-            {
-                Progress = value;
-            }
-
-            public static SceneProgressReporter Create()
-            {
-                var reporter = ReferencePool.Acquire<SceneProgressReporter>();
-                reporter.Progress = 0;
-                return reporter;
-            }
-
-            public void Clear()
-            {
-                Progress = 0;
-            }
-        }
-        
         public static EventComponent Event { get; private set; }
         public static ResourceComponent Resource { get; private set; }
         
-        private Dictionary<int, SceneProgressReporter> _sceneLoadingIdInfos = null;
+        private Dictionary<int, ProgressReporter> _sceneLoadingIdInfos = null;
         private bool _isLoadingScene = false;
         
-        private SceneProgressReporter _currentProgressReporter = null;
+        private ProgressReporter _currentProgressReporter = null;
 
         private void Start()
         {
             Event = UnityGameFramework.Runtime.GameEntry.GetComponent<EventComponent>();
             Resource = UnityGameFramework.Runtime.GameEntry.GetComponent<ResourceComponent>();
-            _sceneLoadingIdInfos = new Dictionary<int, SceneProgressReporter>();
+            _sceneLoadingIdInfos = new Dictionary<int, ProgressReporter>();
         }
 
         private void Update()
@@ -77,7 +50,7 @@ namespace CustomGameFramework.Runtime
         public async void LoadScene(string sceneLocation)
         {
             var sceneMode = UnityEngine.SceneManagement.LoadSceneMode.Additive;
-            var progress = SceneProgressReporter.Create();
+            var progress = ProgressReporter.Create(null);
             _currentProgressReporter = progress;
             try
             {
@@ -118,7 +91,7 @@ namespace CustomGameFramework.Runtime
         /// </summary>
         /// <param name="sceneLocation"></param>
         /// <returns></returns>
-        public async UniTask<int> Handle_LoadScene(string sceneLocation, SceneProgressReporter progress = null)
+        public async UniTask<int> Handle_LoadScene(string sceneLocation, ProgressReporter progress = null)
         {
             return await Handle_LoadScene(sceneLocation, true, progress);
         }
@@ -128,7 +101,7 @@ namespace CustomGameFramework.Runtime
         /// </summary>
         /// <param name="sceneLocation"></param>
         /// <returns></returns>
-        public async UniTask<int> Handle_LoadScene(string sceneLocation, bool activateOnLoad = true, SceneProgressReporter progress = null)
+        public async UniTask<int> Handle_LoadScene(string sceneLocation, bool activateOnLoad = true, ProgressReporter progress = null)
         {
             var sceneMode = UnityEngine.SceneManagement.LoadSceneMode.Additive;
             int sceneId =  await Resource.LoadSceneAsync(sceneLocation, progress, sceneMode, activateOnLoad);
