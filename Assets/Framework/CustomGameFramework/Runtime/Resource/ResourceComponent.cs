@@ -67,8 +67,8 @@ namespace CustomGameFramework.Runtime
         public void UpdateVersionAndManifest()
         {
             m_ResourceHelper.UpdateVersionAndManifest(
-                () => Event.Fire(this, ResourceUpdateVersionAndManifestSuccessEventArgs.Create()),
-                (msg) => Event.Fire(this, ResourceUpdateVersionAndManifestFailEventArgs.Create(msg)));
+                () => Event.Fire(this, ResourceUpdateManifestSuccessEventArgs.Create()),
+                (msg) => Event.Fire(this, ResourceUpdateManifestFailEventArgs.Create(msg)));
         }
 
         public long GetDownloadSize()
@@ -80,7 +80,7 @@ namespace CustomGameFramework.Runtime
         {
             var progressReporter = ProgressReporter.Create((progress) =>
             {
-                Event.Fire(this, ResourceUpdateVersionAndManifestProgressEventArgs.Create(progress));
+                Event.Fire(this, ResourceDownloadProgressEventArgs.Create(progress));
             });
             m_ResourceHelper.StartDownload(
                 () =>

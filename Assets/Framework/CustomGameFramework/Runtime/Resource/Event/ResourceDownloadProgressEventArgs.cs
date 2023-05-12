@@ -1,5 +1,5 @@
 /****************************************************
-*	文件：ResourceUpdateVersionAndManifestProgressEventArgs.cs
+*	文件：ResourceDownloadProgressEventArgs.cs
 *	作者：hemingfei
 *	邮箱：hemingfei@outlook.com
 *	日期：2023/05/12 16:17:41
@@ -14,17 +14,17 @@ namespace CustomGameFramework.Runtime
 	/// <summary>
 	/// 资源更新版本清单的进度事件
 	/// </summary>
-	public class ResourceUpdateVersionAndManifestProgressEventArgs : GameEventArgs
+	public class ResourceDownloadProgressEventArgs : GameEventArgs
 	{
 		/// <summary>
 		/// 资源更新版本清单的进度事件编号。
 		/// </summary>
-		public static readonly int EventId = typeof(ResourceUpdateVersionAndManifestProgressEventArgs).GetHashCode();
+		public static readonly int EventId = typeof(ResourceDownloadProgressEventArgs).GetHashCode();
 
 		/// <summary>
 		/// 初始化资源更新版本清单的进度事件的新实例。
 		/// </summary>
-		public ResourceUpdateVersionAndManifestProgressEventArgs()
+		public ResourceDownloadProgressEventArgs()
 		{
 			Progress = default;
 		}
@@ -44,9 +44,9 @@ namespace CustomGameFramework.Runtime
 		/// </summary>
 		/// <param name="progress">进度</param>
 		/// <returns>创建的资源更新版本清单的进度事件。</returns>
-		public static ResourceUpdateVersionAndManifestProgressEventArgs Create(float progress)
+		public static ResourceDownloadProgressEventArgs Create(float progress)
 		{
-			ResourceUpdateVersionAndManifestProgressEventArgs e = ReferencePool.Acquire<ResourceUpdateVersionAndManifestProgressEventArgs>();
+			ResourceDownloadProgressEventArgs e = ReferencePool.Acquire<ResourceDownloadProgressEventArgs>();
 			e.Progress = progress;
 			return e;
 		}

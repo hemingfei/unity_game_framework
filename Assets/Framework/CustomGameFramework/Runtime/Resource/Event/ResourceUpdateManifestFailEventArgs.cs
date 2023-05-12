@@ -1,8 +1,8 @@
 /****************************************************
-*	文件：ResourceUpdateVersionAndManifestFailEventArgs.cs
+*	文件：ResourceUpdateManifestFailEventArgs.cs
 *	作者：hemingfei
 *	邮箱：hemingfei@outlook.com
-*	日期：2023/05/12 15:38:40
+*	日期：2023/05/13 00:13:07
 *	功能：暂无
 *****************************************************/
 
@@ -14,17 +14,17 @@ namespace CustomGameFramework.Runtime
 	/// <summary>
 	/// 更新资源版本清单失败事件
 	/// </summary>
-	public class ResourceUpdateVersionAndManifestFailEventArgs : GameEventArgs
+	public class ResourceUpdateManifestFailEventArgs : GameEventArgs
 	{
 		/// <summary>
 		/// 更新资源版本清单失败事件编号。
 		/// </summary>
-		public static readonly int EventId = typeof(ResourceUpdateVersionAndManifestFailEventArgs).GetHashCode();
+		public static readonly int EventId = typeof(ResourceUpdateManifestFailEventArgs).GetHashCode();
 
 		/// <summary>
 		/// 初始化更新资源版本清单失败事件的新实例。
 		/// </summary>
-		public ResourceUpdateVersionAndManifestFailEventArgs()
+		public ResourceUpdateManifestFailEventArgs()
 		{
 			ErrorMsg = default;
 		}
@@ -44,9 +44,9 @@ namespace CustomGameFramework.Runtime
 		/// </summary>
 		/// <param name="errorMsg">错误信息</param>
 		/// <returns>创建的更新资源版本清单失败事件。</returns>
-		public static ResourceUpdateVersionAndManifestFailEventArgs Create(string errorMsg)
+		public static ResourceUpdateManifestFailEventArgs Create(string errorMsg)
 		{
-			ResourceUpdateVersionAndManifestFailEventArgs e = ReferencePool.Acquire<ResourceUpdateVersionAndManifestFailEventArgs>();
+			ResourceUpdateManifestFailEventArgs e = ReferencePool.Acquire<ResourceUpdateManifestFailEventArgs>();
 			e.ErrorMsg = errorMsg;
 			return e;
 		}
@@ -60,4 +60,5 @@ namespace CustomGameFramework.Runtime
 		}
 	}
 }
+
 
