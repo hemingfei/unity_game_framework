@@ -94,6 +94,7 @@ namespace CustomGameFramework.Runtime
                 var isSuccess = await YooAssetShim.Download(progress);
                 if (isSuccess)
                 {
+                    await _package.ClearCache();
                     success();
                 }
                 else

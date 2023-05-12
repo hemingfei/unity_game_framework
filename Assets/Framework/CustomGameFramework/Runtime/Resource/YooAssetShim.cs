@@ -139,6 +139,13 @@ namespace CustomGameFramework.Runtime
             return _DOWNLOADER.Status == EOperationStatus.Succeed;
         }
         
+        public static async UniTask<bool> ClearCache(this ResourcePackage package)
+        {
+            var operation = package.ClearUnusedCacheFilesAsync();
+            await operation.ToUniTask();
+            return operation.Status == EOperationStatus.Succeed;
+        }
+
         #endregion
 
         public static async UniTask<T> LoadAssetAsync<T>(string location)
