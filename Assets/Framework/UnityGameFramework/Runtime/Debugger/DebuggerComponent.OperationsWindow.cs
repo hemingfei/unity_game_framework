@@ -11,10 +11,11 @@ namespace UnityGameFramework.Runtime
 {
     public sealed partial class DebuggerComponent : GameFrameworkComponent
     {
-        private sealed class OperationsWindow : ScrollableDebuggerWindowBase
+        private sealed partial class OperationsWindow : ScrollableDebuggerWindowBase
         {
             protected override void OnDrawScrollableWindow()
             {
+                OnDrawOperationButtonScrollableWindow();
                 GUILayout.Label("<b>Operations</b>");
                 GUILayout.BeginVertical("box");
                 {
@@ -31,20 +32,6 @@ namespace UnityGameFramework.Runtime
                             objectPoolComponent.ReleaseAllUnused();
                         }
                     }
-
-                    // ResourceComponent resourceCompoent = GameEntry.GetComponent<ResourceComponent>();
-                    // if (resourceCompoent != null)
-                    // {
-                    //     if (GUILayout.Button("Unload Unused Assets", GUILayout.Height(30f)))
-                    //     {
-                    //         resourceCompoent.ForceUnloadUnusedAssets(false);
-                    //     }
-                    //
-                    //     if (GUILayout.Button("Unload Unused Assets and Garbage Collect", GUILayout.Height(30f)))
-                    //     {
-                    //         resourceCompoent.ForceUnloadUnusedAssets(true);
-                    //     }
-                    // }
 
                     if (GUILayout.Button("Shutdown Game Framework (None)", GUILayout.Height(30f)))
                     {

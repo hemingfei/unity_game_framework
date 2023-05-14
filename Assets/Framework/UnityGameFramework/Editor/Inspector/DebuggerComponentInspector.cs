@@ -18,6 +18,8 @@ namespace UnityGameFramework.Editor
         private SerializedProperty m_ActiveWindow = null;
         private SerializedProperty m_ShowFullWindow = null;
         private SerializedProperty m_ConsoleWindow = null;
+        // 调试按钮每行的个数
+        private SerializedProperty m_BtnNumPerLineInOperation = null;
 
         public override void OnInspectorGUI()
         {
@@ -40,6 +42,7 @@ namespace UnityGameFramework.Editor
             else
             {
                 EditorGUILayout.PropertyField(m_ActiveWindow);
+                EditorGUILayout.PropertyField(m_BtnNumPerLineInOperation);
             }
 
             EditorGUILayout.PropertyField(m_ShowFullWindow);
@@ -63,6 +66,7 @@ namespace UnityGameFramework.Editor
             m_ActiveWindow = serializedObject.FindProperty("m_ActiveWindow");
             m_ShowFullWindow = serializedObject.FindProperty("m_ShowFullWindow");
             m_ConsoleWindow = serializedObject.FindProperty("m_ConsoleWindow");
+            m_BtnNumPerLineInOperation = serializedObject.FindProperty("m_BtnNumPerLineInOperation");
         }
     }
 }

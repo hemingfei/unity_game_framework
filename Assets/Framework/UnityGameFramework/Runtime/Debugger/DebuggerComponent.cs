@@ -32,7 +32,7 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 默认调试器窗口缩放比例。
         /// </summary>
-        internal static readonly float DefaultWindowScale = 1f;
+        internal static readonly float DefaultWindowScale = 1.7f;
 
         private static readonly TextEditor s_TextEditor = new TextEditor();
         private IDebuggerManager m_DebuggerManager = null;
@@ -183,6 +183,35 @@ namespace UnityGameFramework.Runtime
 
         private void Start()
         {
+            switch (m_ActiveWindow)
+            {
+                case DebuggerActiveWindowType.AlwaysOpen:
+                    ActiveWindow = true;
+                    break;
+
+                case DebuggerActiveWindowType.OnlyOpenWhenDevelopment:
+                    ActiveWindow = Debug.isDebugBuild;
+                    break;
+
+                case DebuggerActiveWindowType.OnlyOpenInEditor:
+                    ActiveWindow = Application.isEditor;
+                    break;
+
+                default:
+                    ActiveWindow = false;
+                    break;
+            }
+
+            RegisterWindows();
+        }
+
+        public void RegisterWindows()
+        {
+            if (!ActiveWindow)
+            {
+                return;
+            }
+
             RegisterDebuggerWindow("Console", m_ConsoleWindow);
             RegisterDebuggerWindow("Information/System", m_SystemInformationWindow);
             RegisterDebuggerWindow("Information/Environment", m_EnvironmentInformationWindow);
@@ -215,26 +244,7 @@ namespace UnityGameFramework.Runtime
             RegisterDebuggerWindow("Profiler/Reference Pool", m_ReferencePoolInformationWindow);
             RegisterDebuggerWindow("Profiler/Network", m_NetworkInformationWindow);
             RegisterDebuggerWindow("Other/Settings", m_SettingsWindow);
-            RegisterDebuggerWindow("Other/Operations", m_OperationsWindow);
-
-            switch (m_ActiveWindow)
-            {
-                case DebuggerActiveWindowType.AlwaysOpen:
-                    ActiveWindow = true;
-                    break;
-
-                case DebuggerActiveWindowType.OnlyOpenWhenDevelopment:
-                    ActiveWindow = Debug.isDebugBuild;
-                    break;
-
-                case DebuggerActiveWindowType.OnlyOpenInEditor:
-                    ActiveWindow = Application.isEditor;
-                    break;
-
-                default:
-                    ActiveWindow = false;
-                    break;
-            }
+            RegisterDebuggerWindow("Other/Operations", m_OperationsWindow, this);
         }
 
         private void Update()
