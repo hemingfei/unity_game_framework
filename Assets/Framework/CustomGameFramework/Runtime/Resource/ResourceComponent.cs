@@ -29,6 +29,9 @@ namespace CustomGameFramework.Runtime
     public sealed class ResourceComponent : GameFrameworkComponent
     {
         [SerializeField]
+        private IResourceMode m_ResourceMode = IResourceMode.EditorSimulateMode;
+        
+        [SerializeField]
         private string m_ResourceHelperTypeName = "CustomGameFramework.Runtime.ResourceHelperBase";
 
         [SerializeField]
@@ -57,11 +60,28 @@ namespace CustomGameFramework.Runtime
             m_ResourceHelper = resourceHelper;
         }
 
-        public void Init(IResourceMode mode)
+        public void Init()
         {
+            IResourceMode mode = GetRuntimeResourceMode();
             m_ResourceHelper.Init(mode,
                 () => Event.Fire(this, ResourceInitSuccessEventArgs.Create()),
                 (msg) => Event.Fire(this, ResourceInitFailEventArgs.Create(msg)));
+        }
+
+        private IResourceMode GetRuntimeResourceMode()
+        {
+            IResourceMode mode = IResourceMode.HostPlayMode;
+            if (m_ResourceMode != IResourceMode.EditorSimulateMode)
+            {
+                mode =  m_ResourceMode;
+            }
+            else
+            {
+                mode = Application.platform is RuntimePlatform.OSXEditor or RuntimePlatform.LinuxEditor
+                    or RuntimePlatform.WindowsEditor ? m_ResourceMode : IResourceMode.OfflinePlayMode;
+            }
+
+            return mode;
         }
 
         public void UpdateVersionAndManifest()

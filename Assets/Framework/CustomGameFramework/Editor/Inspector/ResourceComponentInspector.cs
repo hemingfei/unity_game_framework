@@ -19,6 +19,7 @@ namespace CustomGameFramework.Editor
     internal sealed class ResourceComponentInspector : GameFrameworkInspector
     {
         private HelperInfo<ResourceHelperBase> m_ResourceHelperInfo = new HelperInfo<ResourceHelperBase>("Resource");
+        private SerializedProperty m_resouceMode = null;
         
         public override void OnInspectorGUI()
         {
@@ -29,6 +30,9 @@ namespace CustomGameFramework.Editor
             EditorGUI.BeginDisabledGroup(EditorApplication.isPlayingOrWillChangePlaymode);
             {
                 m_ResourceHelperInfo.Draw();
+                EditorGUILayout.Space();
+                EditorGUILayout.LabelField("资源系统运行模式");
+                EditorGUILayout.PropertyField(m_resouceMode);
             }
             EditorGUI.EndDisabledGroup();
 
@@ -47,7 +51,7 @@ namespace CustomGameFramework.Editor
         private void OnEnable()
         {
             m_ResourceHelperInfo.Init(serializedObject);
-
+            m_resouceMode = serializedObject.FindProperty("m_ResourceMode");
             RefreshTypeNames();
         }
 
