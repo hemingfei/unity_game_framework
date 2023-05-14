@@ -2,6 +2,17 @@
 
 All notable changes to this package will be documented in this file.
 
+## [1.0.8] - 2023-05-14
+
+### Added
+
+- Resource Component Load Scene Support Action Callback
+- Debugger Component Support Register Self Methods
+
+### Changed
+
+- Debugger Component Default Position Changed
+
 ## [1.0.7] - 2023-05-13
 
 ### Changed
