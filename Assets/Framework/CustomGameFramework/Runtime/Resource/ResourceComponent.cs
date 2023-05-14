@@ -9,9 +9,6 @@ using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using GameFramework;
-using GameFramework.Download;
-using GameFramework.FileSystem;
-using GameFramework.ObjectPool;
 using GameFramework.Resource;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -167,6 +164,12 @@ namespace CustomGameFramework.Runtime
             LoadSceneMode sceneMode = LoadSceneMode.Single, bool activateOnLoad = true)
         {
             return await m_ResourceHelper.LoadSceneAsync(location, progress, sceneMode, activateOnLoad);
+        }
+        
+        public void LoadSceneAsync(string location, IProgress<float> progress, Action<int> callback,
+            LoadSceneMode sceneMode = LoadSceneMode.Single, bool activateOnLoad = true)
+        {
+            m_ResourceHelper.LoadSceneAsync(location, progress, callback, sceneMode, activateOnLoad);
         }
 
         public void UnloadSceneAsync(int sceneId)

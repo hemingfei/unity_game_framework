@@ -327,6 +327,24 @@ namespace CustomGameFramework.Runtime
 
             return sceneId;
         }
+        
+        public static async void LoadSceneAsync(string location, IProgress<float> progress, Action<int> callback, LoadSceneMode sceneMode = LoadSceneMode.Single, bool activateOnLoad = true)
+        {
+            var handle = YooAssets.LoadSceneAsync(location, sceneMode, activateOnLoad);
+
+            await handle.ToUniTask(progress);
+            
+            if (!handle.IsValid)
+            {
+                throw new Exception($"[YooAssetShim] Failed to load scene: {location}");
+            }
+
+            int sceneId = _SCENE_ID++;
+            
+            _SCENEID_2_HANDLES.TryAdd(sceneId, handle);
+
+            callback?.Invoke(sceneId);
+        }
 
         public static void UnloadSceneAsync(int sceneId)
         {

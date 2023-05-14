@@ -158,6 +158,12 @@ namespace CustomGameFramework.Runtime
         {
             return await YooAssetShim.LoadSceneAsync(location, progress, sceneMode, activateOnLoad);
         }
+        
+        public override void LoadSceneAsync(string location, IProgress<float> progress, Action<int> callback, 
+            LoadSceneMode sceneMode = LoadSceneMode.Single, bool activateOnLoad = true)
+        {
+            YooAssetShim.LoadSceneAsync(location, progress, callback, sceneMode, activateOnLoad);
+        }
 
         public override void UnloadSceneAsync(int sceneId)
         {

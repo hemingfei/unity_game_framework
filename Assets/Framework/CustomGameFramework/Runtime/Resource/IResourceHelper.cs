@@ -47,6 +47,9 @@ namespace CustomGameFramework.Runtime
         public UniTask<int> LoadSceneAsync(string location, IProgress<float> progress,
             LoadSceneMode sceneMode = LoadSceneMode.Single, bool activateOnLoad = true);
 
+        public void LoadSceneAsync(string location, IProgress<float> progress, Action<int> callback,
+            LoadSceneMode sceneMode = LoadSceneMode.Single, bool activateOnLoad = true);
+        
         public void UnloadSceneAsync(int sceneId);
     }
 }
