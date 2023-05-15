@@ -2,6 +2,13 @@
 
 All notable changes to this package will be documented in this file.
 
+## [1.0.9] - 2023-05-15
+
+### Changed
+
+- Sound Component Open the API of Turn On/Off Sound Listener
+- WWWFormInfo Class Now is Public
+
 ## [1.0.8] - 2023-05-14
 
 ### Added

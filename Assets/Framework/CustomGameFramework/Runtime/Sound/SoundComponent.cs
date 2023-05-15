@@ -677,9 +677,19 @@ namespace UnityGameFramework.Runtime
             RefreshAudioListener();
         }
 
-        private void RefreshAudioListener()
+        public void RefreshAudioListener()
         {
             m_AudioListener.enabled = FindObjectsOfType<AudioListener>().Length <= 1;
+        }
+        
+        public void TurnOnAudioListener()
+        {
+            m_AudioListener.enabled = true;
+        }
+        
+        public void TurnOffAudioListener()
+        {
+            m_AudioListener.enabled = false;
         }
     }
 }
