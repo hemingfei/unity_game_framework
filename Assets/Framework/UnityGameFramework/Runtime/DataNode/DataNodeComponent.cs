@@ -137,6 +137,23 @@ namespace UnityGameFramework.Runtime
         {
             m_DataNodeManager.SetData(path, data, node);
         }
+        
+        /// <summary>
+        /// 尝试获取数据结点的数据。如果没有找到，则返回默认值。
+        /// </summary>
+        /// <param name="path">相对于 node 的查找路径。</param>
+        /// <param name="defaultData">要设置的数据默认值。</param>
+        /// <typeparam name="T">要设置的数据类型。</typeparam>
+        /// <returns></returns>
+        public T TryGetData<T>(string path, T defaultData) where T : Variable
+        {
+            if (m_DataNodeManager.GetNode(path) == null || m_DataNodeManager.GetData(path) == null)
+            {
+                m_DataNodeManager.SetData(path, defaultData);
+            }
+            
+            return m_DataNodeManager.GetData<T>(path);
+        }
 
         /// <summary>
         /// 获取数据结点。
