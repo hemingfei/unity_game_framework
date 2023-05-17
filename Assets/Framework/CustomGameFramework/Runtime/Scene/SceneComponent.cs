@@ -101,7 +101,7 @@ namespace CustomGameFramework.Runtime
         /// </summary>
         /// <param name="sceneLocation"></param>
         /// <returns></returns>
-        public async UniTask<int> Handle_LoadScene(string sceneLocation, bool activateOnLoad = true, ProgressReporter progress = null)
+        public async UniTask<int> Handle_LoadScene(string sceneLocation, bool activateOnLoad, ProgressReporter progress = null)
         {
             var sceneMode = UnityEngine.SceneManagement.LoadSceneMode.Additive;
             int sceneId =  await Resource.LoadSceneAsync(sceneLocation, progress, sceneMode, activateOnLoad);
