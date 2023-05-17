@@ -53,18 +53,22 @@ namespace CustomGameFramework.Runtime
                 callback?.Invoke(count);
             }
 
-            _tokens[timerId]?.Dispose();
+            if (_tokens.ContainsKey(timerId))
+            {
+                var cancelToken = _tokens[timerId];
+                cancelToken?.Dispose();
+                cancelToken = null;
+                _tokens.Remove(timerId);
+            }
         }
 
-        public override bool Cancel(int id)
+        public override bool Cancel(int timerId)
         {
-            if (_tokens.ContainsKey(id))
+            if (_tokens.TryGetValue(timerId, out var token))
             {
-                var token = _tokens[id];
-                if (token!= null)
+                if (token!= null && !token.IsCancellationRequested)
                 {
                     token.Cancel();
-                    token.Dispose();
                     return true;
                 }
             }
