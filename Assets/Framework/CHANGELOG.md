@@ -2,6 +2,18 @@
 
 All notable changes to this package will be documented in this file.
 
+## [1.0.10] - 2023-05-17
+
+### Added
+
+- Custom WebRequest Component and Custom WebRequest Agent Helper
+- Litjson Helper
+- DataNode Component Add TryGetData Method
+
+### Fixed
+
+- Unitask Timer Helper Cancel Error
+
 ## [1.0.9] - 2023-05-15
 
 ### Changed
