@@ -1,5 +1,5 @@
 /****************************************************
-*	文件：CustomWebRequestAgentHelper.cs
+*	文件：HttpWebRequestAgentHelper.cs
 *	作者：何明飞
 *	邮箱：hemingfei@outlook.com
 *	日期：2023/02/07 16:07:41
@@ -22,9 +22,9 @@ using Utility = GameFramework.Utility;
 namespace CustomGameFramework.Runtime
 {
     /// <summary>
-    /// Description of CustomWebRequestAgentHelper
+    /// Description of HttpWebRequestAgentHelper
     /// </summary>
-    public class CustomWebRequestAgentHelper : WebRequestAgentHelperBase, IDisposable
+    public class HttpWebRequestAgentHelper : WebRequestAgentHelperBase, IDisposable
     {
         private UnityWebRequest m_UnityWebRequest = null;
         private bool m_Disposed = false;
@@ -76,7 +76,7 @@ namespace CustomGameFramework.Runtime
             }
 
             WWWFormInfo wwwFormInfo = (WWWFormInfo)userData;
-            if (wwwFormInfo == null || wwwFormInfo.UserData == null || wwwFormInfo.UserData.GetType() != typeof(CustomWebRequestInfo))
+            if (wwwFormInfo == null || wwwFormInfo.UserData == null || wwwFormInfo.UserData.GetType() != typeof(HttpWebRequestInfo))
             {
                 if (wwwFormInfo.WWWForm == null)
                 {
@@ -89,13 +89,13 @@ namespace CustomGameFramework.Runtime
             }
             else
             {
-                CustomWebRequestInfo info = (CustomWebRequestInfo)wwwFormInfo.UserData;
+                HttpWebRequestInfo info = (HttpWebRequestInfo)wwwFormInfo.UserData;
                 if (info.Query != null)
                 {
                     webRequestUri += ("?" + GetQueryPath(info.Query));
                 }
 
-                if (info.HttpType == CustomWebRequestInfo.HTTPType.POST)
+                if (info.HttpType == HttpWebRequestInfo.HTTPType.POST)
                 {
                     m_UnityWebRequest = new UnityWebRequest(webRequestUri, UnityWebRequest.kHttpVerbPOST);
                     m_UnityWebRequest.downloadHandler = (DownloadHandler) new DownloadHandlerBuffer();
@@ -142,20 +142,20 @@ namespace CustomGameFramework.Runtime
             }
             
             WWWFormInfo wwwFormInfo = (WWWFormInfo)userData;
-            CustomWebRequestInfo info = null;
-            if (wwwFormInfo.UserData.GetType() != typeof(CustomWebRequestInfo))
+            HttpWebRequestInfo info = null;
+            if (wwwFormInfo.UserData.GetType() != typeof(HttpWebRequestInfo))
             {
                 m_UnityWebRequest = UnityWebRequest.Post(webRequestUri, Utility.Converter.GetString(postData));
             }
             else
             {
-                info = (CustomWebRequestInfo)wwwFormInfo.UserData;
+                info = (HttpWebRequestInfo)wwwFormInfo.UserData;
                 if (info.Query != null)
                 {
                     webRequestUri += ("?" + GetQueryPath(info.Query));
                 }
 
-                if (info.HttpType == CustomWebRequestInfo.HTTPType.POST)
+                if (info.HttpType == HttpWebRequestInfo.HTTPType.POST)
                 {
                     m_UnityWebRequest = new UnityWebRequest(webRequestUri, UnityWebRequest.kHttpVerbPOST);
                     m_UnityWebRequest.downloadHandler = (DownloadHandler) new DownloadHandlerBuffer();

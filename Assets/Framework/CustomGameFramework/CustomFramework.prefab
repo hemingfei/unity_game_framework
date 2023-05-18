@@ -327,7 +327,7 @@ GameObject:
   - component: {fileID: 1147260777184787028}
   - component: {fileID: 7788810680472207938}
   m_Layer: 0
-  m_Name: CustomWebRequest
+  m_Name: HttpWebRequest
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

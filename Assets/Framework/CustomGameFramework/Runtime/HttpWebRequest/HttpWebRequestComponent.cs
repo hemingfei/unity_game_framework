@@ -1,5 +1,5 @@
 /****************************************************
-*	文件：CustomWebRequestComponent.cs
+*	文件：HttpWebRequestComponent.cs
 *	作者：hemingfei
 *	邮箱：hemingfei@outlook.com
 *	日期：2023/05/17 15:11:47
@@ -15,7 +15,7 @@ using UnityGameFramework.Runtime;
 
 namespace CustomGameFramework.Runtime
 {
-    public sealed class CustomWebRequestComponent : GameFrameworkComponent
+    public sealed class HttpWebRequestComponent : GameFrameworkComponent
     {
         private EventComponent m_EventComponent = null;
         private DataNodeComponent m_DataNodeComponent = null;
@@ -47,16 +47,16 @@ namespace CustomGameFramework.Runtime
         private void OnWebRequestStartEvent(object sender, GameEventArgs e)
         {
             var userData = ((WebRequestStartEventArgs)e).UserData;
-            if (userData == null || userData.GetType() != typeof(CustomWebRequestInfo))
+            if (userData == null || userData.GetType() != typeof(HttpWebRequestInfo))
             {
                 return;
             }
-            var args = CustomWebRequestStartEventArgs.Create((UnityGameFramework.Runtime.WebRequestStartEventArgs)e);
+            var args = HttpWebRequestStartEventArgs.Create((UnityGameFramework.Runtime.WebRequestStartEventArgs)e);
 
             Log.Debug($"CustomWebRequest [SerialId] {args.SerialId} Start \n" +
                       "【URL】" + args.WebRequestUri +
-                      "【Headers】" + GameFramework.Utility.Json.ToJson(((CustomWebRequestInfo)args.UserData).Headers) +
-                      "【Body】" + ((CustomWebRequestInfo)args.UserData).BodyJson +
+                      "【Headers】" + GameFramework.Utility.Json.ToJson(((HttpWebRequestInfo)args.UserData).Headers) +
+                      "【Body】" + ((HttpWebRequestInfo)args.UserData).BodyJson +
                       "【UID】" + args.UID);
             
             m_EventComponent.Fire(this, args);
@@ -65,11 +65,11 @@ namespace CustomGameFramework.Runtime
         private void OnWebRequestSuccessEvent(object sender, GameEventArgs e)
         {
             var userData = ((WebRequestSuccessEventArgs)e).UserData;
-            if (userData == null || userData.GetType() != typeof(CustomWebRequestInfo))
+            if (userData == null || userData.GetType() != typeof(HttpWebRequestInfo))
             {
                 return;
             }
-            var args = CustomWebRequestSuccessEventArgs.Create((UnityGameFramework.Runtime.WebRequestSuccessEventArgs)e);
+            var args = HttpWebRequestSuccessEventArgs.Create((UnityGameFramework.Runtime.WebRequestSuccessEventArgs)e);
             
             var returnDataJson = GameFramework.Utility.Converter.GetString(args.GetWebResponseBytes());
             
@@ -85,11 +85,11 @@ namespace CustomGameFramework.Runtime
         private void OnWebRequestFailureEvent(object sender, GameEventArgs e)
         {
             var userData = ((WebRequestFailureEventArgs)e).UserData;
-            if (userData == null || userData.GetType() != typeof(CustomWebRequestInfo))
+            if (userData == null || userData.GetType() != typeof(HttpWebRequestInfo))
             {
                 return;
             }
-            var args = CustomWebRequestFailureEventArgs.Create((UnityGameFramework.Runtime.WebRequestFailureEventArgs)e);
+            var args = HttpWebRequestFailureEventArgs.Create((UnityGameFramework.Runtime.WebRequestFailureEventArgs)e);
             
             Log.Debug($"CustomWebRequest [SerialId] {args.SerialId} Failure \n" +
                       "【ErrorMessage】" + args.ErrorMessage +

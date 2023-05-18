@@ -1,5 +1,5 @@
 /****************************************************
-*	文件：CustomWebRequestStartEventArgs.cs
+*	文件：HttpWebRequestFailureEventArgs.cs
 *	作者：何明飞
 *	邮箱：hemingfei@outlook.com
 *	日期：2023/02/08 19:02:10
@@ -8,34 +8,34 @@
 
 using GameFramework;
 using GameFramework.Event;
-using UnityEngine;
 using UnityGameFramework.Runtime;
 
 namespace CustomGameFramework.Runtime
 {
     /// <summary>
-    /// Web 请求开始事件。
+    /// Web 请求失败事件。
     /// </summary>
-    public sealed class CustomWebRequestStartEventArgs : GameEventArgs
+    public sealed class HttpWebRequestFailureEventArgs : GameEventArgs
     {
         /// <summary>
-        /// Web 请求开始事件编号。
+        /// Web 请求失败事件编号。
         /// </summary>
         public int EventId { get; private set; }
 
         /// <summary>
-        /// 初始化 Web 请求开始事件的新实例。
+        /// 初始化 Web 请求失败事件的新实例。
         /// </summary>
-        public CustomWebRequestStartEventArgs()
+        public HttpWebRequestFailureEventArgs()
         {
             UID = default;
             SerialId = 0;
             WebRequestUri = null;
+            ErrorMessage = null;
             UserData = null;
         }
 
         /// <summary>
-        /// 获取 Web 请求开始事件编号。
+        /// 获取 Web 请求失败事件编号。
         /// </summary>
         public override int Id
         {
@@ -73,6 +73,15 @@ namespace CustomGameFramework.Runtime
         }
 
         /// <summary>
+        /// 获取错误信息。
+        /// </summary>
+        public string ErrorMessage
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
         /// 获取用户自定义数据。
         /// </summary>
         public object UserData
@@ -82,30 +91,33 @@ namespace CustomGameFramework.Runtime
         }
 
         /// <summary>
-        /// 创建 Web 请求开始事件。
+        /// 创建 Web 请求失败事件。
         /// </summary>
         /// <param name="e">内部事件。</param>
-        /// <returns>创建的 Web 请求开始事件。</returns>
-        public static CustomWebRequestStartEventArgs Create(UnityGameFramework.Runtime.WebRequestStartEventArgs e)
+        /// <returns>创建的 Web 请求失败事件。</returns>
+        public static HttpWebRequestFailureEventArgs Create(UnityGameFramework.Runtime.WebRequestFailureEventArgs e)
         {
-            CustomWebRequestInfo requestInfo = (CustomWebRequestInfo)e.UserData;
-            CustomWebRequestStartEventArgs customWebRequestStartEventArgs = ReferencePool.Acquire<CustomWebRequestStartEventArgs>();
-            customWebRequestStartEventArgs.SerialId = e.SerialId;
-            customWebRequestStartEventArgs.WebRequestUri = e.WebRequestUri;
-            customWebRequestStartEventArgs.UserData = requestInfo;
-            customWebRequestStartEventArgs.UID = requestInfo.UID;
-            customWebRequestStartEventArgs.EventId = requestInfo.EventId_Start;
-            return customWebRequestStartEventArgs;
+            HttpWebRequestInfo requestInfo = (HttpWebRequestInfo)e.UserData;
+            HttpWebRequestFailureEventArgs httpWebRequestFailureEventArgs = ReferencePool.Acquire<HttpWebRequestFailureEventArgs>();
+            httpWebRequestFailureEventArgs.SerialId = e.SerialId;
+            httpWebRequestFailureEventArgs.WebRequestUri = e.WebRequestUri;
+            httpWebRequestFailureEventArgs.ErrorMessage = e.ErrorMessage;
+            httpWebRequestFailureEventArgs.UserData = requestInfo;
+            httpWebRequestFailureEventArgs.UID = requestInfo.UID;
+            httpWebRequestFailureEventArgs.EventId = requestInfo.EventId_Failure;
+            ReferencePool.Release(requestInfo);
+            return httpWebRequestFailureEventArgs;
         }
 
         /// <summary>
-        /// 清理 Web 请求开始事件。
+        /// 清理 Web 请求失败事件。
         /// </summary>
         public override void Clear()
         {
             UID = default;
             SerialId = 0;
             WebRequestUri = null;
+            ErrorMessage = null;
             UserData = null;
         }
     }
