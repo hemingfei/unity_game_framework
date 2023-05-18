@@ -125,9 +125,7 @@ namespace UnityGameFramework.Runtime
                 if (!AddEntityGroup(m_EntityGroups[i].Name, m_EntityGroups[i].InstanceAutoReleaseInterval,
                         m_EntityGroups[i].InstanceCapacity, m_EntityGroups[i].InstanceExpireTime,
                         m_EntityGroups[i].InstancePriority))
-                {
                     Log.Warning("Add entity group '{0}' failure.", m_EntityGroups[i].Name);
-                }
         }
 
         /// <summary>

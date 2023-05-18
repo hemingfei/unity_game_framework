@@ -857,10 +857,7 @@ namespace CustomGameFramework.Runtime
         {
             if (!s_hideUIs.ContainsKey(UIname)) return null;
 
-            if (s_hideUIs[UIname].Count == 0)
-            {
-                return null;
-            }
+            if (s_hideUIs[UIname].Count == 0) return null;
 
             var ui = s_hideUIs[UIname][s_hideUIs[UIname].Count - 1];
             //默认返回最后创建的那一个

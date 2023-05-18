@@ -14,12 +14,12 @@ namespace UnityGameFramework.Editor
     [CustomEditor(typeof(EntityComponent))]
     internal sealed class EntityComponentInspector : GameFrameworkInspector
     {
-        private SerializedProperty m_EnableShowEntityDependencyAssetEvent;
-        private SerializedProperty m_EnableShowEntityUpdateEvent;
         private readonly HelperInfo<EntityGroupHelperBase> m_EntityGroupHelperInfo = new("EntityGroup");
-        private SerializedProperty m_EntityGroups;
 
         private readonly HelperInfo<EntityHelperBase> m_EntityHelperInfo = new("Entity");
+        private SerializedProperty m_EnableShowEntityDependencyAssetEvent;
+        private SerializedProperty m_EnableShowEntityUpdateEvent;
+        private SerializedProperty m_EntityGroups;
         private SerializedProperty m_InstanceRoot;
 
         private void OnEnable()

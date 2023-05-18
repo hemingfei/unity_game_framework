@@ -30,10 +30,7 @@ namespace UnityGameFramework.Runtime
         private void Start()
         {
             m_ResourceComponent = GameEntry.GetComponent<ResourceComponent>();
-            if (m_ResourceComponent == null)
-            {
-                Log.Fatal("Resource component is invalid.");
-            }
+            if (m_ResourceComponent == null) Log.Fatal("Resource component is invalid.");
         }
 
         public void LoadAsset(string assetName, int priority, LoadAssetCallbacks loadAssetCallbacks, object userData)

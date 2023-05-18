@@ -13,15 +13,15 @@ namespace UnityGameFramework.Editor
     [CustomEditor(typeof(SoundComponent))]
     internal sealed class SoundComponentInspector : GameFrameworkInspector
     {
+        private readonly HelperInfo<SoundAgentHelperBase> m_SoundAgentHelperInfo = new("SoundAgent");
+        private readonly HelperInfo<SoundGroupHelperBase> m_SoundGroupHelperInfo = new("SoundGroup");
+
+        private readonly HelperInfo<SoundHelperBase> m_SoundHelperInfo = new("Sound");
         private SerializedProperty m_AudioMixer;
         private SerializedProperty m_EnablePlaySoundDependencyAssetEvent;
         private SerializedProperty m_EnablePlaySoundUpdateEvent;
         private SerializedProperty m_InstanceRoot;
-        private readonly HelperInfo<SoundAgentHelperBase> m_SoundAgentHelperInfo = new("SoundAgent");
-        private readonly HelperInfo<SoundGroupHelperBase> m_SoundGroupHelperInfo = new("SoundGroup");
         private SerializedProperty m_SoundGroups;
-
-        private readonly HelperInfo<SoundHelperBase> m_SoundHelperInfo = new("Sound");
 
         private void OnEnable()
         {

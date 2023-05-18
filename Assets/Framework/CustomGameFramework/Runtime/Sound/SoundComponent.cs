@@ -149,9 +149,7 @@ namespace UnityGameFramework.Runtime
             for (var i = 0; i < m_SoundGroups.Length; i++)
                 if (!AddSoundGroup(m_SoundGroups[i].Name, m_SoundGroups[i].AvoidBeingReplacedBySamePriority,
                         m_SoundGroups[i].Mute, m_SoundGroups[i].Volume, m_SoundGroups[i].AgentHelperCount))
-                {
                     Log.Warning("Add sound group '{0}' failure.", m_SoundGroups[i].Name);
-                }
         }
 
         private void OnDestroy()
@@ -608,7 +606,7 @@ namespace UnityGameFramework.Runtime
         {
             m_EventComponent.Fire(this, PlaySoundDependencyAssetEventArgs.Create(e));
         }
-        
+
 #if UNITY_5_3
         private void OnLoadSceneSuccess(object sender, LoadSceneSuccessEventArgs e)
         {

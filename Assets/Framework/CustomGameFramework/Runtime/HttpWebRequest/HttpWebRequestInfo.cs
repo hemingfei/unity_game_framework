@@ -11,10 +11,10 @@ using GameFramework;
 
 namespace CustomGameFramework.Runtime
 {
-	/// <summary>
-	///     Description of HttpWebRequestInfo
-	/// </summary>
-	public class HttpWebRequestInfo : IReference
+    /// <summary>
+    ///     Description of HttpWebRequestInfo
+    /// </summary>
+    public class HttpWebRequestInfo : IReference
     {
         public enum HTTPType
         {

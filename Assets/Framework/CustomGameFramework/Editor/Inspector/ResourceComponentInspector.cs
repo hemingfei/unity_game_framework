@@ -14,8 +14,8 @@ namespace CustomGameFramework.Editor
     [CustomEditor(typeof(ResourceComponent))]
     internal sealed class ResourceComponentInspector : GameFrameworkInspector
     {
-        private SerializedProperty m_resouceMode;
         private readonly HelperInfo<ResourceHelperBase> m_ResourceHelperInfo = new("Resource");
+        private SerializedProperty m_resouceMode;
 
         private void OnEnable()
         {

@@ -507,29 +507,29 @@ namespace Doozy.Engine.UI
 
     public enum UIViewStartBehavior
     {
-	    /// <summary>
-	    ///     Do Nothing.
-	    ///     <para />
-	    ///     Used when the UIView is visible and should not do anything else.
-	    /// </summary>
-	    DoNothing,
+        /// <summary>
+        ///     Do Nothing.
+        ///     <para />
+        ///     Used when the UIView is visible and should not do anything else.
+        /// </summary>
+        DoNothing,
 
-	    /// <summary>
-	    ///     Start hidden.
-	    ///     <para />
-	    ///     Used when the UIView should be out of view at Start.
-	    ///     <para />
-	    ///     This triggers an instant auto HIDE animation, thus the UIView hides in zero seconds.
-	    /// </summary>
-	    Hide,
+        /// <summary>
+        ///     Start hidden.
+        ///     <para />
+        ///     Used when the UIView should be out of view at Start.
+        ///     <para />
+        ///     This triggers an instant auto HIDE animation, thus the UIView hides in zero seconds.
+        /// </summary>
+        Hide,
 
-	    /// <summary>
-	    ///     Start by playing the SHOW animation.
-	    ///     <para />
-	    ///     Used when the UIView should animate becoming visible at Start.
-	    ///     <para />
-	    ///     This triggers and instant HIDE and then an automated SHOW animation immediately after that.
-	    /// </summary>
-	    PlayShowAnimation
+        /// <summary>
+        ///     Start by playing the SHOW animation.
+        ///     <para />
+        ///     Used when the UIView should animate becoming visible at Start.
+        ///     <para />
+        ///     This triggers and instant HIDE and then an automated SHOW animation immediately after that.
+        /// </summary>
+        PlayShowAnimation
     }
 }

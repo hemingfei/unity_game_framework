@@ -3,10 +3,11 @@
 // A Copy of the EULA APPENDIX 1 is available at http://unity3d.com/company/legal/as_terms
 
 using System;
+using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
-using UnityEngine;
+
 //using Doozy.Engine.Utils;
 
 // ReSharper disable NotAccessedField.Global

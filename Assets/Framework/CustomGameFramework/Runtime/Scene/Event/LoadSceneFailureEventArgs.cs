@@ -11,50 +11,50 @@ using GameFramework.Event;
 
 namespace CustomGameFramework.Runtime.Event
 {
-	/// <summary>
-	///     加载场景失败事件
-	/// </summary>
-	public class LoadSceneFailureEventArgs : GameEventArgs
+    /// <summary>
+    ///     加载场景失败事件
+    /// </summary>
+    public class LoadSceneFailureEventArgs : GameEventArgs
     {
-	    /// <summary>
-	    ///     加载场景失败事件编号。
-	    /// </summary>
-	    public static readonly int EventId = typeof(LoadSceneFailureEventArgs).GetHashCode();
+        /// <summary>
+        ///     加载场景失败事件编号。
+        /// </summary>
+        public static readonly int EventId = typeof(LoadSceneFailureEventArgs).GetHashCode();
 
-	    /// <summary>
-	    ///     初始化加载场景失败事件的新实例。
-	    /// </summary>
-	    public LoadSceneFailureEventArgs()
+        /// <summary>
+        ///     初始化加载场景失败事件的新实例。
+        /// </summary>
+        public LoadSceneFailureEventArgs()
         {
             ErrorMessage = string.Empty;
         }
 
-	    /// <summary>
-	    ///     获取加载场景失败事件编号。
-	    /// </summary>
-	    public override int Id => EventId;
+        /// <summary>
+        ///     获取加载场景失败事件编号。
+        /// </summary>
+        public override int Id => EventId;
 
-	    /// <summary>
-	    ///     错误信息
-	    /// </summary>
-	    public string ErrorMessage { get; private set; }
+        /// <summary>
+        ///     错误信息
+        /// </summary>
+        public string ErrorMessage { get; private set; }
 
-	    /// <summary>
-	    ///     创建加载场景失败事件。
-	    /// </summary>
-	    /// <param name="errorMessage">错误信息</param>
-	    /// <returns>创建的加载场景失败事件。</returns>
-	    public static LoadSceneFailureEventArgs Create(string errorMessage)
+        /// <summary>
+        ///     创建加载场景失败事件。
+        /// </summary>
+        /// <param name="errorMessage">错误信息</param>
+        /// <returns>创建的加载场景失败事件。</returns>
+        public static LoadSceneFailureEventArgs Create(string errorMessage)
         {
             var e = ReferencePool.Acquire<LoadSceneFailureEventArgs>();
             e.ErrorMessage = errorMessage;
             return e;
         }
 
-	    /// <summary>
-	    ///     清理加载场景失败事件。
-	    /// </summary>
-	    public override void Clear()
+        /// <summary>
+        ///     清理加载场景失败事件。
+        /// </summary>
+        public override void Clear()
         {
             ErrorMessage = string.Empty;
         }

@@ -14,14 +14,14 @@ namespace CustomGameFramework.Runtime
     internal sealed partial class HeapTimerHelper : TimerHelperBase
     {
         private const int CHECK_FREQUENCY = 16; //精确到16ms timer的最小精度
+        private readonly BinaryHeap<TimeItem> m_scaleTimeHeap = new(128, eBinaryHeapSortMode.kMin);
+        private readonly BinaryHeap<TimeItem> m_unScaleTimeHeap = new(128, eBinaryHeapSortMode.kMin);
 
 
         private TimeItem cachedItem;
         private float m_currentScaleTime = -1;
         private float m_currentUnScaleTime = -1;
         private float m_dwLastCheckTick; // 最后一次检查的时间
-        private readonly BinaryHeap<TimeItem> m_scaleTimeHeap = new(128, eBinaryHeapSortMode.kMin);
-        private readonly BinaryHeap<TimeItem> m_unScaleTimeHeap = new(128, eBinaryHeapSortMode.kMin);
 
         private void Update()
         {

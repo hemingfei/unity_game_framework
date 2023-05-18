@@ -11,42 +11,42 @@ using GameFramework.Event;
 
 namespace CustomGameFramework.Runtime
 {
-	/// <summary>
-	///     资源下载成功事件
-	/// </summary>
-	public class ResourceDownloadSuccessEventArgs : GameEventArgs
+    /// <summary>
+    ///     资源下载成功事件
+    /// </summary>
+    public class ResourceDownloadSuccessEventArgs : GameEventArgs
     {
-	    /// <summary>
-	    ///     资源下载成功事件编号。
-	    /// </summary>
-	    public static readonly int EventId = typeof(ResourceDownloadSuccessEventArgs).GetHashCode();
+        /// <summary>
+        ///     资源下载成功事件编号。
+        /// </summary>
+        public static readonly int EventId = typeof(ResourceDownloadSuccessEventArgs).GetHashCode();
 
-	    /// <summary>
-	    ///     初始化资源下载成功事件的新实例。
-	    /// </summary>
-	    public ResourceDownloadSuccessEventArgs()
+        /// <summary>
+        ///     初始化资源下载成功事件的新实例。
+        /// </summary>
+        public ResourceDownloadSuccessEventArgs()
         {
         }
 
-	    /// <summary>
-	    ///     获取资源下载成功事件编号。
-	    /// </summary>
-	    public override int Id => EventId;
+        /// <summary>
+        ///     获取资源下载成功事件编号。
+        /// </summary>
+        public override int Id => EventId;
 
-	    /// <summary>
-	    ///     创建资源下载成功事件。
-	    /// </summary>
-	    /// <returns>创建的资源下载成功事件。</returns>
-	    public static ResourceDownloadSuccessEventArgs Create()
+        /// <summary>
+        ///     创建资源下载成功事件。
+        /// </summary>
+        /// <returns>创建的资源下载成功事件。</returns>
+        public static ResourceDownloadSuccessEventArgs Create()
         {
             var e = ReferencePool.Acquire<ResourceDownloadSuccessEventArgs>();
             return e;
         }
 
-	    /// <summary>
-	    ///     清理资源下载成功事件。
-	    /// </summary>
-	    public override void Clear()
+        /// <summary>
+        ///     清理资源下载成功事件。
+        /// </summary>
+        public override void Clear()
         {
         }
     }
