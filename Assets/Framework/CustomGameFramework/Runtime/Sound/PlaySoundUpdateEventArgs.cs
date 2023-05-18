@@ -12,17 +12,17 @@ using GameFramework.Sound;
 namespace UnityGameFramework.Runtime
 {
     /// <summary>
-    /// 播放声音更新事件。
+    ///     播放声音更新事件。
     /// </summary>
     public sealed class PlaySoundUpdateEventArgs : GameEventArgs
     {
         /// <summary>
-        /// 播放声音更新事件编号。
+        ///     播放声音更新事件编号。
         /// </summary>
         public static readonly int EventId = typeof(PlaySoundUpdateEventArgs).GetHashCode();
 
         /// <summary>
-        /// 初始化播放声音更新事件的新实例。
+        ///     初始化播放声音更新事件的新实例。
         /// </summary>
         public PlaySoundUpdateEventArgs()
         {
@@ -36,88 +36,54 @@ namespace UnityGameFramework.Runtime
         }
 
         /// <summary>
-        /// 获取播放声音更新事件编号。
+        ///     获取播放声音更新事件编号。
         /// </summary>
-        public override int Id
-        {
-            get
-            {
-                return EventId;
-            }
-        }
+        public override int Id => EventId;
 
         /// <summary>
-        /// 获取声音的序列编号。
+        ///     获取声音的序列编号。
         /// </summary>
-        public int SerialId
-        {
-            get;
-            private set;
-        }
+        public int SerialId { get; private set; }
 
         /// <summary>
-        /// 获取声音资源名称。
+        ///     获取声音资源名称。
         /// </summary>
-        public string SoundAssetName
-        {
-            get;
-            private set;
-        }
+        public string SoundAssetName { get; private set; }
 
         /// <summary>
-        /// 获取声音组名称。
+        ///     获取声音组名称。
         /// </summary>
-        public string SoundGroupName
-        {
-            get;
-            private set;
-        }
+        public string SoundGroupName { get; private set; }
 
         /// <summary>
-        /// 获取播放声音参数。
+        ///     获取播放声音参数。
         /// </summary>
-        public PlaySoundParams PlaySoundParams
-        {
-            get;
-            private set;
-        }
+        public PlaySoundParams PlaySoundParams { get; private set; }
 
         /// <summary>
-        /// 获取加载声音进度。
+        ///     获取加载声音进度。
         /// </summary>
-        public float Progress
-        {
-            get;
-            private set;
-        }
+        public float Progress { get; private set; }
 
         /// <summary>
-        /// 获取声音绑定的实体。
+        ///     获取声音绑定的实体。
         /// </summary>
-        public Entity BindingEntity
-        {
-            get;
-            private set;
-        }
+        public Entity BindingEntity { get; private set; }
 
         /// <summary>
-        /// 获取用户自定义数据。
+        ///     获取用户自定义数据。
         /// </summary>
-        public object UserData
-        {
-            get;
-            private set;
-        }
+        public object UserData { get; private set; }
 
         /// <summary>
-        /// 创建播放声音更新事件。
+        ///     创建播放声音更新事件。
         /// </summary>
         /// <param name="e">内部事件。</param>
         /// <returns>创建的播放声音更新事件。</returns>
         public static PlaySoundUpdateEventArgs Create(GameFramework.Sound.PlaySoundUpdateEventArgs e)
         {
-            PlaySoundInfo playSoundInfo = (PlaySoundInfo)e.UserData;
-            PlaySoundUpdateEventArgs playSoundUpdateEventArgs = ReferencePool.Acquire<PlaySoundUpdateEventArgs>();
+            var playSoundInfo = (PlaySoundInfo)e.UserData;
+            var playSoundUpdateEventArgs = ReferencePool.Acquire<PlaySoundUpdateEventArgs>();
             playSoundUpdateEventArgs.SerialId = e.SerialId;
             playSoundUpdateEventArgs.SoundAssetName = e.SoundAssetName;
             playSoundUpdateEventArgs.SoundGroupName = e.SoundGroupName;
@@ -129,7 +95,7 @@ namespace UnityGameFramework.Runtime
         }
 
         /// <summary>
-        /// 清理播放声音更新事件。
+        ///     清理播放声音更新事件。
         /// </summary>
         public override void Clear()
         {

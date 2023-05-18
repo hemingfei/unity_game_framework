@@ -7,8 +7,6 @@
 *****************************************************/
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -32,7 +30,7 @@ namespace CustomGameFramework.Runtime
         public override async void Init(IResourceMode mode, Action success, Action<string> fail)
         {
             _package = YooAssetShim.InitializeYooAsset();
-            var emode = YooAsset.EPlayMode.EditorSimulateMode;
+            var emode = EPlayMode.EditorSimulateMode;
             switch (mode)
             {
                 case IResourceMode.HostPlayMode:
@@ -50,13 +48,9 @@ namespace CustomGameFramework.Runtime
             {
                 await _package.InitializePackageAsync(emode, GetUrl(), GetQueryServices(), GetDecryptionServices());
                 if (_package.InitializeStatus == EOperationStatus.Succeed)
-                {
                     success();
-                }
                 else
-                {
                     fail("");
-                }
             }
             catch (Exception e)
             {
@@ -73,13 +67,9 @@ namespace CustomGameFramework.Runtime
                 var isSuccess = await _package.UpdateManifest(version);
 
                 if (isSuccess)
-                {
                     success();
-                }
                 else
-                {
                     fail("");
-                }
             }
             catch (Exception e)
             {
@@ -120,7 +110,7 @@ namespace CustomGameFramework.Runtime
 
         public override void LoadAssetAsync<T>(string location, Action<T> callback)
         {
-            YooAssetShim.LoadAssetAsync<T>(location, callback);
+            YooAssetShim.LoadAssetAsync(location, callback);
         }
 
         public override T LoadAssetSync<T>(string location)
@@ -138,7 +128,8 @@ namespace CustomGameFramework.Runtime
             return await YooAssetShim.LoadGameObjectAsync(location, parentTransform);
         }
 
-        public override void LoadGameObjectAsync(string location, Action<GameObject> callback, Transform parentTransform = null)
+        public override void LoadGameObjectAsync(string location, Action<GameObject> callback,
+            Transform parentTransform = null)
         {
             YooAssetShim.LoadGameObjectAsync(location, callback, parentTransform);
         }
@@ -158,8 +149,8 @@ namespace CustomGameFramework.Runtime
         {
             return await YooAssetShim.LoadSceneAsync(location, progress, sceneMode, activateOnLoad);
         }
-        
-        public override void LoadSceneAsync(string location, IProgress<float> progress, Action<int> callback, 
+
+        public override void LoadSceneAsync(string location, IProgress<float> progress, Action<int> callback,
             LoadSceneMode sceneMode = LoadSceneMode.Single, bool activateOnLoad = true)
         {
             YooAssetShim.LoadSceneAsync(location, progress, callback, sceneMode, activateOnLoad);
@@ -171,4 +162,3 @@ namespace CustomGameFramework.Runtime
         }
     }
 }
-

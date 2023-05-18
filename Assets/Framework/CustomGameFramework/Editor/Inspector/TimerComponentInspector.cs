@@ -6,11 +6,8 @@
 *	功能：暂无
 *****************************************************/
 
-using System.Collections.Generic;
-using GameFramework;
-using UnityEditor;
-using UnityGameFramework.Runtime;
 using CustomGameFramework.Runtime;
+using UnityEditor;
 using UnityGameFramework.Editor;
 
 namespace CustomGameFramework.Editor
@@ -18,8 +15,15 @@ namespace CustomGameFramework.Editor
     [CustomEditor(typeof(TimerComponent))]
     internal sealed class TimerComponentInspector : GameFrameworkInspector
     {
-        private HelperInfo<TimerHelperBase> m_TimerHelperInfo = new HelperInfo<TimerHelperBase>("Timer");
-        
+        private readonly HelperInfo<TimerHelperBase> m_TimerHelperInfo = new("Timer");
+
+        private void OnEnable()
+        {
+            m_TimerHelperInfo.Init(serializedObject);
+
+            RefreshTypeNames();
+        }
+
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
@@ -44,19 +48,11 @@ namespace CustomGameFramework.Editor
             RefreshTypeNames();
         }
 
-        private void OnEnable()
-        {
-            m_TimerHelperInfo.Init(serializedObject);
-
-            RefreshTypeNames();
-        }
-
         private void RefreshTypeNames()
         {
             m_TimerHelperInfo.Refresh();
-            
+
             serializedObject.ApplyModifiedProperties();
         }
     }
 }
-

@@ -7,8 +7,6 @@
 *****************************************************/
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace CustomGameFramework.Runtime
@@ -24,5 +22,3 @@ namespace CustomGameFramework.Runtime
         public abstract bool Cancel(int id);
     }
 }
-
-

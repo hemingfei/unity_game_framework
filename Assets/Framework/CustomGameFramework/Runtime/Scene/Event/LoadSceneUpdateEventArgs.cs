@@ -20,53 +20,51 @@ using GameFramework.Event;
 namespace CustomGameFramework.Runtime.Event
 {
 	/// <summary>
-	/// 加载场景更新事件
+	///     加载场景更新事件
 	/// </summary>
 	public class LoadSceneUpdateEventArgs : GameEventArgs
-	{
-		/// <summary>
-		/// 加载场景更新事件编号。
-		/// </summary>
-		public static readonly int EventId = typeof(LoadSceneUpdateEventArgs).GetHashCode();
+    {
+	    /// <summary>
+	    ///     加载场景更新事件编号。
+	    /// </summary>
+	    public static readonly int EventId = typeof(LoadSceneUpdateEventArgs).GetHashCode();
 
-		/// <summary>
-		/// 初始化加载场景更新事件的新实例。
-		/// </summary>
-		public LoadSceneUpdateEventArgs()
-		{
-			Progress = 0;
-		}
+	    /// <summary>
+	    ///     初始化加载场景更新事件的新实例。
+	    /// </summary>
+	    public LoadSceneUpdateEventArgs()
+        {
+            Progress = 0;
+        }
 
-		/// <summary>
-		/// 获取加载场景更新事件编号。
-		/// </summary>
-		public override int Id => EventId;
+	    /// <summary>
+	    ///     获取加载场景更新事件编号。
+	    /// </summary>
+	    public override int Id => EventId;
 
-		/// <summary>
-		/// 进度
-		/// </summary>
-		public float Progress { get; private set; }
-	
-		/// <summary>
-		/// 创建加载场景更新事件。
-		/// </summary>
-		/// <param name="progress">进度</param>
-		/// <returns>创建的加载场景更新事件。</returns>
-		public static LoadSceneUpdateEventArgs Create(float progress)
-		{
-			LoadSceneUpdateEventArgs e = ReferencePool.Acquire<LoadSceneUpdateEventArgs>();
-			e.Progress = progress;
-			return e;
-		}
+	    /// <summary>
+	    ///     进度
+	    /// </summary>
+	    public float Progress { get; private set; }
 
-		/// <summary>
-		/// 清理加载场景更新事件。
-		/// </summary>
-		public override void Clear()
-		{
-			Progress = 0;
-		}
-	}
+	    /// <summary>
+	    ///     创建加载场景更新事件。
+	    /// </summary>
+	    /// <param name="progress">进度</param>
+	    /// <returns>创建的加载场景更新事件。</returns>
+	    public static LoadSceneUpdateEventArgs Create(float progress)
+        {
+            var e = ReferencePool.Acquire<LoadSceneUpdateEventArgs>();
+            e.Progress = progress;
+            return e;
+        }
+
+	    /// <summary>
+	    ///     清理加载场景更新事件。
+	    /// </summary>
+	    public override void Clear()
+        {
+            Progress = 0;
+        }
+    }
 }
-
-

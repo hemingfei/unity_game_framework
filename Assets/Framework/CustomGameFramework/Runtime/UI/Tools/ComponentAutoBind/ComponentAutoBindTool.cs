@@ -14,73 +14,12 @@ using UnityGameFramework.Runtime;
 namespace CustomGameFramework.Runtime
 {
     /// <summary>
-    /// 组件自动绑定工具
+    ///     组件自动绑定工具
     /// </summary>
     public class ComponentAutoBindTool : MonoBehaviour
     {
-#if UNITY_EDITOR
-        [Serializable]
-        public class BindData
-        {
-            public BindData()
-            {
-            }
-            
-            public BindData(string name, Component bindCom)
-            {
-                Name = name;
-                BindCom = bindCom;
-            }
-            
-            public string Name;
-            public Component BindCom;
-        }
-        
-        public List<BindData> BindDatas = new List<BindData>();
-        
-        [SerializeField]
-        private string m_ClassName;
-        
-        [SerializeField]
-        private string m_Namespace;
-        
-        [SerializeField]
-        private string m_CodePath;
-        
-        public string ClassName
-        {
-            get
-            {
-                return m_ClassName;
-            }
-        }
-        
-        public string Namespace
-        {
-            get
-            {
-                return m_Namespace;
-            }
-        }
-        
-        public string CodePath
-        {
-            get
-            {
-                return m_CodePath;
-            }
-        }
-        
-        public IAutoBindRuleHelper RuleHelper
-        {
-            get;
-            set;
-        }
-#endif
-        
-        [SerializeField]
-        public List<Component> m_BindComs = new List<Component>();
-        
+        [SerializeField] public List<Component> m_BindComs = new();
+
 #if UNITY_EDITOR
         private void Awake()
         {
@@ -89,13 +28,13 @@ namespace CustomGameFramework.Runtime
                 m_ClassName = null;
                 Log.Warning("m_ClassName is null");
             }
-            
+
             if (m_Namespace == null)
             {
                 m_Namespace = null;
                 Log.Warning("m_Namespace is null");
             }
-            
+
             if (m_CodePath == null)
             {
                 m_CodePath = null;
@@ -103,7 +42,7 @@ namespace CustomGameFramework.Runtime
             }
         }
 #endif
-        
+
         public T GetBindComponent<T>(int index) where T : Component
         {
             if (index >= m_BindComs.Count)
@@ -111,17 +50,50 @@ namespace CustomGameFramework.Runtime
                 Log.Error("索引无效");
                 return null;
             }
-            
-            T bindCom = m_BindComs[index] as T;
-            
+
+            var bindCom = m_BindComs[index] as T;
+
             if (bindCom == null)
             {
                 Log.Error("类型无效");
                 return null;
             }
-            
+
             return bindCom;
         }
+#if UNITY_EDITOR
+        [Serializable]
+        public class BindData
+        {
+            public string Name;
+            public Component BindCom;
+
+            public BindData()
+            {
+            }
+
+            public BindData(string name, Component bindCom)
+            {
+                Name = name;
+                BindCom = bindCom;
+            }
+        }
+
+        public List<BindData> BindDatas = new();
+
+        [SerializeField] private string m_ClassName;
+
+        [SerializeField] private string m_Namespace;
+
+        [SerializeField] private string m_CodePath;
+
+        public string ClassName => m_ClassName;
+
+        public string Namespace => m_Namespace;
+
+        public string CodePath => m_CodePath;
+
+        public IAutoBindRuleHelper RuleHelper { get; set; }
+#endif
     }
 }
-

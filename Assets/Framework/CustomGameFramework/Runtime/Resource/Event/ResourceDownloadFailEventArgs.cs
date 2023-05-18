@@ -12,52 +12,51 @@ using GameFramework.Event;
 namespace CustomGameFramework.Runtime
 {
 	/// <summary>
-	/// 资源下载失败事件
+	///     资源下载失败事件
 	/// </summary>
 	public class ResourceDownloadFailEventArgs : GameEventArgs
-	{
-		/// <summary>
-		/// 资源下载失败事件编号。
-		/// </summary>
-		public static readonly int EventId = typeof(ResourceDownloadFailEventArgs).GetHashCode();
+    {
+	    /// <summary>
+	    ///     资源下载失败事件编号。
+	    /// </summary>
+	    public static readonly int EventId = typeof(ResourceDownloadFailEventArgs).GetHashCode();
 
-		/// <summary>
-		/// 初始化资源下载失败事件的新实例。
-		/// </summary>
-		public ResourceDownloadFailEventArgs()
-		{
-			ErrorMsg = default;
-		}
+	    /// <summary>
+	    ///     初始化资源下载失败事件的新实例。
+	    /// </summary>
+	    public ResourceDownloadFailEventArgs()
+        {
+            ErrorMsg = default;
+        }
 
-		/// <summary>
-		/// 获取资源下载失败事件编号。
-		/// </summary>
-		public override int Id => EventId;
+	    /// <summary>
+	    ///     获取资源下载失败事件编号。
+	    /// </summary>
+	    public override int Id => EventId;
 
-		/// <summary>
-		/// 错误信息
-		/// </summary>
-		public string ErrorMsg { get; private set; }
-	
-		/// <summary>
-		/// 创建资源下载失败事件。
-		/// </summary>
-		/// <param name="errorMsg">错误信息</param>
-		/// <returns>创建的资源下载失败事件。</returns>
-		public static ResourceDownloadFailEventArgs Create(string errorMsg)
-		{
-			ResourceDownloadFailEventArgs e = ReferencePool.Acquire<ResourceDownloadFailEventArgs>();
-			e.ErrorMsg = errorMsg;
-			return e;
-		}
+	    /// <summary>
+	    ///     错误信息
+	    /// </summary>
+	    public string ErrorMsg { get; private set; }
 
-		/// <summary>
-		/// 清理资源下载失败事件。
-		/// </summary>
-		public override void Clear()
-		{
-			ErrorMsg = default;
-		}
-	}
+	    /// <summary>
+	    ///     创建资源下载失败事件。
+	    /// </summary>
+	    /// <param name="errorMsg">错误信息</param>
+	    /// <returns>创建的资源下载失败事件。</returns>
+	    public static ResourceDownloadFailEventArgs Create(string errorMsg)
+        {
+            var e = ReferencePool.Acquire<ResourceDownloadFailEventArgs>();
+            e.ErrorMsg = errorMsg;
+            return e;
+        }
+
+	    /// <summary>
+	    ///     清理资源下载失败事件。
+	    /// </summary>
+	    public override void Clear()
+        {
+            ErrorMsg = default;
+        }
+    }
 }
-

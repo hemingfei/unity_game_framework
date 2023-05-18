@@ -7,32 +7,32 @@
 
 using System;
 using System.Collections.Generic;
+using CustomGameFramework.Runtime;
 using GameFramework;
 using GameFramework.Download;
 using GameFramework.FileSystem;
 using GameFramework.ObjectPool;
 using GameFramework.Resource;
 using UnityEngine;
-using CustomGameFramework.Runtime;
 using IResourceHelper = GameFramework.Resource.IResourceHelper;
 
 namespace UnityGameFramework.Runtime
 {
     /// <summary>
-    /// 资源组件。
+    ///     资源组件。
     /// </summary>
     [DisallowMultipleComponent]
     [AddComponentMenu("Game Framework/ResourceForFramework")]
     public sealed class FrameworkResourceComponent : GameFrameworkComponent, IResourceManager
     {
-        private ResourceComponent m_ResourceComponent = null;
+        private ResourceComponent m_ResourceComponent;
+
         private void Start()
         {
             m_ResourceComponent = GameEntry.GetComponent<ResourceComponent>();
             if (m_ResourceComponent == null)
             {
                 Log.Fatal("Resource component is invalid.");
-                return;
             }
         }
 
@@ -40,13 +40,13 @@ namespace UnityGameFramework.Runtime
         {
             m_ResourceComponent.LoadAsset(assetName, priority, loadAssetCallbacks, userData);
         }
-        
+
         public void UnloadAsset(object asset)
         {
             m_ResourceComponent.UnloadAsset(asset);
         }
-        
-        
+
+
         public string ReadOnlyPath { get; }
         public string ReadWritePath { get; }
         public ResourceMode ResourceMode { get; }
@@ -93,6 +93,7 @@ namespace UnityGameFramework.Runtime
         public event EventHandler<ResourceUpdateSuccessEventArgs> ResourceUpdateSuccess;
         public event EventHandler<ResourceUpdateFailureEventArgs> ResourceUpdateFailure;
         public event EventHandler<ResourceUpdateAllCompleteEventArgs> ResourceUpdateAllComplete;
+
         public void SetReadOnlyPath(string readOnlyPath)
         {
             throw new NotImplementedException();
@@ -159,17 +160,20 @@ namespace UnityGameFramework.Runtime
             throw new NotImplementedException();
         }
 
-        public void VerifyResources(int verifyResourceLengthPerFrame, VerifyResourcesCompleteCallback verifyResourcesCompleteCallback)
+        public void VerifyResources(int verifyResourceLengthPerFrame,
+            VerifyResourcesCompleteCallback verifyResourcesCompleteCallback)
         {
             throw new NotImplementedException();
         }
 
-        public void CheckResources(bool ignoreOtherVariant, CheckResourcesCompleteCallback checkResourcesCompleteCallback)
+        public void CheckResources(bool ignoreOtherVariant,
+            CheckResourcesCompleteCallback checkResourcesCompleteCallback)
         {
             throw new NotImplementedException();
         }
 
-        public void ApplyResources(string resourcePackPath, ApplyResourcesCompleteCallback applyResourcesCompleteCallback)
+        public void ApplyResources(string resourcePackPath,
+            ApplyResourcesCompleteCallback applyResourcesCompleteCallback)
         {
             throw new NotImplementedException();
         }
@@ -179,7 +183,8 @@ namespace UnityGameFramework.Runtime
             throw new NotImplementedException();
         }
 
-        public void UpdateResources(string resourceGroupName, UpdateResourcesCompleteCallback updateResourcesCompleteCallback)
+        public void UpdateResources(string resourceGroupName,
+            UpdateResourcesCompleteCallback updateResourcesCompleteCallback)
         {
             throw new NotImplementedException();
         }
@@ -239,7 +244,8 @@ namespace UnityGameFramework.Runtime
             throw new NotImplementedException();
         }
 
-        public void LoadAsset(string assetName, Type assetType, int priority, LoadAssetCallbacks loadAssetCallbacks, object userData)
+        public void LoadAsset(string assetName, Type assetType, int priority, LoadAssetCallbacks loadAssetCallbacks,
+            object userData)
         {
             throw new NotImplementedException();
         }
@@ -259,7 +265,8 @@ namespace UnityGameFramework.Runtime
             throw new NotImplementedException();
         }
 
-        public void LoadScene(string sceneAssetName, int priority, LoadSceneCallbacks loadSceneCallbacks, object userData)
+        public void LoadScene(string sceneAssetName, int priority, LoadSceneCallbacks loadSceneCallbacks,
+            object userData)
         {
             throw new NotImplementedException();
         }
@@ -355,7 +362,8 @@ namespace UnityGameFramework.Runtime
             throw new NotImplementedException();
         }
 
-        public int LoadBinarySegmentFromFileSystem(string binaryAssetName, int offset, byte[] buffer, int startIndex, int length)
+        public int LoadBinarySegmentFromFileSystem(string binaryAssetName, int offset, byte[] buffer, int startIndex,
+            int length)
         {
             throw new NotImplementedException();
         }

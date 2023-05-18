@@ -6,15 +6,11 @@
 //  Copyright (c) 2021 hegametech.com 
 //
 
-using UnityEngine;
-using System.Collections;
-using UnityEditor;
-using UnityEngine.UI;
 using System;
-using System.Text;
-using System.IO;
-using System.Reflection;
 using CustomGameFramework.Runtime;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace CustomGameFramework.Editor
 {
@@ -30,9 +26,9 @@ namespace CustomGameFramework.Editor
             EditorUtil.AddSortLayerIfNotExist("TopBar");
             EditorUtil.AddSortLayerIfNotExist("PopUp");
             //UIManager
-            GameObject UIManagerGo = new GameObject("UI");
+            var UIManagerGo = new GameObject("UI");
             UIManagerGo.layer = LayerMask.NameToLayer("UI");
-            UIManager UIManager = UIManagerGo.AddComponent<UIManager>();
+            var UIManager = UIManagerGo.AddComponent<UIManager>();
             CreateUICamera(UIManager, "DefaultUI", 1, referenceResolution, MatchMode, isOnlyUICamera, isVertical);
             ProjectWindowUtil.ShowCreatedAsset(UIManagerGo);
             //保存UIManager
@@ -42,31 +38,31 @@ namespace CustomGameFramework.Editor
         public static void CreateUICamera(UIManager UIManager, string key, float cameraDepth,
             Vector2 referenceResolution, CanvasScaler.ScreenMatchMode MatchMode, bool isOnlyUICamera, bool isVertical)
         {
-            UILayerManager.UICameraData uICameraData = new UILayerManager.UICameraData();
+            var uICameraData = new UILayerManager.UICameraData();
             uICameraData.m_key = key;
-            GameObject UIManagerGo = UIManager.gameObject;
-            GameObject canvas = new GameObject(key);
-            RectTransform canvasRt = canvas.AddComponent<RectTransform>();
+            var UIManagerGo = UIManager.gameObject;
+            var canvas = new GameObject(key);
+            var canvasRt = canvas.AddComponent<RectTransform>();
             canvasRt.SetParent(UIManagerGo.transform);
             uICameraData.m_root = canvas;
             //UIcamera
-            GameObject cameraGo = new GameObject("UICamera");
+            var cameraGo = new GameObject("UICamera");
             cameraGo.transform.SetParent(canvas.transform);
             cameraGo.transform.localPosition = new Vector3(0, 0, -5000);
-            Camera camera = cameraGo.AddComponent<Camera>();
+            var camera = cameraGo.AddComponent<Camera>();
             camera.cullingMask = LayerMask.GetMask("UI");
             camera.orthographic = true;
             camera.depth = cameraDepth;
             uICameraData.m_camera = camera;
             //Canvas
-            Canvas canvasComp = canvas.AddComponent<Canvas>();
+            var canvasComp = canvas.AddComponent<Canvas>();
             canvasComp.renderMode = RenderMode.ScreenSpaceCamera;
             canvasComp.worldCamera = camera;
             uICameraData.m_canvas = canvasComp;
             //UI Raycaster
             canvas.AddComponent<GraphicRaycaster>();
             //CanvasScaler
-            CanvasScaler scaler = canvas.AddComponent<CanvasScaler>();
+            var scaler = canvas.AddComponent<CanvasScaler>();
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = referenceResolution;
             scaler.screenMatchMode = MatchMode;
@@ -83,18 +79,14 @@ namespace CustomGameFramework.Editor
             }
 
             if (isVertical)
-            {
                 scaler.matchWidthOrHeight = 1;
-            }
             else
-            {
                 scaler.matchWidthOrHeight = 0;
-            }
 
             //挂载点
             GameObject goTmp = null;
             RectTransform rtTmp = null;
-            UILayerManager UILayerManager = UIManagerGo.GetComponent<UILayerManager>();
+            var UILayerManager = UIManagerGo.GetComponent<UILayerManager>();
             goTmp = new GameObject("GameUI");
             goTmp.layer = LayerMask.NameToLayer("UI");
             goTmp.transform.SetParent(canvas.transform);
@@ -151,51 +143,126 @@ namespace CustomGameFramework.Editor
         }
 
         /// <summary>
-        /// 保存UIManager
+        ///     保存UIManager
         /// </summary>
         /// <param name="UIManagerGo"></param>
-        static void ReSaveUIManager(GameObject UIManagerGo)
+        private static void ReSaveUIManager(GameObject UIManagerGo)
         {
-            string Path = UIEditorConstant.S_UiTemplatePath + "/UIManager/UIManager.prefab";
+            var Path = UIEditorConstant.S_UiTemplatePath + "/UIManager/UIManager.prefab";
             EditorUtil.CreatFilePath(Application.dataPath + "/" + Path);
             PrefabUtility.SaveAsPrefabAssetAndConnect(UIManagerGo, "Assets/" + Path, InteractionMode.UserAction);
             ProjectWindowUtil.ShowCreatedAsset(UIManagerGo);
         }
 
+        [MenuItem("GameObject/UI/快速构建字段和组件")]
+        public static void CreateObservedScript()
+        {
+            var uiGo = Selection.gameObjects[0].GetComponent<UIWindowBase>();
+
+            if (uiGo == null) return;
+
+            var UIWindowName = uiGo.name;
+            var members = uiGo.WindowEditorFastGetMembers();
+            var components = uiGo.WindowEditorFastGetComponents();
+            var btnCodeSub = uiGo.WindowEditorFastGetBtnScripts();
+            var btnCodeUnSub = uiGo.WindowEditorFastGetBtnScripts().Replace("AddListener", "RemoveListener");
+            var btnFunc = uiGo.WindowEditorFastGetBtnFunctionScripts();
+
+            var partialLoadPath = UIEditorConstant.S_UiTemplatePath +
+                                  "/UIWindowClassObservedTemplate";
+            var partialUItemplate = Resources.Load<TextAsset>(partialLoadPath)?.text;
+
+            var partialSavePath = Application.dataPath + "/" + UIEditorConstant.S_UiWindowClassPath + "/" +
+                                  UIWindowName + "/" + UIWindowName + ".Auto.cs";
+
+            var partialclassContent = partialUItemplate.Replace("{0}", "这是关注的字段和获取组件");
+            partialclassContent = partialclassContent.Replace("{1}", UIEditorConstant.S_AppNamespace);
+            partialclassContent = partialclassContent.Replace("{2}", UIWindowName);
+            partialclassContent = partialclassContent.Replace("{3}", members);
+            partialclassContent = partialclassContent.Replace("{4}", components);
+            partialclassContent = partialclassContent.Replace("{5}", btnCodeSub);
+            partialclassContent = partialclassContent.Replace("{6}", btnCodeUnSub);
+            partialclassContent = partialclassContent.Replace("{7}", btnFunc);
+            EditorUtil.WriteStringByFile(partialSavePath, partialclassContent);
+            AssetDatabase.Refresh();
+        }
+
+        [MenuItem("GameObject/UI/快速构建ComponentEditor")]
+        public static void CreateConmponentEditorScript()
+        {
+            var uiGo = Selection.gameObjects[0].GetComponent<UIBase>();
+
+            if (uiGo == null) return;
+
+            var UIWindowName = uiGo.name;
+
+            var editorLoadPath = UIEditorConstant.S_UiTemplatePath +
+                                 "/UIWindowComponentEditorTemplate";
+            var editorUItemplate = Resources.Load<TextAsset>(editorLoadPath)?.text;
+
+            var editorSavePath = Application.dataPath + "/" +
+                                 UIEditorConstant.S_UiWindowClassPath.Replace("Scripts", "ScriptsEditor") + "/" +
+                                 UIWindowName + "/" + UIWindowName + "ComponentEditor.cs";
+
+            var editorclassContent = editorUItemplate.Replace("{0}", "这是 CustomEditor");
+            editorclassContent = editorclassContent.Replace("{1}", UIEditorConstant.S_AppNamespace + "Editor");
+            editorclassContent = editorclassContent.Replace("{2}", UIWindowName);
+            editorclassContent = editorclassContent.Replace("{3}", UIWindowName + "ComponentEditor");
+            EditorUtil.WriteStringByFile(editorSavePath, editorclassContent);
+            AssetDatabase.Refresh();
+        }
+
+        /// <summary>
+        ///     按照模板创建Lua窗口脚本
+        /// </summary>
+        /// <param name="UIWindowName"></param>
+        public static void CreatUILuaScript(string UIWindowName)
+        {
+            var LoadPath = UIEditorConstant.S_UiTemplatePath +
+                           "/UILuaScriptTemplate";
+            var UItemplate = Resources.Load<TextAsset>(LoadPath)?.text;
+
+            var SavePath = Application.dataPath + "/Resources/Lua/UI/Lua" + UIWindowName + ".txt";
+
+            var classContent = UItemplate.Replace("{0}", UIWindowName);
+            EditorUtil.WriteStringByFile(SavePath, classContent);
+            AssetDatabase.Refresh();
+        }
+
         #region 创建ui预制体
 
         /// <summary>
-        /// 创建ui预制体
+        ///     创建ui预制体
         /// </summary>
         public static void CreateUIPrefab(string UIWindowName, string UIcameraKey, UIType UIType,
             UILayerManager UILayerManager, bool isAutoCreatePrefab)
         {
-            GameObject uiGo = new GameObject(UIWindowName);
-            string assem = UIEditorConstant.S_AppNamespace + "." + UIWindowName + "," +
-                           UIEditorConstant.S_UIAssemblyName +
-                           ", Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"; // typeof(HGT.AppComponent.AppBoot).Assembly.FullName;
-            Type type = Type.GetType(assem, false);
-            UIWindowBase uiBaseTmp = uiGo.AddComponent(type) as UIWindowBase;
+            var uiGo = new GameObject(UIWindowName);
+            var assem = UIEditorConstant.S_AppNamespace + "." + UIWindowName + "," +
+                        UIEditorConstant.S_UIAssemblyName +
+                        ", Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"; // typeof(HGT.AppComponent.AppBoot).Assembly.FullName;
+            var type = Type.GetType(assem, false);
+            var uiBaseTmp = uiGo.AddComponent(type) as UIWindowBase;
             uiGo.layer = LayerMask.NameToLayer("UI");
             uiBaseTmp.m_UIType = UIType;
             uiBaseTmp.cameraKey = UIcameraKey;
-            Canvas canvas = uiGo.AddComponent<Canvas>();
+            var canvas = uiGo.AddComponent<Canvas>();
 
             uiGo.AddComponent<GraphicRaycaster>();
-            RectTransform ui = uiGo.GetComponent<RectTransform>();
+            var ui = uiGo.GetComponent<RectTransform>();
             ui.sizeDelta = Vector2.zero;
             ui.anchorMin = Vector2.zero;
             ui.anchorMax = Vector2.one;
-            GameObject BgGo = new GameObject("BG");
+            var BgGo = new GameObject("BG");
             BgGo.layer = LayerMask.NameToLayer("UI");
-            RectTransform Bg = BgGo.AddComponent<RectTransform>();
+            var Bg = BgGo.AddComponent<RectTransform>();
             Bg.SetParent(ui);
             Bg.sizeDelta = Vector2.zero;
             Bg.anchorMin = Vector2.zero;
             Bg.anchorMax = Vector2.one;
-            GameObject rootGo = new GameObject("root");
+            var rootGo = new GameObject("root");
             rootGo.layer = LayerMask.NameToLayer("UI");
-            RectTransform root = rootGo.AddComponent<RectTransform>();
+            var root = rootGo.AddComponent<RectTransform>();
             root.SetParent(ui);
             root.sizeDelta = Vector2.zero;
             root.anchorMin = Vector2.zero;
@@ -203,11 +270,8 @@ namespace CustomGameFramework.Editor
             uiBaseTmp.m_bgMask = BgGo;
             uiBaseTmp.m_uiRoot = rootGo;
 
-            if (UILayerManager)
-            {
-                UILayerManager.SetLayer(uiBaseTmp, UIcameraKey);
-            }
-            
+            if (UILayerManager) UILayerManager.SetLayer(uiBaseTmp, UIcameraKey);
+
             if (EditorUtil.isExistSortingLayer(UIType.ToString()))
             {
                 canvas.overrideSorting = true;
@@ -216,8 +280,8 @@ namespace CustomGameFramework.Editor
 
             if (isAutoCreatePrefab)
             {
-                string Path = UIEditorConstant.S_ResFolderModePath + "/UI/" + UIWindowName + "/" + UIWindowName +
-                              ".prefab";
+                var Path = UIEditorConstant.S_ResFolderModePath + "/UI/" + UIWindowName + "/" + UIWindowName +
+                           ".prefab";
                 EditorUtil.CreatFilePath(Application.dataPath + "/" + Path);
                 PrefabUtility.SaveAsPrefabAssetAndConnect(uiGo, "Assets/" + Path, InteractionMode.UserAction);
                 {
@@ -233,20 +297,20 @@ namespace CustomGameFramework.Editor
         }
 
         /// <summary>
-        /// 创建热更ui预制体
+        ///     创建热更ui预制体
         /// </summary>
         public static void CreateHotfixUIPrefab(string UIWindowName, string UIcameraKey, UIType UIType,
             UILayerManager UILayerManager, bool isAutoCreatePrefab)
         {
-            GameObject uiGo = new GameObject(UIWindowName);
-            string assem = UIEditorConstant.S_AppNamespace + "." + "HotfixWindow" + "," +
-                           UIEditorConstant.S_HotfixUIAssemblyName +
-                           ", Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"; // typeof(HGT.AppComponent.AppBoot).Assembly.FullName;
-            Type type = Type.GetType(assem, false);
-            UIWindowBase uiBaseTmp = uiGo.AddComponent(type) as UIWindowBase;
+            var uiGo = new GameObject(UIWindowName);
+            var assem = UIEditorConstant.S_AppNamespace + "." + "HotfixWindow" + "," +
+                        UIEditorConstant.S_HotfixUIAssemblyName +
+                        ", Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"; // typeof(HGT.AppComponent.AppBoot).Assembly.FullName;
+            var type = Type.GetType(assem, false);
+            var uiBaseTmp = uiGo.AddComponent(type) as UIWindowBase;
             uiGo.layer = LayerMask.NameToLayer("UI");
             uiBaseTmp.m_UIType = UIType;
-            Canvas canvas = uiGo.AddComponent<Canvas>();
+            var canvas = uiGo.AddComponent<Canvas>();
 
             if (EditorUtil.isExistSortingLayer(UIType.ToString()))
             {
@@ -255,20 +319,20 @@ namespace CustomGameFramework.Editor
             }
 
             uiGo.AddComponent<GraphicRaycaster>();
-            RectTransform ui = uiGo.GetComponent<RectTransform>();
+            var ui = uiGo.GetComponent<RectTransform>();
             ui.sizeDelta = Vector2.zero;
             ui.anchorMin = Vector2.zero;
             ui.anchorMax = Vector2.one;
-            GameObject BgGo = new GameObject("BG");
+            var BgGo = new GameObject("BG");
             BgGo.layer = LayerMask.NameToLayer("UI");
-            RectTransform Bg = BgGo.AddComponent<RectTransform>();
+            var Bg = BgGo.AddComponent<RectTransform>();
             Bg.SetParent(ui);
             Bg.sizeDelta = Vector2.zero;
             Bg.anchorMin = Vector2.zero;
             Bg.anchorMax = Vector2.one;
-            GameObject rootGo = new GameObject("root");
+            var rootGo = new GameObject("root");
             rootGo.layer = LayerMask.NameToLayer("UI");
-            RectTransform root = rootGo.AddComponent<RectTransform>();
+            var root = rootGo.AddComponent<RectTransform>();
             root.SetParent(ui);
             root.sizeDelta = Vector2.zero;
             root.anchorMin = Vector2.zero;
@@ -276,18 +340,15 @@ namespace CustomGameFramework.Editor
             uiBaseTmp.m_bgMask = BgGo;
             uiBaseTmp.m_uiRoot = rootGo;
 
-            if (UILayerManager)
-            {
-                UILayerManager.SetLayer(uiBaseTmp);
-            }
+            if (UILayerManager) UILayerManager.SetLayer(uiBaseTmp);
 
-            MethodInfo magicMethod = type.GetMethod("SetHotfixWindowName");
-            object magicValue = magicMethod.Invoke(uiBaseTmp, new object[] { UIWindowName });
+            var magicMethod = type.GetMethod("SetHotfixWindowName");
+            var magicValue = magicMethod.Invoke(uiBaseTmp, new object[] { UIWindowName });
 
             if (isAutoCreatePrefab)
             {
-                string Path = UIEditorConstant.S_ResFolderModePath + "/UI/" + UIWindowName + "/" + UIWindowName +
-                              ".prefab";
+                var Path = UIEditorConstant.S_ResFolderModePath + "/UI/" + UIWindowName + "/" + UIWindowName +
+                           ".prefab";
                 EditorUtil.CreatFilePath(Application.dataPath + "/" + Path);
                 PrefabUtility.SaveAsPrefabAssetAndConnect(uiGo, "Assets/" + Path, InteractionMode.UserAction);
                 {
@@ -308,31 +369,31 @@ namespace CustomGameFramework.Editor
         #region 创建UI脚本
 
         /// <summary>
-        /// 按照模板创建UI窗口脚本
+        ///     按照模板创建UI窗口脚本
         /// </summary>
         /// <param name="UIWindowName"></param>
         public static void CreatUIScript(string UIWindowName, string description)
         {
-            string LoadPath = UIEditorConstant.S_UiTemplatePath +
-                              "/UIWindowClassTemplate";
-            string UItemplate = Resources.Load<TextAsset>(LoadPath)?.text;
-            
-            string SavePath = Application.dataPath + "/" + UIEditorConstant.S_UiWindowClassPath + "/" + UIWindowName +
-                              "/" + UIWindowName + ".cs";
-            
-            string classContent = UItemplate.Replace("{0}", description);
+            var LoadPath = UIEditorConstant.S_UiTemplatePath +
+                           "/UIWindowClassTemplate";
+            var UItemplate = Resources.Load<TextAsset>(LoadPath)?.text;
+
+            var SavePath = Application.dataPath + "/" + UIEditorConstant.S_UiWindowClassPath + "/" + UIWindowName +
+                           "/" + UIWindowName + ".cs";
+
+            var classContent = UItemplate.Replace("{0}", description);
             classContent = classContent.Replace("{1}", UIEditorConstant.S_AppNamespace);
             classContent = classContent.Replace("{2}", UIWindowName);
             EditorUtil.WriteStringByFile(SavePath, classContent);
-            string partialLoadPath = UIEditorConstant.S_UiTemplatePath +
-                                     "/UIWindowClassObservedTemplate";
-            string partialUItemplate = Resources.Load<TextAsset>(partialLoadPath)?.text;
-            
-            
-            string partialSavePath = Application.dataPath + "/" + UIEditorConstant.S_UiWindowClassPath + "/" +
-                                     UIWindowName + "/" + UIWindowName + ".Auto.cs";
-            
-            string partialclassContent = partialUItemplate.Replace("{0}", "这是关注的字段和获取组件");
+            var partialLoadPath = UIEditorConstant.S_UiTemplatePath +
+                                  "/UIWindowClassObservedTemplate";
+            var partialUItemplate = Resources.Load<TextAsset>(partialLoadPath)?.text;
+
+
+            var partialSavePath = Application.dataPath + "/" + UIEditorConstant.S_UiWindowClassPath + "/" +
+                                  UIWindowName + "/" + UIWindowName + ".Auto.cs";
+
+            var partialclassContent = partialUItemplate.Replace("{0}", "这是关注的字段和获取组件");
             partialclassContent = partialclassContent.Replace("{1}", UIEditorConstant.S_AppNamespace);
             partialclassContent = partialclassContent.Replace("{2}", UIWindowName);
             partialclassContent = partialclassContent.Replace("{3}", string.Empty);
@@ -341,15 +402,15 @@ namespace CustomGameFramework.Editor
             partialclassContent = partialclassContent.Replace("{6}", string.Empty);
             partialclassContent = partialclassContent.Replace("{7}", string.Empty);
             EditorUtil.WriteStringByFile(partialSavePath, partialclassContent);
-            string editorLoadPath = UIEditorConstant.S_UiTemplatePath +
-                                    "/UIWindowComponentEditorTemplate";
-            string editorUItemplate = Resources.Load<TextAsset>(editorLoadPath)?.text;
-            
-            string editorSavePath = Application.dataPath + "/" +
-                                    UIEditorConstant.S_UiWindowClassPath.Replace("Scripts", "ScriptsEditor") + "/" +
-                                    UIWindowName + "/" + UIWindowName + "ComponentEditor.cs";
+            var editorLoadPath = UIEditorConstant.S_UiTemplatePath +
+                                 "/UIWindowComponentEditorTemplate";
+            var editorUItemplate = Resources.Load<TextAsset>(editorLoadPath)?.text;
 
-            string editorclassContent = editorUItemplate.Replace("{0}", "这是 CustomEditor");
+            var editorSavePath = Application.dataPath + "/" +
+                                 UIEditorConstant.S_UiWindowClassPath.Replace("Scripts", "ScriptsEditor") + "/" +
+                                 UIWindowName + "/" + UIWindowName + "ComponentEditor.cs";
+
+            var editorclassContent = editorUItemplate.Replace("{0}", "这是 CustomEditor");
             editorclassContent = editorclassContent.Replace("{1}", UIEditorConstant.S_AppNamespace + "Editor");
             editorclassContent = editorclassContent.Replace("{2}", UIWindowName);
             editorclassContent = editorclassContent.Replace("{3}", UIWindowName + "ComponentEditor");
@@ -360,26 +421,26 @@ namespace CustomGameFramework.Editor
 
 
         /// <summary>
-        /// 按照模板创建UI窗口热更脚本
+        ///     按照模板创建UI窗口热更脚本
         /// </summary>
         /// <param name="UIWindowName"></param>
         public static void CreatHotfixUIScript(string UIWindowName, string description)
         {
-            string LoadPath = Application.dataPath + "/" + UIEditorConstant.S_HotfixUiTemplatePath +
-                              "/HotfixUIWindowClassTemplate.txt";
-            string SavePath = Application.dataPath + "/" + UIEditorConstant.S_HotfixUiWindowClassPath + "/" +
-                              UIWindowName + "/" + UIWindowName + ".cs";
-            string UItemplate = EditorUtil.ReadStringByFile(LoadPath);
-            string classContent = UItemplate.Replace("{0}", description);
+            var LoadPath = Application.dataPath + "/" + UIEditorConstant.S_HotfixUiTemplatePath +
+                           "/HotfixUIWindowClassTemplate.txt";
+            var SavePath = Application.dataPath + "/" + UIEditorConstant.S_HotfixUiWindowClassPath + "/" +
+                           UIWindowName + "/" + UIWindowName + ".cs";
+            var UItemplate = EditorUtil.ReadStringByFile(LoadPath);
+            var classContent = UItemplate.Replace("{0}", description);
             classContent = classContent.Replace("{1}", UIEditorConstant.S_HotfixNamespace);
             classContent = classContent.Replace("{2}", UIWindowName);
             EditorUtil.WriteStringByFile(SavePath, classContent);
-            string partialLoadPath = Application.dataPath + "/" + UIEditorConstant.S_HotfixUiTemplatePath +
-                                     "/HotfixUIWindowClassObservedTemplate.txt";
-            string partialSavePath = Application.dataPath + "/" + UIEditorConstant.S_HotfixUiWindowClassPath + "/" +
-                                     UIWindowName + "/" + UIWindowName + ".Auto.cs";
-            string partialUItemplate = EditorUtil.ReadStringByFile(partialLoadPath);
-            string partialclassContent = partialUItemplate.Replace("{0}", "这是关注的字段和获取组件");
+            var partialLoadPath = Application.dataPath + "/" + UIEditorConstant.S_HotfixUiTemplatePath +
+                                  "/HotfixUIWindowClassObservedTemplate.txt";
+            var partialSavePath = Application.dataPath + "/" + UIEditorConstant.S_HotfixUiWindowClassPath + "/" +
+                                  UIWindowName + "/" + UIWindowName + ".Auto.cs";
+            var partialUItemplate = EditorUtil.ReadStringByFile(partialLoadPath);
+            var partialclassContent = partialUItemplate.Replace("{0}", "这是关注的字段和获取组件");
             partialclassContent = partialclassContent.Replace("{1}", UIEditorConstant.S_HotfixNamespace);
             partialclassContent = partialclassContent.Replace("{2}", UIWindowName);
             partialclassContent = partialclassContent.Replace("{3}", string.Empty);
@@ -391,89 +452,7 @@ namespace CustomGameFramework.Editor
             AssetDatabase.Refresh();
         }
 
-
         #endregion
-
-        [MenuItem("GameObject/UI/快速构建字段和组件")]
-        public static void CreateObservedScript()
-        {
-            UIWindowBase uiGo = Selection.gameObjects[0].GetComponent<UIWindowBase>();
-
-            if (uiGo == null)
-            {
-                return;
-            }
-
-            string UIWindowName = uiGo.name;
-            string members = uiGo.WindowEditorFastGetMembers();
-            string components = uiGo.WindowEditorFastGetComponents();
-            string btnCodeSub = uiGo.WindowEditorFastGetBtnScripts();
-            string btnCodeUnSub = uiGo.WindowEditorFastGetBtnScripts().Replace("AddListener", "RemoveListener");
-            string btnFunc = uiGo.WindowEditorFastGetBtnFunctionScripts();
-
-            string partialLoadPath = UIEditorConstant.S_UiTemplatePath +
-                                     "/UIWindowClassObservedTemplate";
-            string partialUItemplate = Resources.Load<TextAsset>(partialLoadPath)?.text;
-            
-            string partialSavePath = Application.dataPath + "/" + UIEditorConstant.S_UiWindowClassPath + "/" +
-                                     UIWindowName + "/" + UIWindowName + ".Auto.cs";
-
-            string partialclassContent = partialUItemplate.Replace("{0}", "这是关注的字段和获取组件");
-            partialclassContent = partialclassContent.Replace("{1}", UIEditorConstant.S_AppNamespace);
-            partialclassContent = partialclassContent.Replace("{2}", UIWindowName);
-            partialclassContent = partialclassContent.Replace("{3}", members);
-            partialclassContent = partialclassContent.Replace("{4}", components);
-            partialclassContent = partialclassContent.Replace("{5}", btnCodeSub);
-            partialclassContent = partialclassContent.Replace("{6}", btnCodeUnSub);
-            partialclassContent = partialclassContent.Replace("{7}", btnFunc);
-            EditorUtil.WriteStringByFile(partialSavePath, partialclassContent);
-            AssetDatabase.Refresh();
-        }
-
-        [MenuItem("GameObject/UI/快速构建ComponentEditor")]
-        public static void CreateConmponentEditorScript()
-        {
-            UIBase uiGo = Selection.gameObjects[0].GetComponent<UIBase>();
-
-            if (uiGo == null)
-            {
-                return;
-            }
-
-            string UIWindowName = uiGo.name;
-
-            string editorLoadPath = UIEditorConstant.S_UiTemplatePath +
-                                    "/UIWindowComponentEditorTemplate";
-            string editorUItemplate = Resources.Load<TextAsset>(editorLoadPath)?.text;
-            
-            string editorSavePath = Application.dataPath + "/" +
-                                    UIEditorConstant.S_UiWindowClassPath.Replace("Scripts", "ScriptsEditor") + "/" +
-                                    UIWindowName + "/" + UIWindowName + "ComponentEditor.cs";
-
-            string editorclassContent = editorUItemplate.Replace("{0}", "这是 CustomEditor");
-            editorclassContent = editorclassContent.Replace("{1}", UIEditorConstant.S_AppNamespace + "Editor");
-            editorclassContent = editorclassContent.Replace("{2}", UIWindowName);
-            editorclassContent = editorclassContent.Replace("{3}", UIWindowName + "ComponentEditor");
-            EditorUtil.WriteStringByFile(editorSavePath, editorclassContent);
-            AssetDatabase.Refresh();
-        }
-
-        /// <summary>
-        /// 按照模板创建Lua窗口脚本
-        /// </summary>
-        /// <param name="UIWindowName"></param>
-        public static void CreatUILuaScript(string UIWindowName)
-        {
-            string LoadPath = UIEditorConstant.S_UiTemplatePath +
-                              "/UILuaScriptTemplate";
-            string UItemplate = Resources.Load<TextAsset>(LoadPath)?.text;
-            
-            string SavePath = Application.dataPath + "/Resources/Lua/UI/Lua" + UIWindowName + ".txt";
-
-            string classContent = UItemplate.Replace("{0}", UIWindowName);
-            EditorUtil.WriteStringByFile(SavePath, classContent);
-            AssetDatabase.Refresh();
-        }
 
         /*
         /// <summary>
@@ -552,4 +531,3 @@ namespace CustomGameFramework.Editor
         */
     }
 }
-

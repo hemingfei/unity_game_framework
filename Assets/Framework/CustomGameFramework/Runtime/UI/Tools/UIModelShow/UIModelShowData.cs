@@ -7,19 +7,20 @@
 *****************************************************/
 
 using UnityEngine;
+
 //using UnityEngine.Rendering.Universal;
 
 namespace CustomGameFramework.Runtime
 {
     public class UIModelShowData
     {
-        public GameObject top;
-        public GameObject root;
-        public GameObject model;
-        public Camera camera;
-        public RenderTexture renderTexture;
         public Camera baseCamerainURP;
+        public Camera camera;
         public Light light;
+        public GameObject model;
+        public RenderTexture renderTexture;
+        public GameObject root;
+        public GameObject top;
 
         public void Dispose()
         {
@@ -32,18 +33,18 @@ namespace CustomGameFramework.Runtime
             //     }
             // }
             UIModelShowTool.DestroyModelGameObject(model);
-            GameObject.Destroy(top);
+            Object.Destroy(top);
         }
 
         public void ChangeModel(string modelName)
         {
-            int layer = model.layer;
+            var layer = model.layer;
             UIModelShowTool.DestroyModelGameObject(model);
 
             var pos = model.transform.localPosition;
             var angle = model.transform.localEulerAngles;
             var scale = model.transform.localScale;
-            
+
             model = UIModelShowTool.CreateModelGameObject(modelName);
             model.transform.SetParent(root.transform);
             model.transform.localPosition = pos;

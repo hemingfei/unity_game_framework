@@ -7,59 +7,48 @@
 *****************************************************/
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace CustomGameFramework.Runtime
 {
     /// <summary>
-    /// 计时器组件。
+    ///     计时器组件。
     /// </summary>
     public sealed partial class TimerComponent
     {
-        private Dictionary<int, Stack<int>> _groupStacks = new Dictionary<int, Stack<int>>();
-        
+        private readonly Dictionary<int, Stack<int>> _groupStacks = new();
+
         public int Post(int groupId, Action callback, float delay, bool isTimeScaled = true)
         {
-            if (!_groupStacks.ContainsKey(groupId))
-            {
-                _groupStacks.Add(groupId, new Stack<int>());
-            }
-            int timerId = m_TimerHelper.Post(callback, delay, isTimeScaled);
+            if (!_groupStacks.ContainsKey(groupId)) _groupStacks.Add(groupId, new Stack<int>());
+            var timerId = m_TimerHelper.Post(callback, delay, isTimeScaled);
             _groupStacks[groupId].Push(timerId);
             return timerId;
         }
-        
+
         public int Post(int groupId, Action<int> callback, float delay, int repeatCount, bool isTimeScaled = true)
         {
-            if (!_groupStacks.ContainsKey(groupId))
-            {
-                _groupStacks.Add(groupId, new Stack<int>());
-            }
-            int timerId = m_TimerHelper.Post(callback, delay, isTimeScaled, repeatCount);
+            if (!_groupStacks.ContainsKey(groupId)) _groupStacks.Add(groupId, new Stack<int>());
+            var timerId = m_TimerHelper.Post(callback, delay, isTimeScaled, repeatCount);
             _groupStacks[groupId].Push(timerId);
             return timerId;
         }
-        
+
         public void CancelGroup(int groupId, bool isInvokeComplete = false)
         {
-            if (!_groupStacks.ContainsKey(groupId))
-            {
-                return;
-            }
+            if (!_groupStacks.ContainsKey(groupId)) return;
 
             var timerStack = _groupStacks[groupId];
-            int stackLength = timerStack.Count;
-            for (int i = 0; i < stackLength; i++)
+            var stackLength = timerStack.Count;
+            for (var i = 0; i < stackLength; i++)
             {
-                int timerId = timerStack.Pop();
+                var timerId = timerStack.Pop();
                 m_TimerHelper.Cancel(timerId);
             }
+
             timerStack.Clear();
             timerStack = null;
             _groupStacks.Remove(groupId);
         }
     }
 }
-

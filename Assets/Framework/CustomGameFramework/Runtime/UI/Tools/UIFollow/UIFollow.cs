@@ -6,8 +6,8 @@
 //  Copyright (c) 2021 hegametech.com 
 //
 
-using UnityEngine;
 using GameFramework;
+using UnityEngine;
 
 namespace CustomGameFramework.Runtime
 {
@@ -21,8 +21,8 @@ namespace CustomGameFramework.Runtime
         [SerializeField] private Vector3 _positionOffset;
         [SerializeField] private Vector3 _uiOffset;
 
-        private bool _isRefreshedOutsideFrame = false;
-        private bool _isDirty = false;
+        private bool _isRefreshedOutsideFrame;
+        private bool _isDirty;
         private Vector3 _viewPos;
         private UIFollowLogic.BindMode _bindMode;
         private UIFollowLogic _uiFollowLogic;
@@ -35,7 +35,7 @@ namespace CustomGameFramework.Runtime
 
         public Transform TargetUI
         {
-            get { return _targetUI; }
+            get => _targetUI;
             set
             {
                 _targetUI = value;
@@ -45,7 +45,7 @@ namespace CustomGameFramework.Runtime
 
         public Transform FollowTransform
         {
-            get { return _followTransform; }
+            get => _followTransform;
             set
             {
                 _followTransform = value;
@@ -57,7 +57,7 @@ namespace CustomGameFramework.Runtime
 
         public Vector3 FollowPosition
         {
-            get { return _followPosition; }
+            get => _followPosition;
             set
             {
                 _followPosition = value;
@@ -69,17 +69,17 @@ namespace CustomGameFramework.Runtime
 
         public Vector3 PositionOffset
         {
-            get { return _positionOffset; }
+            get => _positionOffset;
             set
             {
                 _positionOffset = value;
                 UpdateBinding();
             }
         }
-        
+
         public Vector3 UIOffset
         {
-            get { return _uiOffset; }
+            get => _uiOffset;
             set
             {
                 _uiOffset = value;
@@ -89,27 +89,21 @@ namespace CustomGameFramework.Runtime
 
         public Camera SceneCamera
         {
-            get { return _sceneCamera; }
+            get => _sceneCamera;
             set
             {
                 _sceneCamera = value;
-                if (_uiFollowLogic != null)
-                {
-                    _uiFollowLogic.SceneCamera = _sceneCamera;
-                }
+                if (_uiFollowLogic != null) _uiFollowLogic.SceneCamera = _sceneCamera;
             }
         }
 
         public Camera UICamera
         {
-            get { return _uiCamera; }
+            get => _uiCamera;
             set
             {
                 _uiCamera = value;
-                if (_uiFollowLogic != null)
-                {
-                    _uiFollowLogic.UICamera = _uiCamera;
-                }
+                if (_uiFollowLogic != null) _uiFollowLogic.UICamera = _uiCamera;
             }
         }
 
@@ -124,10 +118,7 @@ namespace CustomGameFramework.Runtime
 
         private void LateUpdate()
         {
-            if (_uiFollowLogic == null)
-            {
-                return;
-            }
+            if (_uiFollowLogic == null) return;
 
             if (IsNeedUpdate() || _isDirty)
             {
@@ -135,10 +126,7 @@ namespace CustomGameFramework.Runtime
                 _uiFollowLogic.Update();
             }
 
-            if (_isRefreshedOutsideFrame)
-            {
-                TargetUI.position = Vector3.zero;
-            }
+            if (_isRefreshedOutsideFrame) TargetUI.position = Vector3.zero;
         }
 
         private void OnDestroy()
@@ -167,14 +155,12 @@ namespace CustomGameFramework.Runtime
         }
 
         /// <summary>
-        /// 绑定固定坐标
+        ///     绑定固定坐标
         /// </summary>
-        public void BindPosition(Transform targetUI, Vector3 followPosition, Camera uiCamera, Camera sceneCamera, Vector3 uiOffset, Vector3 positionOffset)
+        public void BindPosition(Transform targetUI, Vector3 followPosition, Camera uiCamera, Camera sceneCamera,
+            Vector3 uiOffset, Vector3 positionOffset)
         {
-            if (_uiFollowLogic != null)
-            {
-                ReferencePool.Release(_uiFollowLogic);
-            }
+            if (_uiFollowLogic != null) ReferencePool.Release(_uiFollowLogic);
             _uiFollowLogic = ReferencePool.Acquire<UIFollowLogic>();
             SetDirty();
             TargetUI = targetUI;
@@ -185,16 +171,14 @@ namespace CustomGameFramework.Runtime
             PositionOffset = positionOffset;
             _isRefreshedOutsideFrame = false;
         }
-        
+
         /// <summary>
-        /// 绑定物体
+        ///     绑定物体
         /// </summary>
-        public void BindTransform(Transform targetUI, Transform followTransform, Camera uiCamera, Camera sceneCamera, Vector3 uiOffset, Vector3 positionOffset)
+        public void BindTransform(Transform targetUI, Transform followTransform, Camera uiCamera, Camera sceneCamera,
+            Vector3 uiOffset, Vector3 positionOffset)
         {
-            if (_uiFollowLogic == null)
-            {
-                _uiFollowLogic = ReferencePool.Acquire<UIFollowLogic>();
-            }
+            if (_uiFollowLogic == null) _uiFollowLogic = ReferencePool.Acquire<UIFollowLogic>();
             SetDirty();
             TargetUI = targetUI;
             FollowTransform = followTransform;
@@ -212,20 +196,11 @@ namespace CustomGameFramework.Runtime
         private void UpdateBinding()
         {
             _isDirty = true;
-            if (_targetUI == null)
-            {
-                return;
-            }
+            if (_targetUI == null) return;
 
-            if (SceneCamera == null)
-            {
-                return;
-            }
+            if (SceneCamera == null) return;
 
-            if (_uiFollowLogic == null)
-            {
-                _uiFollowLogic = ReferencePool.Acquire<UIFollowLogic>();
-            }
+            if (_uiFollowLogic == null) _uiFollowLogic = ReferencePool.Acquire<UIFollowLogic>();
 
             if (_uiFollowLogic.SceneCamera == null || _uiFollowLogic.UICamera == null)
             {
@@ -250,10 +225,7 @@ namespace CustomGameFramework.Runtime
 
         private bool IsNeedUpdate()
         {
-            if (SceneCamera == null)
-            {
-                return false;
-            }
+            if (SceneCamera == null) return false;
 
             switch (_bindMode)
             {
@@ -272,10 +244,7 @@ namespace CustomGameFramework.Runtime
         {
             if (!SceneCamera.gameObject.activeInHierarchy)
             {
-                if (TargetUI.position == Vector3.zero)
-                {
-                    return false;
-                }
+                if (TargetUI.position == Vector3.zero) return false;
 
                 TargetUI.position = Vector3.zero;
                 return true;
@@ -291,8 +260,10 @@ namespace CustomGameFramework.Runtime
                     _isRefreshedOutsideFrame = true;
                     return true;
                 }
+
                 return false;
             }
+
             // 当在1.5个屏幕之内的时候 刷新
             if (_viewPos.x < -0.5f || _viewPos.x > 1.5f || _viewPos.y < -0.5f || _viewPos.y > 1.5f)
             {
@@ -301,6 +272,7 @@ namespace CustomGameFramework.Runtime
                     _isRefreshedOutsideFrame = true;
                     return true;
                 }
+
                 return false;
             }
 

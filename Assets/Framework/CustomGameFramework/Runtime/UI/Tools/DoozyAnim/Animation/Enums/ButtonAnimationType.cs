@@ -8,17 +8,17 @@ namespace Doozy.Engine.UI.Animation
     public enum ButtonAnimationType
     {
         /// <summary>
-        /// Punch animation (fast animation that returns to the start values when finished)
+        ///     Punch animation (fast animation that returns to the start values when finished)
         /// </summary>
         Punch,
-        
+
         /// <summary>
-        /// State animation (changes the state of the target by setting new values for position, rotation, scale and/or alpha)
+        ///     State animation (changes the state of the target by setting new values for position, rotation, scale and/or alpha)
         /// </summary>
         State,
-        
+
         /// <summary>
-        /// Animation managed by an Animator Controller which is an interface to control the Mecanim animation system
+        ///     Animation managed by an Animator Controller which is an interface to control the Mecanim animation system
         /// </summary>
         Animator
     }

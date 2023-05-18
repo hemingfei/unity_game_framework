@@ -3,8 +3,11 @@
 // A Copy of the EULA APPENDIX 1 is available at http://unity3d.com/company/legal/as_terms
 
 using System;
-//using Doozy.Engine.Utils;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using UnityEngine;
+//using Doozy.Engine.Utils;
 
 // ReSharper disable NotAccessedField.Global
 
@@ -17,6 +20,22 @@ namespace Doozy.Engine.UI.Animation
     [Serializable]
     public class UIAnimationData : ScriptableObject
     {
+        /// <summary> [Editor Only] Marks target object as dirty. (Only suitable for non-scene objects) </summary>
+        /// <param name="saveAssets"> Write all unsaved asset changes to disk? </param>
+        public void SetDirty(bool saveAssets)
+        {
+            //DoozyUtils.SetDirty(this, saveAssets);
+#if UNITY_EDITOR
+            EditorUtility.SetDirty(this);
+#endif
+            if (saveAssets)
+            {
+#if UNITY_EDITOR
+                AssetDatabase.SaveAssets();
+#endif
+            }
+        }
+
         #region Public Variables
 
         /// <summary> Animation settings </summary>
@@ -29,21 +48,5 @@ namespace Doozy.Engine.UI.Animation
         public string Name;
 
         #endregion
-
-        /// <summary> [Editor Only] Marks target object as dirty. (Only suitable for non-scene objects) </summary>
-        /// <param name="saveAssets"> Write all unsaved asset changes to disk? </param>
-        public void SetDirty(bool saveAssets)
-        {
-            //DoozyUtils.SetDirty(this, saveAssets);
-#if UNITY_EDITOR
-            UnityEditor.EditorUtility.SetDirty(this);
-#endif
-            if (saveAssets)
-            {
-#if UNITY_EDITOR
-                UnityEditor.AssetDatabase.SaveAssets();
-#endif
-            }
-        }
     }
 }

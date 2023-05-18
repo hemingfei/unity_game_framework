@@ -7,19 +7,15 @@
 *****************************************************/
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using GameFramework;
-using UnityEngine;
 
 namespace CustomGameFramework.Runtime
 {
     public class ProgressReporter : IProgress<float>, IReference
     {
+        public Action<float> OnReport;
         public float Progress;
 
-        public Action<float> OnReport;
         public ProgressReporter()
         {
             Progress = 0;
@@ -32,6 +28,12 @@ namespace CustomGameFramework.Runtime
             OnReport?.Invoke(value);
         }
 
+        public void Clear()
+        {
+            Progress = 0;
+            OnReport = null;
+        }
+
         public static ProgressReporter Create(Action<float> onReport)
         {
             var reporter = ReferencePool.Acquire<ProgressReporter>();
@@ -39,12 +41,5 @@ namespace CustomGameFramework.Runtime
             reporter.OnReport = onReport;
             return reporter;
         }
-
-        public void Clear()
-        {
-            Progress = 0;
-            OnReport = null;
-        }
     }
 }
-

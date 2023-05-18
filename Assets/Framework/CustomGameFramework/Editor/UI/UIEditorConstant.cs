@@ -25,8 +25,7 @@ namespace CustomGameFramework.Editor
         public static string[] S_AutoBindRuleHelperAssemblyNames =
         {
             //"Assembly-CSharp",
-            "CustomGameFramework.Runtime",
-
+            "CustomGameFramework.Runtime"
         };
     }
 }

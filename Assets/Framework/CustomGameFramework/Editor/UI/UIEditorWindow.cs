@@ -6,37 +6,28 @@
 //  Copyright (c) 2021 hegametech.com 
 //
 
-using UnityEngine;
-using System.Collections;
-using UnityEditor;
-using UnityEngine.UI;
 using System;
-using System.Reflection;
 using System.Collections.Generic;
 using System.IO;
 using CustomGameFramework.Runtime;
-using UnityGameFramework.Runtime;
+using UnityEditor;
+using UnityEditor.Callbacks;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace CustomGameFramework.Editor
 {
     public class UIEditorWindow : EditorWindow
     {
-        UIManager m_UIManager;
-        UILayerManager m_UILayerManager;
-        
-        private bool m_isShowUIManagerCreate = false;
-        private bool m_isShowUISortingLayerCreate = false;
+        private bool m_isShowUIManagerCreate;
+        private bool m_isShowUISortingLayerCreate;
+        private UILayerManager m_UILayerManager;
+        private UIManager m_UIManager;
 
-        [MenuItem("Tools/Create UI \t\t\t 创建UI", false, 20)]
-        public static void ShowWindow()
+
+        private void OnEnable()
         {
-            EditorWindow.GetWindow(typeof(UIEditorWindow));
-        }
-
-
-        void OnEnable()
-        {
-            GameObject uiManager = GameObject.Find("UI");
+            var uiManager = GameObject.Find("UI");
 
             if (uiManager)
             {
@@ -49,15 +40,15 @@ namespace CustomGameFramework.Editor
             m_isShowUIManagerCreate = false;
         }
 
-        void OnGUI()
+        private void OnGUI()
         {
             titleContent.text = "UI编辑器";
             EditorGUILayout.BeginVertical();
-            
+
             CreateUIGUI();
 
             EditorGUILayout.Space(10);
-            
+
             UIToolGUI();
             UIManagerGUI();
 
@@ -78,20 +69,26 @@ namespace CustomGameFramework.Editor
         }
 
         //当工程改变时
-        void OnProjectChange()
+        private void OnProjectChange()
         {
             FindAllUI();
         }
 
+        [MenuItem("Tools/Create UI \t\t\t 创建UI", false, 20)]
+        public static void ShowWindow()
+        {
+            GetWindow(typeof(UIEditorWindow));
+        }
+
         #region UIManager
 
-        public Vector2 m_referenceResolution = new Vector2(960, 640);
+        public Vector2 m_referenceResolution = new(960, 640);
         public CanvasScaler.ScreenMatchMode m_MatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
 
-        public bool m_isOnlyUICamera = false;
-        public bool m_isVertical = false;
+        public bool m_isOnlyUICamera;
+        public bool m_isVertical;
 
-        void UIManagerGUI()
+        private void UIManagerGUI()
         {
             //if (EditorUtil.DrawHeader("创建 UIManager", "CreateUIManager", true, false))
             m_isShowUIManagerCreate = GUILayout.Toggle(m_isShowUIManagerCreate, " 创建 UIManager");
@@ -103,9 +100,7 @@ namespace CustomGameFramework.Editor
                 m_isVertical = EditorGUILayout.Toggle("是否竖屏", m_isVertical);
 
                 if (GUILayout.Button("创建UIManager"))
-                {
                     UICreateService.CreatUIManager(m_referenceResolution, m_MatchMode, m_isOnlyUICamera, m_isVertical);
-                }
 
                 CreateUICameraGUI();
             }
@@ -113,11 +108,11 @@ namespace CustomGameFramework.Editor
 
         #region CreateUICamera
 
-        bool isCreateUICamera = false;
-        string cameraKey;
-        float cameraDepth = 1;
+        private bool isCreateUICamera;
+        private string cameraKey;
+        private float cameraDepth = 1;
 
-        void CreateUICameraGUI()
+        private void CreateUICameraGUI()
         {
             isCreateUICamera = EditorGUILayout.Foldout(isCreateUICamera, "CreateUICamera:");
 
@@ -149,17 +144,17 @@ namespace CustomGameFramework.Editor
 
         #region createUI
 
-        bool isAutoCreatePrefab = true;
+        private bool isAutoCreatePrefab = true;
 
-        bool isUseHotfix = false;
+        private bool isUseHotfix;
 
-        string m_UIname = "";
-        string m_description = "";
-        int m_UICameraKeyIndex = 0;
-        string[] cameraKeyList;
-        UIType m_UIType = UIType.Normal;
+        private string m_UIname = "";
+        private string m_description = "";
+        private int m_UICameraKeyIndex;
+        private string[] cameraKeyList;
+        private UIType m_UIType = UIType.Normal;
 
-        void CreateUIGUI()
+        private void CreateUIGUI()
         {
             if (EditorUtil.DrawHeader("创建 UI", "CreateUI", true, false))
             {
@@ -178,11 +173,11 @@ namespace CustomGameFramework.Editor
                 {
                     if (m_UIname != "")
                     {
-                        string l_nameTmp = m_UIname + "Window";
-                        string assem = UIEditorConstant.S_AppNamespace + "." + l_nameTmp + "," +
-                                       UIEditorConstant.S_UIAssemblyName +
-                                       ", Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"; // typeof(HGT.AppComponent.AppBoot).Assembly.GetName();
-                        Type l_typeTmp = Type.GetType(assem, false);
+                        var l_nameTmp = m_UIname + "Window";
+                        var assem = UIEditorConstant.S_AppNamespace + "." + l_nameTmp + "," +
+                                    UIEditorConstant.S_UIAssemblyName +
+                                    ", Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"; // typeof(HGT.AppComponent.AppBoot).Assembly.GetName();
+                        var l_typeTmp = Type.GetType(assem, false);
 
                         if (l_typeTmp != null)
                         {
@@ -221,11 +216,11 @@ namespace CustomGameFramework.Editor
                 {
                     if (m_UIname != "")
                     {
-                        string l_nameTmp = m_UIname + "Window";
-                        string assem = UIEditorConstant.S_HotfixNamespace + "." + l_nameTmp + "," +
-                                       UIEditorConstant.S_HotfixUIAssemblyName +
-                                       ", Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"; // typeof(HGT.AppComponent.AppBoot).Assembly.GetName();
-                        Type l_typeTmp = Type.GetType(assem, false);
+                        var l_nameTmp = m_UIname + "Window";
+                        var assem = UIEditorConstant.S_HotfixNamespace + "." + l_nameTmp + "," +
+                                    UIEditorConstant.S_HotfixUIAssemblyName +
+                                    ", Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"; // typeof(HGT.AppComponent.AppBoot).Assembly.GetName();
+                        var l_typeTmp = Type.GetType(assem, false);
 
                         if (l_typeTmp != null)
                         {
@@ -253,29 +248,28 @@ namespace CustomGameFramework.Editor
                         }
                     }
                 }
-
             }
         }
 
-        [UnityEditor.Callbacks.DidReloadScripts]
-        static void OnUiScriptCreated()
+        [DidReloadScripts]
+        private static void OnUiScriptCreated()
         {
             #region 创建 Game UI
 
             if (EditorPrefs.GetBool("Create_UI", false))
             {
                 EditorPrefs.SetBool("Create_UI", false);
-                string m_UIname = EditorPrefs.GetString("Create_UI_Name");
-                string l_nameTmp = m_UIname + "Window";
-                string assem = UIEditorConstant.S_AppNamespace + "." + l_nameTmp + "," +
-                               UIEditorConstant.S_UIAssemblyName +
-                               ", Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"; // typeof(HGT.AppComponent.AppBoot).Assembly.GetName();
-                Type l_typeTmp = Type.GetType(assem, false);
+                var m_UIname = EditorPrefs.GetString("Create_UI_Name");
+                var l_nameTmp = m_UIname + "Window";
+                var assem = UIEditorConstant.S_AppNamespace + "." + l_nameTmp + "," +
+                            UIEditorConstant.S_UIAssemblyName +
+                            ", Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"; // typeof(HGT.AppComponent.AppBoot).Assembly.GetName();
+                var l_typeTmp = Type.GetType(assem, false);
                 if (l_typeTmp != null)
                 {
                     if (l_typeTmp.BaseType == typeof(UIWindowBase) || l_typeTmp.BaseType == typeof(UIAnimWindowBase))
                     {
-                        GameObject uiManager = GameObject.Find("UI");
+                        var uiManager = GameObject.Find("UI");
                         var m_UILayerManager = uiManager.GetComponent<UILayerManager>();
                         var isAutoCreatePrefab = EditorPrefs.GetBool("Create_UI_Prefab", true);
                         var m_UIType = (UIType)EditorPrefs.GetInt("Create_UI_TypePrefab", 2);
@@ -298,16 +292,16 @@ namespace CustomGameFramework.Editor
             if (EditorPrefs.GetBool("Create_HotfixUI", false))
             {
                 EditorPrefs.SetBool("Create_HotfixUI", false);
-                string m_UIname = EditorPrefs.GetString("Create_UI_Name");
-                string l_nameTmp = m_UIname + "Window";
-                string assem = UIEditorConstant.S_HotfixNamespace + "." + l_nameTmp + "," +
-                               UIEditorConstant.S_HotfixUIAssemblyName +
-                               ", Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"; // typeof(HGT.AppComponent.AppBoot).Assembly.GetName();
-                Type l_typeTmp = Type.GetType(assem, false);
+                var m_UIname = EditorPrefs.GetString("Create_UI_Name");
+                var l_nameTmp = m_UIname + "Window";
+                var assem = UIEditorConstant.S_HotfixNamespace + "." + l_nameTmp + "," +
+                            UIEditorConstant.S_HotfixUIAssemblyName +
+                            ", Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"; // typeof(HGT.AppComponent.AppBoot).Assembly.GetName();
+                var l_typeTmp = Type.GetType(assem, false);
 
                 if (l_typeTmp != null)
                 {
-                    GameObject uiManager = GameObject.Find("UI");
+                    var uiManager = GameObject.Find("UI");
                     var m_UILayerManager = uiManager.GetComponent<UILayerManager>();
                     var isAutoCreatePrefab = EditorPrefs.GetBool("Create_UI_Prefab", true);
                     var m_UIType = (UIType)EditorPrefs.GetInt("Create_UI_TypePrefab", 2);
@@ -321,26 +315,22 @@ namespace CustomGameFramework.Editor
             #endregion
         }
 
-
         #endregion
 
         #region UITool
 
-        void UIToolGUI()
+        private void UIToolGUI()
         {
             m_isShowUISortingLayerCreate = GUILayout.Toggle(m_isShowUISortingLayerCreate, " 创建 UISortLayer");
             if (m_isShowUISortingLayerCreate)
             {
                 EditorGUI.indentLevel = 1;
 
-                if (GUILayout.Button("重设UI sortLayer"))
-                {
-                    ResetUISortLayer();
-                }
+                if (GUILayout.Button("重设UI sortLayer")) ResetUISortLayer();
             }
         }
 
-        void ResetUISortLayer()
+        private void ResetUISortLayer()
         {
             EditorUtil.AddSortLayerIfNotExist("GameUI");
             EditorUtil.AddSortLayerIfNotExist("Fixed");
@@ -359,7 +349,7 @@ namespace CustomGameFramework.Editor
 
 
         /// <summary>
-        /// 获取到所有的UIprefab
+        ///     获取到所有的UIprefab
         /// </summary>
         public void FindAllUI()
         {
@@ -370,42 +360,33 @@ namespace CustomGameFramework.Editor
         //读取“Resources/UI”目录下所有的UI预设
         public void FindAllUIResources(string path)
         {
-            if (!Directory.Exists(path))
-            {
-                return;
-            }
-            
-            string[] allUIPrefabName = Directory.GetFiles(path);
+            if (!Directory.Exists(path)) return;
+
+            var allUIPrefabName = Directory.GetFiles(path);
 
             foreach (var item in allUIPrefabName)
             {
-                string oneUIPrefabName = GetFileNameByPath(item);
+                var oneUIPrefabName = GetFileNameByPath(item);
 
                 if (item.EndsWith(".prefab"))
                 {
-                    string oneUIPrefabPsth = path + "/" + oneUIPrefabName;
+                    var oneUIPrefabPsth = path + "/" + oneUIPrefabName;
                     allUIPrefab.Add(oneUIPrefabName,
                         AssetDatabase.LoadAssetAtPath("Assets/" + oneUIPrefabPsth, typeof(GameObject)) as GameObject);
                 }
             }
 
-            string[] dires = Directory.GetDirectories(path);
+            var dires = Directory.GetDirectories(path);
 
-            for (int i = 0; i < dires.Length; i++)
-            {
-                FindAllUIResources(dires[i]);
-            }
+            for (var i = 0; i < dires.Length; i++) FindAllUIResources(dires[i]);
         }
 
         public string GetFileNameByPath(string path)
         {
-            FileInfo fi = new FileInfo(path);
+            var fi = new FileInfo(path);
             return fi.Name; // text.txt
         }
 
         #endregion
     }
 }
-
-
-

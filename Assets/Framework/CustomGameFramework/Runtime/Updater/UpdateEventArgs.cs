@@ -11,12 +11,12 @@ using GameFramework;
 namespace CustomGameFramework
 {
     /// <summary>
-    /// Description of UpdateEventArgs
+    ///     Description of UpdateEventArgs
     /// </summary>
     public class UpdateEventArgs : GameFrameworkEventArgs
     {
         /// <summary>
-        /// 初始化
+        ///     初始化
         /// </summary>
         /// <param name="deltaTime">逻辑流逝时间，以秒为单位。</param>
         /// <param name="unscaledDeltaTime">真实流逝时间，以秒为单位。</param>
@@ -25,27 +25,19 @@ namespace CustomGameFramework
             DeltaTime = deltaTime;
             UnscaledDeltaTime = unscaledDeltaTime;
         }
-        
+
         /// <summary>
-        /// 逻辑流逝时间，以秒为单位。
+        ///     逻辑流逝时间，以秒为单位。
         /// </summary>
-        public float DeltaTime
-        {
-            get;
-            set;
-        }
-        
+        public float DeltaTime { get; set; }
+
         /// <summary>
-        /// 真实流逝时间，以秒为单位。
+        ///     真实流逝时间，以秒为单位。
         /// </summary>
-        public float UnscaledDeltaTime
-        {
-            get;
-            set;
-        }
-        
+        public float UnscaledDeltaTime { get; set; }
+
         /// <summary>
-        /// 清理事件
+        ///     清理事件
         /// </summary>
         public override void Clear()
         {
@@ -54,4 +46,3 @@ namespace CustomGameFramework
         }
     }
 }
-

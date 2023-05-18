@@ -14,6 +14,6 @@ namespace CustomGameFramework.Runtime
         Fixed = 1,
         Normal = 2,
         TopBar = 3,
-        PopUp = 4,
+        PopUp = 4
     }
 }

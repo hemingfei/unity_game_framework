@@ -6,17 +6,12 @@
 *	功能：暂无
 *****************************************************/
 
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace CustomGameFramework.Runtime
 {
     public enum IResourceMode
     {
         EditorSimulateMode,
         OfflinePlayMode,
-        HostPlayMode,
+        HostPlayMode
     }
 }
-

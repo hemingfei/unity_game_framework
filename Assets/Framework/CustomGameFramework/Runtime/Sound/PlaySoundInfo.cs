@@ -12,55 +12,33 @@ namespace UnityGameFramework.Runtime
 {
     internal sealed class PlaySoundInfo : IReference
     {
-        private Entity m_BindingEntity;
-        private Vector3 m_WorldPosition;
-        private object m_UserData;
-
         public PlaySoundInfo()
         {
-            m_BindingEntity = null;
-            m_WorldPosition = Vector3.zero;
-            m_UserData = null;
+            BindingEntity = null;
+            WorldPosition = Vector3.zero;
+            UserData = null;
         }
 
-        public Entity BindingEntity
-        {
-            get
-            {
-                return m_BindingEntity;
-            }
-        }
+        public Entity BindingEntity { get; private set; }
 
-        public Vector3 WorldPosition
-        {
-            get
-            {
-                return m_WorldPosition;
-            }
-        }
+        public Vector3 WorldPosition { get; private set; }
 
-        public object UserData
+        public object UserData { get; private set; }
+
+        public void Clear()
         {
-            get
-            {
-                return m_UserData;
-            }
+            BindingEntity = null;
+            WorldPosition = Vector3.zero;
+            UserData = null;
         }
 
         public static PlaySoundInfo Create(Entity bindingEntity, Vector3 worldPosition, object userData)
         {
-            PlaySoundInfo playSoundInfo = ReferencePool.Acquire<PlaySoundInfo>();
-            playSoundInfo.m_BindingEntity = bindingEntity;
-            playSoundInfo.m_WorldPosition = worldPosition;
-            playSoundInfo.m_UserData = userData;
+            var playSoundInfo = ReferencePool.Acquire<PlaySoundInfo>();
+            playSoundInfo.BindingEntity = bindingEntity;
+            playSoundInfo.WorldPosition = worldPosition;
+            playSoundInfo.UserData = userData;
             return playSoundInfo;
-        }
-
-        public void Clear()
-        {
-            m_BindingEntity = null;
-            m_WorldPosition = Vector3.zero;
-            m_UserData = null;
         }
     }
 }

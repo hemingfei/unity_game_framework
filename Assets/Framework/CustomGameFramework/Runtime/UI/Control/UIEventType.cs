@@ -11,21 +11,21 @@ namespace CustomGameFramework.Runtime
     public enum UIEventType
     {
         OnOpen,
-        
+
         OnClose,
-        
+
         OnHide,
         OnShow,
-        
+
         OnInit,
         OnDestroy,
-        
+
         OnRefresh,
-        
+
         OnStartEnterAnim,
         OnCompleteEnterAnim,
-        
+
         OnStartExitAnim,
-        OnCompleteExitAnim,
+        OnCompleteExitAnim
     }
 }

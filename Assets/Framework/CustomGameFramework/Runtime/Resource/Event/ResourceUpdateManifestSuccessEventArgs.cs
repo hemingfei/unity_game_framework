@@ -12,43 +12,42 @@ using GameFramework.Event;
 namespace CustomGameFramework.Runtime
 {
 	/// <summary>
-	/// 更新版本清单成功事件
+	///     更新版本清单成功事件
 	/// </summary>
 	public class ResourceUpdateManifestSuccessEventArgs : GameEventArgs
-	{
-		/// <summary>
-		/// 更新版本清单成功事件编号。
-		/// </summary>
-		public static readonly int EventId = typeof(ResourceUpdateManifestSuccessEventArgs).GetHashCode();
+    {
+	    /// <summary>
+	    ///     更新版本清单成功事件编号。
+	    /// </summary>
+	    public static readonly int EventId = typeof(ResourceUpdateManifestSuccessEventArgs).GetHashCode();
 
-		/// <summary>
-		/// 初始化更新版本清单成功事件的新实例。
-		/// </summary>
-		public ResourceUpdateManifestSuccessEventArgs()
-		{
-		}
+	    /// <summary>
+	    ///     初始化更新版本清单成功事件的新实例。
+	    /// </summary>
+	    public ResourceUpdateManifestSuccessEventArgs()
+        {
+        }
 
-		/// <summary>
-		/// 获取更新版本清单成功事件编号。
-		/// </summary>
-		public override int Id => EventId;
-	
-		/// <summary>
-		/// 创建更新版本清单成功事件。
-		/// </summary>
-		/// <returns>创建的更新版本清单成功事件。</returns>
-		public static ResourceUpdateManifestSuccessEventArgs Create()
-		{
-			ResourceUpdateManifestSuccessEventArgs e = ReferencePool.Acquire<ResourceUpdateManifestSuccessEventArgs>();
-			return e;
-		}
+	    /// <summary>
+	    ///     获取更新版本清单成功事件编号。
+	    /// </summary>
+	    public override int Id => EventId;
 
-		/// <summary>
-		/// 清理更新版本清单成功事件。
-		/// </summary>
-		public override void Clear()
-		{
-		}
-	}
+	    /// <summary>
+	    ///     创建更新版本清单成功事件。
+	    /// </summary>
+	    /// <returns>创建的更新版本清单成功事件。</returns>
+	    public static ResourceUpdateManifestSuccessEventArgs Create()
+        {
+            var e = ReferencePool.Acquire<ResourceUpdateManifestSuccessEventArgs>();
+            return e;
+        }
+
+	    /// <summary>
+	    ///     清理更新版本清单成功事件。
+	    /// </summary>
+	    public override void Clear()
+        {
+        }
+    }
 }
-

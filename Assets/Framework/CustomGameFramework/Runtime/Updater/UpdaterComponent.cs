@@ -7,49 +7,23 @@
 *****************************************************/
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using CustomGameFramework.Runtime;
 using UnityEngine;
 using UnityGameFramework.Runtime;
-using Random = UnityEngine.Random;
 
 namespace CustomGameFramework
 {
     /// <summary>
-    /// Description of UpdaterComponent
+    ///     Description of UpdaterComponent
     /// </summary>
     public class UpdaterComponent : GameFrameworkComponent
     {
-        private EventHandler<UpdateEventArgs> _updateEventHandler;
-        private readonly UpdateEventArgs _updateArgs = new UpdateEventArgs(0, 0);
+        private readonly UpdateEventArgs _updateArgs = new(0, 0);
+        private readonly List<Action> _updateQueue = new();
+        private readonly List<Action> _updateRunQueue = new();
 
         private bool _noUpdate = true;
-        private readonly List<Action> _updateQueue = new List<Action>();
-        private readonly List<Action> _updateRunQueue = new List<Action>();
-
-        public void ExecuteUpdateAction(Action action)
-        {
-            if (action == null)
-            {
-                return;
-            }
-
-            lock (_updateQueue)
-            {
-                _updateQueue.Add(action);
-                _noUpdate = false;
-            }
-        }
-
-        /// <summary>
-        /// Update事件。
-        /// </summary>
-        public event EventHandler<UpdateEventArgs> UpdateHandler
-        {
-            add => _updateEventHandler += value;
-            remove => _updateEventHandler -= value;
-        }
+        private EventHandler<UpdateEventArgs> _updateEventHandler;
 
         private void Update()
         {
@@ -61,7 +35,6 @@ namespace CustomGameFramework
             }
 
             if (!_noUpdate)
-            {
                 lock (_updateQueue)
                 {
                     if (_noUpdate) return;
@@ -77,7 +50,26 @@ namespace CustomGameFramework
 
                     _updateRunQueue.Clear();
                 }
+        }
+
+        public void ExecuteUpdateAction(Action action)
+        {
+            if (action == null) return;
+
+            lock (_updateQueue)
+            {
+                _updateQueue.Add(action);
+                _noUpdate = false;
             }
+        }
+
+        /// <summary>
+        ///     Update事件。
+        /// </summary>
+        public event EventHandler<UpdateEventArgs> UpdateHandler
+        {
+            add => _updateEventHandler += value;
+            remove => _updateEventHandler -= value;
         }
     }
 }

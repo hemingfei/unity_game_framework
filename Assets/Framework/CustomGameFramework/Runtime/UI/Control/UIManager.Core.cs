@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityGameFramework.Runtime;
@@ -11,20 +9,17 @@ namespace CustomGameFramework.Runtime
     {
         private static bool CheckCanOpenAgain(string UIName)
         {
-            int maxNum = s_DefaultUINum; // -1代表无线
+            var maxNum = s_DefaultUINum; // -1代表无线
 
             if (s_uiRestrict.ContainsKey(UIName))
             {
                 maxNum = s_uiRestrict[UIName];
 
-                if (maxNum < 0)
-                {
-                    maxNum = -1;
-                }
+                if (maxNum < 0) maxNum = -1;
             }
 
-            bool isOpen = (s_UIs.ContainsKey(UIName) && ((s_UIs[UIName].Count < maxNum) || maxNum == -1));
-            bool isNotOpen = (!s_UIs.ContainsKey(UIName) && (maxNum > 0 || maxNum == -1));
+            var isOpen = s_UIs.ContainsKey(UIName) && (s_UIs[UIName].Count < maxNum || maxNum == -1);
+            var isNotOpen = !s_UIs.ContainsKey(UIName) && (maxNum > 0 || maxNum == -1);
             return isOpen || isNotOpen;
         }
 
@@ -36,54 +31,48 @@ namespace CustomGameFramework.Runtime
                 Log.Debug($"创建面板失败 已创建到最大个数，无法再继续创建 {UIName}");
                 return null;
             }
-            
+
             var assetFullPath = string.Empty;
             GameObject ui = null;
-            
+
             if (isFromAseetBundle)
             {
                 assetFullPath = s_uiCustomPath.TryGetValue(UIName, out var value) ? value : GetUIPath(UIName);
                 if (isAsync)
-                {
                     ui = await ResourceMgr.LoadGameObjectAsync(assetFullPath, UIManagerGo.transform);
-                }
                 else
-                {
                     ui = ResourceMgr.LoadGameObjectSync(assetFullPath, UIManagerGo.transform);
-                }
             }
             else
             {
-                assetFullPath = s_uiCustomPath.TryGetValue(UIName, out var value) ? value : GetUIPathInResources(UIName);
+                assetFullPath = s_uiCustomPath.TryGetValue(UIName, out var value)
+                    ? value
+                    : GetUIPathInResources(UIName);
                 if (isAsync)
                 {
                     var goAsync = await Resources.LoadAsync(assetFullPath);
-                    if (UnityEngine.Object.Instantiate(goAsync, UIManagerGo.transform) is not GameObject go)
-                    {
+                    if (Instantiate(goAsync, UIManagerGo.transform) is not GameObject go)
                         throw new Exception($"[Resource] Failed to instantiate asset: {assetFullPath}");
-                    }
                     go.transform.localPosition = Vector3.zero;
-                    go.transform.localScale    = Vector3.one;
+                    go.transform.localScale = Vector3.one;
                     ui = go;
                     s_resourceUIs.Add(go, goAsync);
                 }
                 else
                 {
                     var goSync = Resources.Load(assetFullPath);
-                    if (UnityEngine.Object.Instantiate(goSync, UIManagerGo.transform) is not GameObject go)
-                    {
+                    if (Instantiate(goSync, UIManagerGo.transform) is not GameObject go)
                         throw new Exception($"[Resource] Failed to instantiate asset: {assetFullPath}");
-                    }
                     go.transform.localPosition = Vector3.zero;
-                    go.transform.localScale    = Vector3.one;
+                    go.transform.localScale = Vector3.one;
                     ui = go;
                     s_resourceUIs.Add(go, goSync);
                 }
             }
 
             ui.gameObject.name = UIName;
-            
-            UIWindowBase uiWindowBase = ui.GetComponent<UIWindowBase>();
+
+            var uiWindowBase = ui.GetComponent<UIWindowBase>();
             uiWindowBase.windowStatus = UIWindowBase.WindowStatus.Create;
             try
             {
@@ -91,8 +80,9 @@ namespace CustomGameFramework.Runtime
             }
             catch (Exception e)
             {
-                Log.Error(UIName + "OnInit Exception: " + e.ToString());
+                Log.Error(UIName + "OnInit Exception: " + e);
             }
+
             AddHideUI(uiWindowBase);
             UILayerManager.SetLayer(uiWindowBase);
             UIEvent.FireNow(uiWindowBase, UIEventType.OnInit); //派发OnInit事件
@@ -111,12 +101,9 @@ namespace CustomGameFramework.Runtime
                 return null;
             }
 
-            UIWindowBase UIbase = GetHideUI(UIName);
+            var UIbase = GetHideUI(UIName);
 
-            if (UIbase == null)
-            {
-                UIbase = await CreateUIWindow(UIName, isFromAssetBundle, isAsync);
-            }
+            if (UIbase == null) UIbase = await CreateUIWindow(UIName, isFromAssetBundle, isAsync);
 
             // 继续打开面板
             RemoveHideUI(UIbase);
@@ -129,7 +116,7 @@ namespace CustomGameFramework.Runtime
             StartEnterAnim(UIbase, callback, objs); //播放动画
             return UIbase;
         }
-        
+
         private static void StartEnterAnim(UIWindowBase UIbase, UIEventCallBack callBack, params object[] objs)
         {
             UIbase.windowStatus = UIWindowBase.WindowStatus.OpenAnim;
@@ -147,10 +134,7 @@ namespace CustomGameFramework.Runtime
 
             try
             {
-                if (callBack != null)
-                {
-                    callBack(UIbase, objs);
-                }
+                if (callBack != null) callBack(UIbase, objs);
             }
             catch (Exception e)
             {
@@ -167,24 +151,16 @@ namespace CustomGameFramework.Runtime
 
             //动画播放完毕删除UI
             if (callback != null)
-            {
                 callback += CloseUIWindowCallBack;
-            }
             else
-            {
                 callback = CloseUIWindowCallBack;
-            }
-            
+
             if (isPlayAnim)
-            {
                 StartExitAnim(UI, callback, objs);
-            }
             else
-            {
                 callback(UI, objs);
-            }
         }
-        
+
         private static void StartExitAnim(UIWindowBase UI, UIEventCallBack callBack, params object[] objs)
         {
             UI.windowStatus = UIWindowBase.WindowStatus.CloseAnim;
@@ -192,7 +168,7 @@ namespace CustomGameFramework.Runtime
             UIEvent.FireNow(UI, UIEventType.OnStartExitAnim, objs);
             UI.ExitAnim(EndExitAnim, callBack, objs);
         }
-        
+
         //退出动画播放完毕回调
         private static void EndExitAnim(UIWindowBase UIbase, UIEventCallBack callBack, params object[] objs)
         {
@@ -220,7 +196,7 @@ namespace CustomGameFramework.Runtime
             }
             catch (Exception e)
             {
-                Log.Error(UI.UIName + " OnClose Exception: " + e.ToString());
+                Log.Error(UI.UIName + " OnClose Exception: " + e);
             }
 
             UIStackManager.OnUIClose(UI);
@@ -232,13 +208,8 @@ namespace CustomGameFramework.Runtime
         public static void DestroyUIWindow(UIWindowBase UI)
         {
             if (GetIsExitsHide(UI))
-            {
                 RemoveHideUI(UI);
-            }
-            else if (GetIsExits(UI))
-            {
-                RemoveUI(UI);
-            }
+            else if (GetIsExits(UI)) RemoveUI(UI);
 
             UIEvent.FireNow(UI, UIEventType.OnDestroy); //派发OnDestroy事件
 
@@ -248,7 +219,7 @@ namespace CustomGameFramework.Runtime
             }
             catch (Exception e)
             {
-                Log.Error("OnDestroy :" + e.ToString());
+                Log.Error("OnDestroy :" + e);
             }
 
             if (s_resourceUIs.ContainsKey(UI.gameObject))
@@ -264,26 +235,24 @@ namespace CustomGameFramework.Runtime
                 ResourceMgr.ReleaseGameObject(UI.gameObject);
             }
         }
-        
+
         /// <summary>
-        /// 关闭UI之后彻底销毁为跟从未打开过此UI一样
+        ///     关闭UI之后彻底销毁为跟从未打开过此UI一样
         /// </summary>
-        public static void CloseAndDestroyUIWindow(string UIname, bool isPlayAnim = true, UIEventCallBack callback = null,
+        public static void CloseAndDestroyUIWindow(string UIname, bool isPlayAnim = true,
+            UIEventCallBack callback = null,
             params object[] objs)
         {
-            if (GetUI(UIname) != null)
-            {
-                UIEvent.Subscribe(UIname, UIEventType.OnClose, OnClosedToDestroy);
-            }
-            
+            if (GetUI(UIname) != null) UIEvent.Subscribe(UIname, UIEventType.OnClose, OnClosedToDestroy);
+
             CloseUIWindow(UIname, isPlayAnim, callback, objs);
         }
 
         private static void OnClosedToDestroy(UIWindowBase uiClosed, params object[] objs)
         {
-            string uiClosedName = uiClosed.UIName;
+            var uiClosedName = uiClosed.UIName;
             UIEvent.UnSubscribe(uiClosedName, UIEventType.OnClose, OnClosedToDestroy);
-            
+
             Log.Debug($"UI ->销毁窗口 {uiClosedName}");
             DestroyUIWindow(uiClosed);
         }

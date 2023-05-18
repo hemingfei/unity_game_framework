@@ -5,24 +5,24 @@
 // Feedback: mailto:ellan@gameframework.cn
 //------------------------------------------------------------
 
+using System;
 using GameFramework;
 using GameFramework.Event;
-using System;
 
 namespace UnityGameFramework.Runtime
 {
     /// <summary>
-    /// 显示实体时加载依赖资源事件。
+    ///     显示实体时加载依赖资源事件。
     /// </summary>
     public sealed class ShowEntityDependencyAssetEventArgs : GameEventArgs
     {
         /// <summary>
-        /// 显示实体时加载依赖资源事件编号。
+        ///     显示实体时加载依赖资源事件编号。
         /// </summary>
         public static readonly int EventId = typeof(ShowEntityDependencyAssetEventArgs).GetHashCode();
 
         /// <summary>
-        /// 初始化显示实体时加载依赖资源事件的新实例。
+        ///     初始化显示实体时加载依赖资源事件的新实例。
         /// </summary>
         public ShowEntityDependencyAssetEventArgs()
         {
@@ -37,97 +37,60 @@ namespace UnityGameFramework.Runtime
         }
 
         /// <summary>
-        /// 获取显示实体时加载依赖资源事件编号。
+        ///     获取显示实体时加载依赖资源事件编号。
         /// </summary>
-        public override int Id
-        {
-            get
-            {
-                return EventId;
-            }
-        }
+        public override int Id => EventId;
 
         /// <summary>
-        /// 获取实体编号。
+        ///     获取实体编号。
         /// </summary>
-        public int EntityId
-        {
-            get;
-            private set;
-        }
+        public int EntityId { get; private set; }
 
         /// <summary>
-        /// 获取实体逻辑类型。
+        ///     获取实体逻辑类型。
         /// </summary>
-        public Type EntityLogicType
-        {
-            get;
-            private set;
-        }
+        public Type EntityLogicType { get; private set; }
 
         /// <summary>
-        /// 获取实体资源名称。
+        ///     获取实体资源名称。
         /// </summary>
-        public string EntityAssetName
-        {
-            get;
-            private set;
-        }
+        public string EntityAssetName { get; private set; }
 
         /// <summary>
-        /// 获取实体组名称。
+        ///     获取实体组名称。
         /// </summary>
-        public string EntityGroupName
-        {
-            get;
-            private set;
-        }
+        public string EntityGroupName { get; private set; }
 
         /// <summary>
-        /// 获取被加载的依赖资源名称。
+        ///     获取被加载的依赖资源名称。
         /// </summary>
-        public string DependencyAssetName
-        {
-            get;
-            private set;
-        }
+        public string DependencyAssetName { get; private set; }
 
         /// <summary>
-        /// 获取当前已加载依赖资源数量。
+        ///     获取当前已加载依赖资源数量。
         /// </summary>
-        public int LoadedCount
-        {
-            get;
-            private set;
-        }
+        public int LoadedCount { get; private set; }
 
         /// <summary>
-        /// 获取总共加载依赖资源数量。
+        ///     获取总共加载依赖资源数量。
         /// </summary>
-        public int TotalCount
-        {
-            get;
-            private set;
-        }
+        public int TotalCount { get; private set; }
 
         /// <summary>
-        /// 获取用户自定义数据。
+        ///     获取用户自定义数据。
         /// </summary>
-        public object UserData
-        {
-            get;
-            private set;
-        }
+        public object UserData { get; private set; }
 
         /// <summary>
-        /// 创建显示实体时加载依赖资源事件。
+        ///     创建显示实体时加载依赖资源事件。
         /// </summary>
         /// <param name="e">内部事件。</param>
         /// <returns>创建的显示实体时加载依赖资源事件。</returns>
-        public static ShowEntityDependencyAssetEventArgs Create(GameFramework.Entity.ShowEntityDependencyAssetEventArgs e)
+        public static ShowEntityDependencyAssetEventArgs Create(
+            GameFramework.Entity.ShowEntityDependencyAssetEventArgs e)
         {
-            ShowEntityInfo showEntityInfo = (ShowEntityInfo)e.UserData;
-            ShowEntityDependencyAssetEventArgs showEntityDependencyAssetEventArgs = ReferencePool.Acquire<ShowEntityDependencyAssetEventArgs>();
+            var showEntityInfo = (ShowEntityInfo)e.UserData;
+            var showEntityDependencyAssetEventArgs = ReferencePool.Acquire<ShowEntityDependencyAssetEventArgs>();
             showEntityDependencyAssetEventArgs.EntityId = e.EntityId;
             showEntityDependencyAssetEventArgs.EntityLogicType = showEntityInfo.EntityLogicType;
             showEntityDependencyAssetEventArgs.EntityAssetName = e.EntityAssetName;
@@ -140,7 +103,7 @@ namespace UnityGameFramework.Runtime
         }
 
         /// <summary>
-        /// 清理显示实体时加载依赖资源事件。
+        ///     清理显示实体时加载依赖资源事件。
         /// </summary>
         public override void Clear()
         {

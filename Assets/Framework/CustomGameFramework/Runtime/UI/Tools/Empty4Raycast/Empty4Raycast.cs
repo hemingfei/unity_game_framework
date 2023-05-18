@@ -6,7 +6,6 @@
 //  Copyright (c) 2021 hegametech.com 
 //
 
-using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,11 +19,10 @@ namespace CustomGameFramework.Runtime
         {
             useLegacyMeshGeneration = false;
         }
-        
+
         protected override void OnPopulateMesh(VertexHelper toFill)
         {
             toFill.Clear();
         }
     }
 }
-

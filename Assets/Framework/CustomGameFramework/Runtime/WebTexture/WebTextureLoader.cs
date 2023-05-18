@@ -17,7 +17,7 @@ using WebRequestSuccessEventArgs = GameFramework.WebRequest.WebRequestSuccessEve
 namespace CustomGameFramework.Runtime
 {
     /// <summary>
-    /// 网络图加载器
+    ///     网络图加载器
     /// </summary>
     public class WebTextureLoader : IReference
     {
@@ -34,27 +34,27 @@ namespace CustomGameFramework.Runtime
         private WebTextureComponent WebTextureComponent { get; set; }
         private WebRequestComponent WebRequestComponent { get; set; }
 
-        public static void Create(string url, Action<string, bool, Texture> loadAction)
-        {
-            WebTextureLoader e = ReferencePool.Acquire<WebTextureLoader>();
-            e.LoadAction = loadAction;
-            e.Url = url;
-            e.StartLoadWebTexture();
-        }
-
         public void Clear()
         {
             LoadAction = null;
             Url = string.Empty;
         }
 
+        public static void Create(string url, Action<string, bool, Texture> loadAction)
+        {
+            var e = ReferencePool.Acquire<WebTextureLoader>();
+            e.LoadAction = loadAction;
+            e.Url = url;
+            e.StartLoadWebTexture();
+        }
+
         public void StartLoadWebTexture()
         {
             WebRequestManager = GameFrameworkEntry.GetModule<IWebRequestManager>();
 
-            WebTextureComponent = UnityGameFramework.Runtime.GameEntry.GetComponent<WebTextureComponent>();
-            
-            WebRequestComponent = UnityGameFramework.Runtime.GameEntry.GetComponent<WebRequestComponent>();
+            WebTextureComponent = GameEntry.GetComponent<WebTextureComponent>();
+
+            WebRequestComponent = GameEntry.GetComponent<WebRequestComponent>();
 
             SubscribeEvents();
             WebRequestComponent.AddWebRequest(Url);
@@ -63,8 +63,8 @@ namespace CustomGameFramework.Runtime
         private void FinishLoadWebTexture()
         {
             UnsubscribeEvents();
-            
-            ReferencePool.Release(this);//回收
+
+            ReferencePool.Release(this); //回收
         }
 
         private void SubscribeEvents()
@@ -93,10 +93,7 @@ namespace CustomGameFramework.Runtime
                     if (WebTextureComponent.GettingTextures.TryGetValue(url, out var gettingTexures))
                     {
                         var count = gettingTexures.Count;
-                        for (int i = 0; i < count; i++)
-                        {
-                            gettingTexures.Dequeue()?.Invoke(url, true, texture);
-                        }
+                        for (var i = 0; i < count; i++) gettingTexures.Dequeue()?.Invoke(url, true, texture);
 
                         WebTextureComponent.GettingTextures.Remove(url);
                     }
@@ -106,6 +103,7 @@ namespace CustomGameFramework.Runtime
                     var texture = WebTextureComponent.CacheTextures[Url];
                     LoadAction?.Invoke(url, true, texture);
                 }
+
                 FinishLoadWebTexture();
             }
         }
@@ -119,13 +117,11 @@ namespace CustomGameFramework.Runtime
                 if (WebTextureComponent.GettingTextures.TryGetValue(url, out var gettingTexures))
                 {
                     var count = gettingTexures.Count;
-                    for (int i = 0; i < count; i++)
-                    {
-                        gettingTexures.Dequeue()?.Invoke(url, false, null);
-                    }
+                    for (var i = 0; i < count; i++) gettingTexures.Dequeue()?.Invoke(url, false, null);
 
                     WebTextureComponent.GettingTextures.Remove(url);
                 }
+
                 FinishLoadWebTexture();
             }
         }

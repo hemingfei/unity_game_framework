@@ -6,9 +6,9 @@
 //  Copyright (c) 2021 hegametech.com 
 //
 
-using UnityEngine;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 using UnityGameFramework.Runtime;
 
@@ -20,28 +20,22 @@ namespace CustomGameFramework.Runtime
 
         #region GET SET UIName  UIID
 
-        string m_UIName = null;
+        private string m_UIName;
 
         public string UIName
         {
             get
             {
-                if (m_UIName == null)
-                {
-                    m_UIName = name;
-                }
+                if (m_UIName == null) m_UIName = name;
 
                 return m_UIName;
             }
-            set { m_UIName = value; }
+            set => m_UIName = value;
         }
 
         public int UIID { get; private set; } = -1;
 
-        public string UIEventKey
-        {
-            get { return UIName + "@" + UIID; }
-        }
+        public string UIEventKey => UIName + "@" + UIID;
 
         #endregion
 
@@ -79,7 +73,7 @@ namespace CustomGameFramework.Runtime
             }
             catch (Exception e)
             {
-                Log.Error("UIBase Dispose Exception -> UIEventKey: " + UIEventKey + " Exception: " + e.ToString());
+                Log.Error("UIBase Dispose Exception -> UIEventKey: " + UIEventKey + " Exception: " + e);
             }
 
             DisposeLifeComponent();
@@ -89,15 +83,12 @@ namespace CustomGameFramework.Runtime
 
         #region 获取对象
 
-        public List<GameObject> m_objectList = new List<GameObject>();
+        public List<GameObject> m_objectList = new();
 
         //生成对象表，便于快速获取对象，并忽略层级
-        void CreateObjectTable()
+        private void CreateObjectTable()
         {
-            if (m_objects == null)
-            {
-                m_objects = new Dictionary<string, GameObject>();
-            }
+            if (m_objects == null) m_objects = new Dictionary<string, GameObject>();
 
             m_objects.Clear();
             m_uiBases.Clear();
@@ -117,66 +108,56 @@ namespace CustomGameFramework.Runtime
             m_CanvasGroup.Clear();
             m_Toggle.Clear();
 
-            for (int i = 0; i < m_objectList.Count; i++)
-            {
+            for (var i = 0; i < m_objectList.Count; i++)
                 if (m_objectList[i] != null)
                 {
                     if (m_objects.ContainsKey(m_objectList[i].name))
-                    {
                         Log.Error(name + " CreateObjectTable Contains Duplicate Key ->" + m_objectList[i].name + "<-");
-                    }
                     else
-                    {
                         m_objects.Add(m_objectList[i].name, m_objectList[i]);
-                    }
                 }
                 else
                 {
                     Log.Error(name + " CreateObjectTable m_objectList[" + i + "] is Null !");
                 }
-            }
         }
 
-        Dictionary<string, GameObject> m_objects = null;
-        Dictionary<string, UIBase> m_uiBases = new Dictionary<string, UIBase>();
+        private Dictionary<string, GameObject> m_objects;
+        private readonly Dictionary<string, UIBase> m_uiBases = new();
 
-        Dictionary<string, Image> m_images = new Dictionary<string, Image>();
-        Dictionary<string, Sprite> m_Sprites = new Dictionary<string, Sprite>();
-        Dictionary<string, Text> m_texts = new Dictionary<string, Text>();
-        Dictionary<string, TextMesh> m_textmeshs = new Dictionary<string, TextMesh>();
-        Dictionary<string, UnityEngine.UI.Button> m_buttons = new Dictionary<string, UnityEngine.UI.Button>();
-        Dictionary<string, ScrollRect> m_scrollRects = new Dictionary<string, ScrollRect>();
-        Dictionary<string, RawImage> m_rawImages = new Dictionary<string, RawImage>();
-        Dictionary<string, Transform> m_transforms = new Dictionary<string, Transform>();
-        Dictionary<string, RectTransform> m_rectTransforms = new Dictionary<string, RectTransform>();
-        Dictionary<string, InputField> m_inputFields = new Dictionary<string, InputField>();
-        Dictionary<string, Slider> m_Sliders = new Dictionary<string, Slider>();
-        Dictionary<string, Canvas> m_Canvas = new Dictionary<string, Canvas>();
-        Dictionary<string, CanvasGroup> m_CanvasGroup = new Dictionary<string, CanvasGroup>();
-        Dictionary<string, Toggle> m_Toggle = new Dictionary<string, Toggle>();
+        private readonly Dictionary<string, Image> m_images = new();
+        private readonly Dictionary<string, Sprite> m_Sprites = new();
+        private readonly Dictionary<string, Text> m_texts = new();
+        private readonly Dictionary<string, TextMesh> m_textmeshs = new();
+        private readonly Dictionary<string, Button> m_buttons = new();
+        private readonly Dictionary<string, ScrollRect> m_scrollRects = new();
+        private readonly Dictionary<string, RawImage> m_rawImages = new();
+        private readonly Dictionary<string, Transform> m_transforms = new();
+        private readonly Dictionary<string, RectTransform> m_rectTransforms = new();
+        private readonly Dictionary<string, InputField> m_inputFields = new();
+        private readonly Dictionary<string, Slider> m_Sliders = new();
+        private readonly Dictionary<string, Canvas> m_Canvas = new();
+        private readonly Dictionary<string, CanvasGroup> m_CanvasGroup = new();
+        private readonly Dictionary<string, Toggle> m_Toggle = new();
 
         public bool HaveObject(string name)
         {
-            bool has = false;
+            var has = false;
             has = m_objects.ContainsKey(name);
             return has;
         }
 
         public Vector3 GetPosition(string name, bool islocal)
         {
-            Vector3 tmp = Vector3.zero;
-            GameObject go = GetGameObject(name);
+            var tmp = Vector3.zero;
+            var go = GetGameObject(name);
 
             if (go != null)
             {
                 if (islocal)
-                {
                     tmp = GetGameObject(name).transform.localPosition;
-                }
                 else
-                {
                     tmp = GetGameObject(name).transform.position;
-                }
             }
 
             return tmp;
@@ -184,42 +165,29 @@ namespace CustomGameFramework.Runtime
 
         public GameObject GetGameObject(string name)
         {
-            if (m_objects == null)
-            {
-                CreateObjectTable();
-            }
+            if (m_objects == null) CreateObjectTable();
 
             if (m_objects.ContainsKey(name))
             {
-                GameObject go = m_objects[name];
+                var go = m_objects[name];
 
                 if (go == null)
-                {
                     throw new Exception("UIWindowBase GetGameObject error: " + UIName + " m_objects[" + name +
                                         "] is null !!");
-                }
 
                 return go;
             }
-            else
-            {
-                throw new Exception("UIWindowBase GetGameObject error: " + UIName + " dont find ->" + name + "<-");
-            }
+
+            throw new Exception("UIWindowBase GetGameObject error: " + UIName + " dont find ->" + name + "<-");
         }
 
         public Transform GetTransform(string name)
         {
-            if (m_transforms.ContainsKey(name))
-            {
-                return m_transforms[name];
-            }
+            if (m_transforms.ContainsKey(name)) return m_transforms[name];
 
-            Transform tmp = GetGameObject(name).GetComponent<Transform>();
+            var tmp = GetGameObject(name).GetComponent<Transform>();
 
-            if (tmp == null)
-            {
-                throw new Exception(UIEventKey + " GetTransform ->" + name + "<- is Null !");
-            }
+            if (tmp == null) throw new Exception(UIEventKey + " GetTransform ->" + name + "<- is Null !");
 
             m_transforms.Add(name, tmp);
             return tmp;
@@ -227,17 +195,11 @@ namespace CustomGameFramework.Runtime
 
         public RectTransform GetRectTransform(string name)
         {
-            if (m_rectTransforms.ContainsKey(name))
-            {
-                return m_rectTransforms[name];
-            }
+            if (m_rectTransforms.ContainsKey(name)) return m_rectTransforms[name];
 
-            RectTransform tmp = GetGameObject(name).GetComponent<RectTransform>();
+            var tmp = GetGameObject(name).GetComponent<RectTransform>();
 
-            if (tmp == null)
-            {
-                throw new Exception(UIEventKey + " GetRectTransform ->" + name + "<- is Null !");
-            }
+            if (tmp == null) throw new Exception(UIEventKey + " GetRectTransform ->" + name + "<- is Null !");
 
             m_rectTransforms.Add(name, tmp);
             return tmp;
@@ -245,17 +207,11 @@ namespace CustomGameFramework.Runtime
 
         public UIBase GetUIBase(string name)
         {
-            if (m_uiBases.ContainsKey(name))
-            {
-                return m_uiBases[name];
-            }
+            if (m_uiBases.ContainsKey(name)) return m_uiBases[name];
 
-            UIBase tmp = GetGameObject(name).GetComponent<UIBase>();
+            var tmp = GetGameObject(name).GetComponent<UIBase>();
 
-            if (tmp == null)
-            {
-                throw new Exception(UIEventKey + " GetUIBase ->" + name + "<- is Null !");
-            }
+            if (tmp == null) throw new Exception(UIEventKey + " GetUIBase ->" + name + "<- is Null !");
 
             m_uiBases.Add(name, tmp);
             return tmp;
@@ -263,17 +219,11 @@ namespace CustomGameFramework.Runtime
 
         public Sprite GetSprite(string name)
         {
-            if (m_Sprites.ContainsKey(name))
-            {
-                return m_Sprites[name];
-            }
+            if (m_Sprites.ContainsKey(name)) return m_Sprites[name];
 
-            Sprite tmp = GetGameObject(name).GetComponent<Sprite>();
+            var tmp = GetGameObject(name).GetComponent<Sprite>();
 
-            if (tmp == null)
-            {
-                throw new Exception(UIEventKey + " GetImage ->" + name + "<- is Null !");
-            }
+            if (tmp == null) throw new Exception(UIEventKey + " GetImage ->" + name + "<- is Null !");
 
             m_Sprites.Add(name, tmp);
             return tmp;
@@ -281,17 +231,11 @@ namespace CustomGameFramework.Runtime
 
         public Text GetText(string name)
         {
-            if (m_texts.ContainsKey(name))
-            {
-                return m_texts[name];
-            }
+            if (m_texts.ContainsKey(name)) return m_texts[name];
 
-            Text tmp = GetGameObject(name).GetComponent<Text>();
+            var tmp = GetGameObject(name).GetComponent<Text>();
 
-            if (tmp == null)
-            {
-                throw new Exception(UIEventKey + " GetText ->" + name + "<- is Null !");
-            }
+            if (tmp == null) throw new Exception(UIEventKey + " GetText ->" + name + "<- is Null !");
 
             m_texts.Add(name, tmp);
             return tmp;
@@ -299,17 +243,11 @@ namespace CustomGameFramework.Runtime
 
         public TextMesh GetTextMesh(string name)
         {
-            if (m_textmeshs.ContainsKey(name))
-            {
-                return m_textmeshs[name];
-            }
+            if (m_textmeshs.ContainsKey(name)) return m_textmeshs[name];
 
-            TextMesh tmp = GetGameObject(name).GetComponent<TextMesh>();
+            var tmp = GetGameObject(name).GetComponent<TextMesh>();
 
-            if (tmp == null)
-            {
-                throw new Exception(UIEventKey + " GetTextMesh ->" + name + "<- is Null !");
-            }
+            if (tmp == null) throw new Exception(UIEventKey + " GetTextMesh ->" + name + "<- is Null !");
 
             m_textmeshs.Add(name, tmp);
             return tmp;
@@ -317,35 +255,23 @@ namespace CustomGameFramework.Runtime
 
         public Toggle GetToggle(string name)
         {
-            if (m_Toggle.ContainsKey(name))
-            {
-                return m_Toggle[name];
-            }
+            if (m_Toggle.ContainsKey(name)) return m_Toggle[name];
 
-            Toggle tmp = GetGameObject(name).GetComponent<Toggle>();
+            var tmp = GetGameObject(name).GetComponent<Toggle>();
 
-            if (tmp == null)
-            {
-                throw new Exception(UIEventKey + " GetToggle ->" + name + "<- is Null !");
-            }
+            if (tmp == null) throw new Exception(UIEventKey + " GetToggle ->" + name + "<- is Null !");
 
             m_Toggle.Add(name, tmp);
             return tmp;
         }
 
-        public UnityEngine.UI.Button GetButton(string name)
+        public Button GetButton(string name)
         {
-            if (m_buttons.ContainsKey(name))
-            {
-                return m_buttons[name];
-            }
+            if (m_buttons.ContainsKey(name)) return m_buttons[name];
 
-            UnityEngine.UI.Button tmp = GetGameObject(name).GetComponent<UnityEngine.UI.Button>();
+            var tmp = GetGameObject(name).GetComponent<Button>();
 
-            if (tmp == null)
-            {
-                throw new Exception(UIEventKey + " GetButton ->" + name + "<- is Null !");
-            }
+            if (tmp == null) throw new Exception(UIEventKey + " GetButton ->" + name + "<- is Null !");
 
             m_buttons.Add(name, tmp);
             return tmp;
@@ -353,17 +279,11 @@ namespace CustomGameFramework.Runtime
 
         public InputField GetInputField(string name)
         {
-            if (m_inputFields.ContainsKey(name))
-            {
-                return m_inputFields[name];
-            }
+            if (m_inputFields.ContainsKey(name)) return m_inputFields[name];
 
-            InputField tmp = GetGameObject(name).GetComponent<InputField>();
+            var tmp = GetGameObject(name).GetComponent<InputField>();
 
-            if (tmp == null)
-            {
-                throw new Exception(UIEventKey + " GetInputField ->" + name + "<- is Null !");
-            }
+            if (tmp == null) throw new Exception(UIEventKey + " GetInputField ->" + name + "<- is Null !");
 
             m_inputFields.Add(name, tmp);
             return tmp;
@@ -371,17 +291,11 @@ namespace CustomGameFramework.Runtime
 
         public ScrollRect GetScrollRect(string name)
         {
-            if (m_scrollRects.ContainsKey(name))
-            {
-                return m_scrollRects[name];
-            }
+            if (m_scrollRects.ContainsKey(name)) return m_scrollRects[name];
 
-            ScrollRect tmp = GetGameObject(name).GetComponent<ScrollRect>();
+            var tmp = GetGameObject(name).GetComponent<ScrollRect>();
 
-            if (tmp == null)
-            {
-                throw new Exception(UIEventKey + " GetScrollRect ->" + name + "<- is Null !");
-            }
+            if (tmp == null) throw new Exception(UIEventKey + " GetScrollRect ->" + name + "<- is Null !");
 
             m_scrollRects.Add(name, tmp);
             return tmp;
@@ -389,17 +303,11 @@ namespace CustomGameFramework.Runtime
 
         public Image GetImage(string name)
         {
-            if (m_images.ContainsKey(name))
-            {
-                return m_images[name];
-            }
+            if (m_images.ContainsKey(name)) return m_images[name];
 
-            Image tmp = GetGameObject(name).GetComponent<Image>();
+            var tmp = GetGameObject(name).GetComponent<Image>();
 
-            if (tmp == null)
-            {
-                throw new Exception(UIEventKey + " GetImage ->" + name + "<- is Null !");
-            }
+            if (tmp == null) throw new Exception(UIEventKey + " GetImage ->" + name + "<- is Null !");
 
             m_images.Add(name, tmp);
             return tmp;
@@ -407,17 +315,11 @@ namespace CustomGameFramework.Runtime
 
         public RawImage GetRawImage(string name)
         {
-            if (m_rawImages.ContainsKey(name))
-            {
-                return m_rawImages[name];
-            }
+            if (m_rawImages.ContainsKey(name)) return m_rawImages[name];
 
-            RawImage tmp = GetGameObject(name).GetComponent<RawImage>();
+            var tmp = GetGameObject(name).GetComponent<RawImage>();
 
-            if (tmp == null)
-            {
-                throw new Exception(UIEventKey + " GetRawImage ->" + name + "<- is Null !");
-            }
+            if (tmp == null) throw new Exception(UIEventKey + " GetRawImage ->" + name + "<- is Null !");
 
             m_rawImages.Add(name, tmp);
             return tmp;
@@ -425,17 +327,11 @@ namespace CustomGameFramework.Runtime
 
         public Slider GetSlider(string name)
         {
-            if (m_Sliders.ContainsKey(name))
-            {
-                return m_Sliders[name];
-            }
+            if (m_Sliders.ContainsKey(name)) return m_Sliders[name];
 
-            Slider tmp = GetGameObject(name).GetComponent<Slider>();
+            var tmp = GetGameObject(name).GetComponent<Slider>();
 
-            if (tmp == null)
-            {
-                throw new Exception(UIEventKey + " GetSlider ->" + name + "<- is Null !");
-            }
+            if (tmp == null) throw new Exception(UIEventKey + " GetSlider ->" + name + "<- is Null !");
 
             m_Sliders.Add(name, tmp);
             return tmp;
@@ -443,17 +339,11 @@ namespace CustomGameFramework.Runtime
 
         public Canvas GetCanvas(string name)
         {
-            if (m_Canvas.ContainsKey(name))
-            {
-                return m_Canvas[name];
-            }
+            if (m_Canvas.ContainsKey(name)) return m_Canvas[name];
 
-            Canvas tmp = GetGameObject(name).GetComponent<Canvas>();
+            var tmp = GetGameObject(name).GetComponent<Canvas>();
 
-            if (tmp == null)
-            {
-                throw new Exception(UIEventKey + " GetCanvas ->" + name + "<- is Null !");
-            }
+            if (tmp == null) throw new Exception(UIEventKey + " GetCanvas ->" + name + "<- is Null !");
 
             m_Canvas.Add(name, tmp);
             return tmp;
@@ -461,17 +351,11 @@ namespace CustomGameFramework.Runtime
 
         public CanvasGroup GetCanvasGroup(string name)
         {
-            if (m_CanvasGroup.ContainsKey(name))
-            {
-                return m_CanvasGroup[name];
-            }
+            if (m_CanvasGroup.ContainsKey(name)) return m_CanvasGroup[name];
 
-            CanvasGroup tmp = GetGameObject(name).GetComponent<CanvasGroup>();
+            var tmp = GetGameObject(name).GetComponent<CanvasGroup>();
 
-            if (tmp == null)
-            {
-                throw new Exception(UIEventKey + " GetCanvasGroup ->" + name + "<- is Null !");
-            }
+            if (tmp == null) throw new Exception(UIEventKey + " GetCanvasGroup ->" + name + "<- is Null !");
 
             m_CanvasGroup.Add(name, tmp);
             return tmp;
@@ -483,14 +367,11 @@ namespace CustomGameFramework.Runtime
         {
             get
             {
-                if (m_rectTransform == null)
-                {
-                    m_rectTransform = transform as RectTransform;
-                }
+                if (m_rectTransform == null) m_rectTransform = transform as RectTransform;
 
                 return m_rectTransform;
             }
-            set { m_rectTransform = value; }
+            set => m_rectTransform = value;
         }
 
         public void SetSizeDelta(float w, float h)
@@ -502,10 +383,10 @@ namespace CustomGameFramework.Runtime
 
         #region 模型展示到UI上，UIModelShow
 
-        private List<UIModelShowData> modelList = new List<UIModelShowData>();
+        private readonly List<UIModelShowData> modelList = new();
 
         /// <summary>
-        /// 创建UI的模型展示数据，可以设置相机数据
+        ///     创建UI的模型展示数据，可以设置相机数据
         /// </summary>
         /// <param name="modelName">模型路径</param>
         /// <returns>模型展示类</returns>
@@ -524,42 +405,35 @@ namespace CustomGameFramework.Runtime
         {
             UIModelShowData model;
             model = UIModelShowTool.CreateModelData(modelName, layerName, orthographic, orthographicSize,
-                    backgroundColor, localPosition, eulerAngles, localScale, texSize, nearClippingPlane, farClippingPlane, lightEulerAngles);
-                modelList.Add(model);
+                backgroundColor, localPosition, eulerAngles, localScale, texSize, nearClippingPlane, farClippingPlane,
+                lightEulerAngles);
+            modelList.Add(model);
             return model;
         }
-        
+
         /// <summary>
-        /// UI模型展示到UI上
+        ///     UI模型展示到UI上
         /// </summary>
         /// <param name="uiModelShowData">展示模型数据</param>
         /// <param name="showAreaRawImage">显示区域RawImage组件</param>
         /// <param name="dragAreaGameObject">拖拽区域GameObejct</param>
         /// <param name="isResetRotation">是否重置旋转</param>
         /// <param name="hideOtherUiModels">是否隐藏其他的模型，默认TRUE，性能会得到优化</param>
-        public void UIModelShow(UIModelShowData uiModelShowData, RawImage showAreaRawImage, GameObject dragAreaGameObject, bool isResetRotation = true, bool hideOtherUiModels = true)
+        public void UIModelShow(UIModelShowData uiModelShowData, RawImage showAreaRawImage,
+            GameObject dragAreaGameObject, bool isResetRotation = true, bool hideOtherUiModels = true)
         {
             if (hideOtherUiModels)
-            {
                 foreach (var model in modelList)
-                {
                     if (model != uiModelShowData)
-                    {
                         model.camera.gameObject.SetActive(false);
-                    }
-                }
-            }
 
-            if (isResetRotation)
-            {
-                uiModelShowData.model.transform.localRotation = Quaternion.identity;
-            }
+            if (isResetRotation) uiModelShowData.model.transform.localRotation = Quaternion.identity;
             uiModelShowData.camera.gameObject.SetActive(true);
             showAreaRawImage.texture = uiModelShowData.renderTexture;
             showAreaRawImage.color = Color.white;
             UIModelShowAddDrag(uiModelShowData, dragAreaGameObject);
         }
-        
+
         // /// <summary>
         // /// 创建UI的模型展示数据，可以设置相机数据
         // /// </summary>
@@ -584,7 +458,7 @@ namespace CustomGameFramework.Runtime
         //     modelList.Add(model);
         //     return model;
         // }
-        
+
         // /// <summary>
         // /// UI模型展示到UI上
         // /// </summary>
@@ -635,20 +509,17 @@ namespace CustomGameFramework.Runtime
         // }
 
         /// <summary>
-        /// UI模型展示 添加 转动功能
+        ///     UI模型展示 添加 转动功能
         /// </summary>
         /// <param name="uiModelShowData"></param>
         /// <param name="dragAreaGameObject"></param>
         public void UIModelShowAddDrag(UIModelShowData uiModelShowData, GameObject dragAreaGameObject)
         {
-            if (dragAreaGameObject != null)
-            {
-                UIModelShowTool.AddDrag(dragAreaGameObject, uiModelShowData.model);
-            }
+            if (dragAreaGameObject != null) UIModelShowTool.AddDrag(dragAreaGameObject, uiModelShowData.model);
         }
 
         /// <summary>
-        /// 清除UI模型展示的数据和资源
+        ///     清除UI模型展示的数据和资源
         /// </summary>
         /// <param name="data"></param>
         /// <param name="dragAreaGameObject">对应的拖拽区域，需要取消注册拖拽事件，不传入会报错</param>
@@ -656,21 +527,15 @@ namespace CustomGameFramework.Runtime
         {
             modelList.Remove(data);
             UIModelShowTool.DisposeModelShow(data);
-            if (dragAreaGameObject != null)
-            {
-                UIModelShowTool.RemoveDrag(dragAreaGameObject);
-            }
+            if (dragAreaGameObject != null) UIModelShowTool.RemoveDrag(dragAreaGameObject);
         }
-        
+
         /// <summary>
-        /// 清除UI模型展示的全部数据和资源，销毁窗口会自动调用,不要手动调用
+        ///     清除UI模型展示的全部数据和资源，销毁窗口会自动调用,不要手动调用
         /// </summary>
         public void CleanUIModelShowDatas()
         {
-            for (int i = 0; i < modelList.Count; i++)
-            {
-                UIModelShowTool.DisposeModelShow(modelList[i]);
-            }
+            for (var i = 0; i < modelList.Count; i++) UIModelShowTool.DisposeModelShow(modelList[i]);
 
             modelList.Clear();
         }
@@ -679,7 +544,7 @@ namespace CustomGameFramework.Runtime
 
         #region 生命周期管理
 
-        protected List<IUILifeCycle> m_lifeComponent = new List<IUILifeCycle>();
+        protected List<IUILifeCycle> m_lifeComponent = new();
 
         public void AddLifeCycleComponent(IUILifeCycle comp)
         {
@@ -687,10 +552,9 @@ namespace CustomGameFramework.Runtime
             m_lifeComponent.Add(comp);
         }
 
-        void DisposeLifeComponent()
+        private void DisposeLifeComponent()
         {
-            for (int i = 0; i < m_lifeComponent.Count; i++)
-            {
+            for (var i = 0; i < m_lifeComponent.Count; i++)
                 try
                 {
                     m_lifeComponent[i].Dispose();
@@ -698,9 +562,8 @@ namespace CustomGameFramework.Runtime
                 catch (Exception e)
                 {
                     Log.Error("UIBase DisposeLifeComponent Exception -> UIEventKey: " + UIEventKey + " Exception: " +
-                              e.ToString());
+                              e);
                 }
-            }
 
             m_lifeComponent.Clear();
         }
@@ -714,20 +577,16 @@ namespace CustomGameFramework.Runtime
         [ContextMenu("ObjectList 去重")]
         public void ClearObject()
         {
-            List<GameObject> ls = new List<GameObject>();
-            int len = m_objectList.Count;
+            var ls = new List<GameObject>();
+            var len = m_objectList.Count;
 
-            for (int i = 0; i < len; i++)
+            for (var i = 0; i < len; i++)
             {
-                GameObject go = m_objectList[i];
+                var go = m_objectList[i];
 
                 if (go != null)
-                {
                     if (!ls.Contains(go))
-                    {
                         ls.Add(go);
-                    }
-                }
             }
 
             ls.Sort((a, b) => { return a.name.CompareTo(b.name); });
@@ -738,61 +597,61 @@ namespace CustomGameFramework.Runtime
         public string EditorFastGetMembers()
         {
             ClearObject();
-            int len = m_objectList.Count;
-            string final = string.Empty;
+            var len = m_objectList.Count;
+            var final = string.Empty;
 
-            for (int i = 0; i < len; i++)
+            for (var i = 0; i < len; i++)
             {
-                GameObject go = m_objectList[i];
-                string name = go.name;
-                bool hasComponent = false;
+                var go = m_objectList[i];
+                var name = go.name;
+                var hasComponent = false;
 
                 if (name.Contains("Image") || name.Contains("image"))
                 {
-                    string memberName = "mi_" + name;
-                    string typeName = string.Empty;
+                    var memberName = "mi_" + name;
+                    var typeName = string.Empty;
                     typeName = "private Image ";
-                    string finalOutput = typeName + memberName + "; \n\t\t";
+                    var finalOutput = typeName + memberName + "; \n\t\t";
                     final += finalOutput;
                     hasComponent = true;
                 }
 
                 if (name.Contains("Text") || name.Contains("text"))
                 {
-                    string memberName = "mt_" + name;
-                    string typeName = string.Empty;
+                    var memberName = "mt_" + name;
+                    var typeName = string.Empty;
                     typeName = "private Text ";
-                    string finalOutput = typeName + memberName + "; \n\t\t";
+                    var finalOutput = typeName + memberName + "; \n\t\t";
                     final += finalOutput;
                     hasComponent = true;
                 }
 
                 if (name.Contains("Button") || name.Contains("button"))
                 {
-                    string memberName = "mb_" + name;
-                    string typeName = string.Empty;
+                    var memberName = "mb_" + name;
+                    var typeName = string.Empty;
                     typeName = "private Button ";
-                    string finalOutput = typeName + memberName + "; \n\t\t";
+                    var finalOutput = typeName + memberName + "; \n\t\t";
                     final += finalOutput;
                     hasComponent = true;
                 }
 
                 if (name.Contains("ListView") || name.Contains("listview"))
                 {
-                    string memberName = "ml_" + name;
-                    string typeName = string.Empty;
+                    var memberName = "ml_" + name;
+                    var typeName = string.Empty;
                     typeName = "private IUListView ";
-                    string finalOutput = typeName + memberName + "; \n\t\t";
+                    var finalOutput = typeName + memberName + "; \n\t\t";
                     final += finalOutput;
                     hasComponent = true;
                 }
 
                 if (hasComponent == false || name.Contains("Go") || name.Contains("go"))
                 {
-                    string memberName = "m_" + name;
-                    string typeName = string.Empty;
+                    var memberName = "m_" + name;
+                    var typeName = string.Empty;
                     typeName = "private GameObject ";
-                    string finalOutput = typeName + memberName + "; \n\t\t";
+                    var finalOutput = typeName + memberName + "; \n\t\t";
                     final += finalOutput;
                 }
             }
@@ -808,61 +667,61 @@ namespace CustomGameFramework.Runtime
         public string EditorFastGetComponents()
         {
             ClearObject();
-            int len = m_objectList.Count;
-            string final = string.Empty;
+            var len = m_objectList.Count;
+            var final = string.Empty;
 
-            for (int i = 0; i < len; i++)
+            for (var i = 0; i < len; i++)
             {
-                GameObject go = m_objectList[i];
-                string name = go.name;
-                bool hasComponent = false;
+                var go = m_objectList[i];
+                var name = go.name;
+                var hasComponent = false;
 
                 if (name.Contains("Image") || name.Contains("image"))
                 {
-                    string memberName = "mi_" + name;
-                    string getComponentName = string.Empty;
+                    var memberName = "mi_" + name;
+                    var getComponentName = string.Empty;
                     getComponentName = "GetImage(\"" + name + "\")";
-                    string finalOutput = memberName + " = " + getComponentName + "; \n\t\t\t";
+                    var finalOutput = memberName + " = " + getComponentName + "; \n\t\t\t";
                     final += finalOutput;
                     hasComponent = true;
                 }
 
                 if (name.Contains("Text") || name.Contains("text"))
                 {
-                    string memberName = "mt_" + name;
-                    string getComponentName = string.Empty;
+                    var memberName = "mt_" + name;
+                    var getComponentName = string.Empty;
                     getComponentName = "GetText(\"" + name + "\")";
-                    string finalOutput = memberName + " = " + getComponentName + "; \n\t\t\t";
+                    var finalOutput = memberName + " = " + getComponentName + "; \n\t\t\t";
                     final += finalOutput;
                     hasComponent = true;
                 }
 
                 if (name.Contains("Button") || name.Contains("button"))
                 {
-                    string memberName = "mb_" + name;
-                    string getComponentName = string.Empty;
+                    var memberName = "mb_" + name;
+                    var getComponentName = string.Empty;
                     getComponentName = "GetButton(\"" + name + "\")";
-                    string finalOutput = memberName + " = " + getComponentName + "; \n\t\t\t";
+                    var finalOutput = memberName + " = " + getComponentName + "; \n\t\t\t";
                     final += finalOutput;
                     hasComponent = true;
                 }
 
                 if (name.Contains("ListView") || name.Contains("listview"))
                 {
-                    string memberName = "ml_" + name;
-                    string getComponentName = string.Empty;
+                    var memberName = "ml_" + name;
+                    var getComponentName = string.Empty;
                     getComponentName = "GetScrollRectListView(\"" + name + "\")";
-                    string finalOutput = memberName + " = " + getComponentName + "; \n\t\t\t";
+                    var finalOutput = memberName + " = " + getComponentName + "; \n\t\t\t";
                     final += finalOutput;
                     hasComponent = true;
                 }
 
                 if (hasComponent == false || name.Contains("Go") || name.Contains("go"))
                 {
-                    string memberName = "m_" + name;
-                    string getComponentName = string.Empty;
+                    var memberName = "m_" + name;
+                    var getComponentName = string.Empty;
                     getComponentName = "GetGameObject(\"" + name + "\")";
-                    string finalOutput = memberName + " = " + getComponentName + "; \n\t\t\t";
+                    var finalOutput = memberName + " = " + getComponentName + "; \n\t\t\t";
                     final += finalOutput;
                     hasComponent = true;
                 }

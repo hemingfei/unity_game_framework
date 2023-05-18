@@ -13,25 +13,23 @@ using UnityGameFramework.Runtime;
 namespace CustomGameFramework.Runtime
 {
     /// <summary>
-    /// 计时器组件。
+    ///     计时器组件。
     /// </summary>
     public sealed partial class TimerComponent : GameFrameworkComponent
     {
-        [SerializeField]
-        private string m_TimerHelperTypeName = "CustomGameFramework.Runtime.TimerHelperBase";
+        [SerializeField] private string m_TimerHelperTypeName = "CustomGameFramework.Runtime.TimerHelperBase";
 
-        [SerializeField]
-        private TimerHelperBase m_CustomTimerHelper = null;
+        [SerializeField] private TimerHelperBase m_CustomTimerHelper;
 
-        private ITimerHelper m_TimerHelper = null;
-        
+        private ITimerHelper m_TimerHelper;
+
         /// <summary>
-        /// 游戏框架组件初始化。
+        ///     游戏框架组件初始化。
         /// </summary>
         protected override void Awake()
         {
             base.Awake();
-            TimerHelperBase timerHelper = Helper.CreateHelper(m_TimerHelperTypeName, m_CustomTimerHelper);
+            var timerHelper = Helper.CreateHelper(m_TimerHelperTypeName, m_CustomTimerHelper);
             if (timerHelper == null)
             {
                 Log.Error("Can not create timer helper.");
@@ -39,7 +37,7 @@ namespace CustomGameFramework.Runtime
             }
 
             timerHelper.name = "Timer Helper";
-            Transform transform = timerHelper.transform;
+            var transform = timerHelper.transform;
             transform.SetParent(this.transform);
             transform.localScale = Vector3.one;
 
@@ -52,7 +50,7 @@ namespace CustomGameFramework.Runtime
         }
 
         /// <summary>
-        /// 初始化
+        ///     初始化
         /// </summary>
         public void Init()
         {
@@ -60,7 +58,7 @@ namespace CustomGameFramework.Runtime
         }
 
         /// <summary>
-        /// 投递定时器
+        ///     投递定时器
         /// </summary>
         /// <param name="callback">回调函数</param>
         /// <param name="delay">延迟几秒</param>
@@ -72,7 +70,7 @@ namespace CustomGameFramework.Runtime
         }
 
         /// <summary>
-        /// 投递定时器
+        ///     投递定时器
         /// </summary>
         /// <param name="callback">回调函数</param>
         /// <param name="delay">延迟几秒</param>
@@ -85,7 +83,7 @@ namespace CustomGameFramework.Runtime
         }
 
         /// <summary>
-        /// 取消特定id的计时器
+        ///     取消特定id的计时器
         /// </summary>
         /// <param name="id">计时器ID</param>
         /// <returns>是否成功取消</returns>

@@ -5,12 +5,8 @@
 // Feedback: mailto:ellan@gameframework.cn
 //------------------------------------------------------------
 
-using System.Collections.Generic;
-using GameFramework;
-using GameFramework.Resource;
-using UnityEditor;
-using UnityGameFramework.Runtime;
 using CustomGameFramework.Runtime;
+using UnityEditor;
 using UnityGameFramework.Editor;
 
 namespace CustomGameFramework.Editor
@@ -18,9 +14,16 @@ namespace CustomGameFramework.Editor
     [CustomEditor(typeof(ResourceComponent))]
     internal sealed class ResourceComponentInspector : GameFrameworkInspector
     {
-        private HelperInfo<ResourceHelperBase> m_ResourceHelperInfo = new HelperInfo<ResourceHelperBase>("Resource");
-        private SerializedProperty m_resouceMode = null;
-        
+        private SerializedProperty m_resouceMode;
+        private readonly HelperInfo<ResourceHelperBase> m_ResourceHelperInfo = new("Resource");
+
+        private void OnEnable()
+        {
+            m_ResourceHelperInfo.Init(serializedObject);
+            m_resouceMode = serializedObject.FindProperty("m_ResourceMode");
+            RefreshTypeNames();
+        }
+
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
@@ -48,17 +51,10 @@ namespace CustomGameFramework.Editor
             RefreshTypeNames();
         }
 
-        private void OnEnable()
-        {
-            m_ResourceHelperInfo.Init(serializedObject);
-            m_resouceMode = serializedObject.FindProperty("m_ResourceMode");
-            RefreshTypeNames();
-        }
-
         private void RefreshTypeNames()
         {
             m_ResourceHelperInfo.Refresh();
-            
+
             serializedObject.ApplyModifiedProperties();
         }
     }

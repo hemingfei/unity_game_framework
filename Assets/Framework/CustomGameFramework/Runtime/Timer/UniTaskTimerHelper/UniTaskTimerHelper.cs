@@ -7,11 +7,9 @@
 *****************************************************/
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using UnityEngine;
 
 namespace CustomGameFramework.Runtime
 {
@@ -19,6 +17,7 @@ namespace CustomGameFramework.Runtime
     {
         private int _timerId;
         private Dictionary<int, CancellationTokenSource> _tokens;
+
         public override void Init()
         {
             _timerId = 0;
@@ -27,7 +26,7 @@ namespace CustomGameFramework.Runtime
 
         public override int Post(Action callback, float delay, bool isTimeScaled)
         {
-            return Post((a) => callback?.Invoke(), delay, isTimeScaled, 0);
+            return Post(a => callback?.Invoke(), delay, isTimeScaled, 0);
         }
 
         public override int Post(Action<int> callback, float delay, bool isTimeScaled, int repeatCount)
@@ -39,17 +38,17 @@ namespace CustomGameFramework.Runtime
             return timerId;
         }
 
-        private async void StartTimerTask(int timerId, CancellationTokenSource token, Action<int> callback, float delay, bool isTimeScaled, int repeatCount)
+        private async void StartTimerTask(int timerId, CancellationTokenSource token, Action<int> callback, float delay,
+            bool isTimeScaled, int repeatCount)
         {
-            for (int i = 0; i < repeatCount + 1; i++)
+            for (var i = 0; i < repeatCount + 1; i++)
             {
-                int count = i + 1;
+                var count = i + 1;
 
-                var isCanceled = await UniTask.Delay(TimeSpan.FromSeconds(delay), ignoreTimeScale: !isTimeScaled, cancellationToken: token.Token).SuppressCancellationThrow();
-                if (isCanceled)
-                {
-                    break;
-                }
+                var isCanceled = await UniTask
+                    .Delay(TimeSpan.FromSeconds(delay), !isTimeScaled, cancellationToken: token.Token)
+                    .SuppressCancellationThrow();
+                if (isCanceled) break;
                 callback?.Invoke(count);
             }
 
@@ -65,13 +64,12 @@ namespace CustomGameFramework.Runtime
         public override bool Cancel(int timerId)
         {
             if (_tokens.TryGetValue(timerId, out var token))
-            {
-                if (token!= null && !token.IsCancellationRequested)
+                if (token != null && !token.IsCancellationRequested)
                 {
                     token.Cancel();
                     return true;
                 }
-            }
+
             return false;
         }
     }

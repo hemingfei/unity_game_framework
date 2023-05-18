@@ -13,17 +13,12 @@ using UnityGameFramework.Runtime;
 namespace CustomGameFramework.Runtime
 {
     /// <summary>
-    /// Web 请求失败事件。
+    ///     Web 请求失败事件。
     /// </summary>
     public sealed class HttpWebRequestFailureEventArgs : GameEventArgs
     {
         /// <summary>
-        /// Web 请求失败事件编号。
-        /// </summary>
-        public int EventId { get; private set; }
-
-        /// <summary>
-        /// 初始化 Web 请求失败事件的新实例。
+        ///     初始化 Web 请求失败事件的新实例。
         /// </summary>
         public HttpWebRequestFailureEventArgs()
         {
@@ -35,70 +30,49 @@ namespace CustomGameFramework.Runtime
         }
 
         /// <summary>
-        /// 获取 Web 请求失败事件编号。
+        ///     Web 请求失败事件编号。
         /// </summary>
-        public override int Id
-        {
-            get
-            {
-                return EventId;
-            }
-        }
+        public int EventId { get; private set; }
 
         /// <summary>
-        /// 获取用户自定义数据的UID。
+        ///     获取 Web 请求失败事件编号。
         /// </summary>
-        public string UID
-        {
-            get;
-            private set;
-        }
-        
-        /// <summary>
-        /// 获取 Web 请求任务的序列编号。
-        /// </summary>
-        public int SerialId
-        {
-            get;
-            private set;
-        }
+        public override int Id => EventId;
 
         /// <summary>
-        /// 获取 Web 请求地址。
+        ///     获取用户自定义数据的UID。
         /// </summary>
-        public string WebRequestUri
-        {
-            get;
-            private set;
-        }
+        public string UID { get; private set; }
 
         /// <summary>
-        /// 获取错误信息。
+        ///     获取 Web 请求任务的序列编号。
         /// </summary>
-        public string ErrorMessage
-        {
-            get;
-            private set;
-        }
+        public int SerialId { get; private set; }
 
         /// <summary>
-        /// 获取用户自定义数据。
+        ///     获取 Web 请求地址。
         /// </summary>
-        public object UserData
-        {
-            get;
-            private set;
-        }
+        public string WebRequestUri { get; private set; }
 
         /// <summary>
-        /// 创建 Web 请求失败事件。
+        ///     获取错误信息。
+        /// </summary>
+        public string ErrorMessage { get; private set; }
+
+        /// <summary>
+        ///     获取用户自定义数据。
+        /// </summary>
+        public object UserData { get; private set; }
+
+        /// <summary>
+        ///     创建 Web 请求失败事件。
         /// </summary>
         /// <param name="e">内部事件。</param>
         /// <returns>创建的 Web 请求失败事件。</returns>
-        public static HttpWebRequestFailureEventArgs Create(UnityGameFramework.Runtime.WebRequestFailureEventArgs e)
+        public static HttpWebRequestFailureEventArgs Create(WebRequestFailureEventArgs e)
         {
-            HttpWebRequestInfo requestInfo = (HttpWebRequestInfo)e.UserData;
-            HttpWebRequestFailureEventArgs httpWebRequestFailureEventArgs = ReferencePool.Acquire<HttpWebRequestFailureEventArgs>();
+            var requestInfo = (HttpWebRequestInfo)e.UserData;
+            var httpWebRequestFailureEventArgs = ReferencePool.Acquire<HttpWebRequestFailureEventArgs>();
             httpWebRequestFailureEventArgs.SerialId = e.SerialId;
             httpWebRequestFailureEventArgs.WebRequestUri = e.WebRequestUri;
             httpWebRequestFailureEventArgs.ErrorMessage = e.ErrorMessage;
@@ -110,7 +84,7 @@ namespace CustomGameFramework.Runtime
         }
 
         /// <summary>
-        /// 清理 Web 请求失败事件。
+        ///     清理 Web 请求失败事件。
         /// </summary>
         public override void Clear()
         {
@@ -122,4 +96,3 @@ namespace CustomGameFramework.Runtime
         }
     }
 }
-

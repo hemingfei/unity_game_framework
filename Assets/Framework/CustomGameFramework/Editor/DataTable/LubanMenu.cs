@@ -16,25 +16,19 @@ namespace CustomGameFramework.Editor.DataTable
     {
         public const string GenBatFile = "gen.bat";
         public const string GenShFile = "gen.sh";
-        
+
         [MenuItem("Tools/DataTable Generate \t 数据表格配置生成", false, 50)]
         public static void RunDataTableGenerate()
         {
             if (Application.platform is RuntimePlatform.OSXEditor or RuntimePlatform.LinuxEditor)
-            {
                 RunDataTableGenerate(GenShFile);
-            }
             else
-            {
                 RunDataTableGenerate(GenBatFile);
-            }
         }
-        
+
         public static void RunDataTableGenerate(string fileName)
         {
             RunBatchTool.RunBat(fileName, Path.GetFullPath(Application.dataPath + "/../Luban/DataTable/"));
         }
-        
     }
 }
-

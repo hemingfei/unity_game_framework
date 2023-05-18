@@ -7,8 +7,6 @@
 *****************************************************/
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -27,21 +25,21 @@ namespace CustomGameFramework.Runtime
         public void StartDownload(Action success, Action<string> fail, IProgress<float> progress = null);
 
         public void UnloadUnusedAssets();
-        
+
         public UniTask<T> LoadAssetAsync<T>(string location) where T : Object;
 
         public void LoadAssetAsync<T>(string location, Action<T> callback) where T : Object;
-        
+
         public T LoadAssetSync<T>(string location) where T : Object;
-        
+
         public void ReleaseAsset(Object obj);
 
         public UniTask<GameObject> LoadGameObjectAsync(string location, Transform parentTransform = null);
 
         public void LoadGameObjectAsync(string location, Action<GameObject> callback, Transform parentTransform = null);
-        
+
         public GameObject LoadGameObjectSync(string location, Transform parentTransform = null);
-        
+
         public void ReleaseGameObject(GameObject go);
 
         public UniTask<int> LoadSceneAsync(string location, IProgress<float> progress,
@@ -49,8 +47,7 @@ namespace CustomGameFramework.Runtime
 
         public void LoadSceneAsync(string location, IProgress<float> progress, Action<int> callback,
             LoadSceneMode sceneMode = LoadSceneMode.Single, bool activateOnLoad = true);
-        
+
         public void UnloadSceneAsync(int sceneId);
     }
 }
-

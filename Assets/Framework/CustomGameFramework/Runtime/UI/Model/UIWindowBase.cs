@@ -6,81 +6,75 @@
 //  Copyright (c) 2021 hegametech.com 
 //
 
-using UnityEngine;
+using System;
 using System.Collections.Generic;
+using UnityEngine;
 using UnityGameFramework.Runtime;
 
 namespace CustomGameFramework.Runtime
 {
     public abstract partial class UIWindowBase : UIBase
     {
+        public enum WindowStatus
+        {
+            Create,
+            OpenAnim,
+            Open,
+            CloseAnim,
+            Close,
+            Hide
+        }
+
         //[HideInInspector]
         public string cameraKey;
         public UIType m_UIType;
-        
+
         public WindowStatus windowStatus;
-        
+
         public GameObject m_bgMask;
         public GameObject m_uiRoot;
 
-        public object[] m_OpenUIParams;
-        public object[] m_CloseUIParams;
-
         [HideInInspector] public string OpenTimeStamp;
         [HideInInspector] public string CloseTimeStamp;
-        
+
         public float m_PosZ; //Z轴偏移
 
         /// <summary>
-        /// 需要根据屏幕高度缩放的物体
+        ///     需要根据屏幕高度缩放的物体
         /// </summary>
-        public List<GameObject> m_objectNeedAutoScaleWithScreen = new List<GameObject>();
+        public List<GameObject> m_objectNeedAutoScaleWithScreen = new();
 
+        public object[] m_CloseUIParams;
+
+        public object[] m_OpenUIParams;
 
 
         /// <summary>
-        /// 是否自动流海屏适配
+        ///     是否自动流海屏适配
         /// </summary>
-        public virtual bool IsAutoFixNotchScreen
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public virtual bool IsAutoFixNotchScreen => false;
 
         /// <summary>
-        /// 流海屏适配后的偏移。填入大于0的值
+        ///     流海屏适配后的偏移。填入大于0的值
         /// </summary>
-        public virtual float OffsetIfNotchScreen
-        {
-            get
-            {
-                return 0;
-            }
-        }
+        public virtual float OffsetIfNotchScreen => 0;
 
         #region 重载方法
 
         public override void OnUIInit()
         {
             if (IsAutoFixNotchScreen)
-            {
                 if (UIManager.SafeScreenTopOffset() != 0)
                 {
-                    float offSizeY = Mathf.Max(100f, UIManager.SafeScreenTopOffset());
-                    (m_uiRoot.transform as RectTransform).offsetMax = new Vector2((m_uiRoot.transform as RectTransform).offsetMax.x, -(offSizeY - OffsetIfNotchScreen));
+                    var offSizeY = Mathf.Max(100f, UIManager.SafeScreenTopOffset());
+                    (m_uiRoot.transform as RectTransform).offsetMax = new Vector2(
+                        (m_uiRoot.transform as RectTransform).offsetMax.x, -(offSizeY - OffsetIfNotchScreen));
                 }
-            }
-            
+
             if (m_objectNeedAutoScaleWithScreen.Count > 0)
             {
                 var vv3 = UIManager.GetSafeHeightScale();
-                foreach (var gg in m_objectNeedAutoScaleWithScreen)
-                {
-            
-                    gg.transform.localScale *= vv3;
-                }
+                foreach (var gg in m_objectNeedAutoScaleWithScreen) gg.transform.localScale *= vv3;
             }
         }
 
@@ -91,7 +85,7 @@ namespace CustomGameFramework.Runtime
         public virtual void OnOpen()
         {
         }
-        
+
         public virtual void OnClose()
         {
         }
@@ -101,36 +95,37 @@ namespace CustomGameFramework.Runtime
             //默认无动画
             animComplete(this, callBack, objs);
         }
+
         public virtual void OnStartEnterAnim()
         {
-            
         }
+
         public virtual void OnCompleteEnterAnim()
         {
-            
         }
+
         public virtual void ExitAnim(UIAnimCallBack animComplete, UIEventCallBack callBack, params object[] objs)
         {
             //默认无动画
             animComplete(this, callBack, objs);
         }
+
         public virtual void OnStartExitAnim()
         {
-            
         }
+
         public virtual void OnCompleteExitAnim()
         {
-            
         }
-        
+
         public virtual void OnHide()
         {
         }
-        
+
         public virtual void OnShow()
         {
         }
-        
+
         public virtual void OnRefresh()
         {
         }
@@ -139,51 +134,48 @@ namespace CustomGameFramework.Runtime
         {
             gameObject.SetActive(true);
         }
-        
+
         public virtual void Hide()
         {
             gameObject.SetActive(false);
         }
-        
+
         #endregion
-        
+
         #region 继承方法
-        
+
         public void InitWindow(int id)
         {
-            List<IUILifeCycle> list = new List<IUILifeCycle>();
+            var list = new List<IUILifeCycle>();
             Init(null, id);
             RecursionInitUI(null, this, id, list);
         }
-        
+
         /// <summary>
-        /// 递归初始化UI
+        ///     递归初始化UI
         /// </summary>
         /// <param name="uiBase"></param>
         public void RecursionInitUI(UIBase parentUI, UIBase uiBase, int id, List<IUILifeCycle> UIList)
         {
-            int childIndex = 0;
-            
-            for (int i = 0; i < uiBase.m_objectList.Count; i++)
+            var childIndex = 0;
+
+            for (var i = 0; i < uiBase.m_objectList.Count; i++)
             {
-                GameObject go = uiBase.m_objectList[i];
-                
+                var go = uiBase.m_objectList[i];
+
                 if (go != null)
                 {
-                    IUILifeCycle tmp = go.GetComponent<IUILifeCycle>();
-                    
+                    var tmp = go.GetComponent<IUILifeCycle>();
+
                     if (tmp != null)
                     {
                         if (!UIList.Contains(tmp))
                         {
                             uiBase.AddLifeCycleComponent(tmp);
                             UIList.Add(tmp);
-                            UIBase subUI = uiBase.m_objectList[i].GetComponent<UIBase>();
-                            
-                            if (subUI != null)
-                            {
-                                RecursionInitUI(uiBase, subUI, childIndex++, UIList);
-                            }
+                            var subUI = uiBase.m_objectList[i].GetComponent<UIBase>();
+
+                            if (subUI != null) RecursionInitUI(uiBase, subUI, childIndex++, UIList);
                         }
                         else
                         {
@@ -197,7 +189,7 @@ namespace CustomGameFramework.Runtime
                 }
             }
         }
-        
+
         //刷新是主动调用
         public void Refresh()
         {
@@ -211,7 +203,7 @@ namespace CustomGameFramework.Runtime
             OpenTimeStamp = GetLocalTimeStampMillisecondsString();
             CloseTimeStamp = string.Empty;
         }
-        
+
         public void SetCloseParam(params object[] objs)
         {
             m_CloseUIParams = objs;
@@ -220,19 +212,10 @@ namespace CustomGameFramework.Runtime
 
         private string GetLocalTimeStampMillisecondsString()
         {
-            System.TimeSpan ts = System.DateTime.UtcNow - new System.DateTime(1970, 1, 1, 0, 0, 0, 0);
-            return System.Convert.ToInt64(ts.TotalMilliseconds).ToString();
+            var ts = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, 0);
+            return Convert.ToInt64(ts.TotalMilliseconds).ToString();
         }
-        #endregion
 
-        public enum WindowStatus
-        {
-            Create,
-            OpenAnim,
-            Open,
-            CloseAnim,
-            Close,
-            Hide,
-        }
+        #endregion
     }
 }

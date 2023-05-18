@@ -12,61 +12,60 @@ using GameFramework.Event;
 namespace CustomGameFramework.Runtime
 {
 	/// <summary>
-	/// 关闭UI完成事件
+	///     关闭UI完成事件
 	/// </summary>
 	public class CloseUIFormCompleteEventArgs : GameEventArgs
-	{
-		/// <summary>
-		/// 关闭UI完成事件编号。
-		/// </summary>
-		public static readonly int EventId = typeof(CloseUIFormCompleteEventArgs).GetHashCode();
+    {
+	    /// <summary>
+	    ///     关闭UI完成事件编号。
+	    /// </summary>
+	    public static readonly int EventId = typeof(CloseUIFormCompleteEventArgs).GetHashCode();
 
-		/// <summary>
-		/// 初始化关闭UI完成事件的新实例。
-		/// </summary>
-		public CloseUIFormCompleteEventArgs()
-		{
-			UiName = string.Empty;
-			Objs = null;
-		}
+	    /// <summary>
+	    ///     初始化关闭UI完成事件的新实例。
+	    /// </summary>
+	    public CloseUIFormCompleteEventArgs()
+        {
+            UiName = string.Empty;
+            Objs = null;
+        }
 
-		/// <summary>
-		/// 获取关闭UI完成事件编号。
-		/// </summary>
-		public override int Id => EventId;
+	    /// <summary>
+	    ///     获取关闭UI完成事件编号。
+	    /// </summary>
+	    public override int Id => EventId;
 
-		/// <summary>
-		/// UI名称
-		/// </summary>
-		public string UiName { get; private set; }
+	    /// <summary>
+	    ///     UI名称
+	    /// </summary>
+	    public string UiName { get; private set; }
 
-		/// <summary>
-		/// 参数
-		/// </summary>
-		public object[] Objs { get; private set; }
-	
-		/// <summary>
-		/// 创建关闭UI完成事件。
-		/// </summary>
-		/// <param name="uiName">UI名称</param>
-		/// <param name="objs">参数</param>
-		/// <returns>创建的关闭UI完成事件。</returns>
-		public static CloseUIFormCompleteEventArgs Create(string uiName, object[] objs)
-		{
-			CloseUIFormCompleteEventArgs e = ReferencePool.Acquire<CloseUIFormCompleteEventArgs>();
-			e.UiName = uiName;
-			e.Objs = objs;
-			return e;
-		}
+	    /// <summary>
+	    ///     参数
+	    /// </summary>
+	    public object[] Objs { get; private set; }
 
-		/// <summary>
-		/// 清理关闭UI完成事件。
-		/// </summary>
-		public override void Clear()
-		{
-			UiName = string.Empty;
-			Objs = null;
-		}
-	}
+	    /// <summary>
+	    ///     创建关闭UI完成事件。
+	    /// </summary>
+	    /// <param name="uiName">UI名称</param>
+	    /// <param name="objs">参数</param>
+	    /// <returns>创建的关闭UI完成事件。</returns>
+	    public static CloseUIFormCompleteEventArgs Create(string uiName, object[] objs)
+        {
+            var e = ReferencePool.Acquire<CloseUIFormCompleteEventArgs>();
+            e.UiName = uiName;
+            e.Objs = objs;
+            return e;
+        }
+
+	    /// <summary>
+	    ///     清理关闭UI完成事件。
+	    /// </summary>
+	    public override void Clear()
+        {
+            UiName = string.Empty;
+            Objs = null;
+        }
+    }
 }
-

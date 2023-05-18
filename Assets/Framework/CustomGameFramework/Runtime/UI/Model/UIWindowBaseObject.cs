@@ -15,9 +15,10 @@ namespace CustomGameFramework.Runtime
     public class UIWindowBaseObject : ObjectBase
     {
         public GameObject goTrans;
+
         public static UIWindowBaseObject Create(object target, GameObject trans)
         {
-            UIWindowBaseObject uiWindowBaseObject = ReferencePool.Acquire<UIWindowBaseObject>();
+            var uiWindowBaseObject = ReferencePool.Acquire<UIWindowBaseObject>();
             uiWindowBaseObject.Initialize(target);
             uiWindowBaseObject.goTrans = trans;
             return uiWindowBaseObject;
@@ -25,13 +26,9 @@ namespace CustomGameFramework.Runtime
 
         protected override void Release(bool isShutdown)
         {
-            UIWindowBase uiWindowBase = (UIWindowBase)Target;
-            if (uiWindowBase == null)
-            {
-                return;
-            }
+            var uiWindowBase = (UIWindowBase)Target;
+            if (uiWindowBase == null) return;
             Object.Destroy(uiWindowBase.gameObject);
         }
     }
-
 }

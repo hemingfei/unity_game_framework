@@ -12,17 +12,17 @@ using GameFramework.Sound;
 namespace UnityGameFramework.Runtime
 {
     /// <summary>
-    /// 播放声音失败事件。
+    ///     播放声音失败事件。
     /// </summary>
     public sealed class PlaySoundFailureEventArgs : GameEventArgs
     {
         /// <summary>
-        /// 播放声音失败事件编号。
+        ///     播放声音失败事件编号。
         /// </summary>
         public static readonly int EventId = typeof(PlaySoundFailureEventArgs).GetHashCode();
 
         /// <summary>
-        /// 初始化播放声音失败事件的新实例。
+        ///     初始化播放声音失败事件的新实例。
         /// </summary>
         public PlaySoundFailureEventArgs()
         {
@@ -37,97 +37,59 @@ namespace UnityGameFramework.Runtime
         }
 
         /// <summary>
-        /// 获取播放声音失败事件编号。
+        ///     获取播放声音失败事件编号。
         /// </summary>
-        public override int Id
-        {
-            get
-            {
-                return EventId;
-            }
-        }
+        public override int Id => EventId;
 
         /// <summary>
-        /// 获取声音的序列编号。
+        ///     获取声音的序列编号。
         /// </summary>
-        public int SerialId
-        {
-            get;
-            private set;
-        }
+        public int SerialId { get; private set; }
 
         /// <summary>
-        /// 获取声音资源名称。
+        ///     获取声音资源名称。
         /// </summary>
-        public string SoundAssetName
-        {
-            get;
-            private set;
-        }
+        public string SoundAssetName { get; private set; }
 
         /// <summary>
-        /// 获取声音组名称。
+        ///     获取声音组名称。
         /// </summary>
-        public string SoundGroupName
-        {
-            get;
-            private set;
-        }
+        public string SoundGroupName { get; private set; }
 
         /// <summary>
-        /// 获取播放声音参数。
+        ///     获取播放声音参数。
         /// </summary>
-        public PlaySoundParams PlaySoundParams
-        {
-            get;
-            private set;
-        }
+        public PlaySoundParams PlaySoundParams { get; private set; }
 
         /// <summary>
-        /// 获取声音绑定的实体。
+        ///     获取声音绑定的实体。
         /// </summary>
-        public Entity BindingEntity
-        {
-            get;
-            private set;
-        }
+        public Entity BindingEntity { get; private set; }
 
         /// <summary>
-        /// 获取错误码。
+        ///     获取错误码。
         /// </summary>
-        public PlaySoundErrorCode ErrorCode
-        {
-            get;
-            private set;
-        }
+        public PlaySoundErrorCode ErrorCode { get; private set; }
 
         /// <summary>
-        /// 获取错误信息。
+        ///     获取错误信息。
         /// </summary>
-        public string ErrorMessage
-        {
-            get;
-            private set;
-        }
+        public string ErrorMessage { get; private set; }
 
         /// <summary>
-        /// 获取用户自定义数据。
+        ///     获取用户自定义数据。
         /// </summary>
-        public object UserData
-        {
-            get;
-            private set;
-        }
+        public object UserData { get; private set; }
 
         /// <summary>
-        /// 创建播放声音失败事件。
+        ///     创建播放声音失败事件。
         /// </summary>
         /// <param name="e">内部事件。</param>
         /// <returns>创建的播放声音失败事件。</returns>
         public static PlaySoundFailureEventArgs Create(GameFramework.Sound.PlaySoundFailureEventArgs e)
         {
-            PlaySoundInfo playSoundInfo = (PlaySoundInfo)e.UserData;
-            PlaySoundFailureEventArgs playSoundFailureEventArgs = ReferencePool.Acquire<PlaySoundFailureEventArgs>();
+            var playSoundInfo = (PlaySoundInfo)e.UserData;
+            var playSoundFailureEventArgs = ReferencePool.Acquire<PlaySoundFailureEventArgs>();
             playSoundFailureEventArgs.SerialId = e.SerialId;
             playSoundFailureEventArgs.SoundAssetName = e.SoundAssetName;
             playSoundFailureEventArgs.SoundGroupName = e.SoundGroupName;
@@ -141,7 +103,7 @@ namespace UnityGameFramework.Runtime
         }
 
         /// <summary>
-        /// 清理播放声音失败事件。
+        ///     清理播放声音失败事件。
         /// </summary>
         public override void Clear()
         {

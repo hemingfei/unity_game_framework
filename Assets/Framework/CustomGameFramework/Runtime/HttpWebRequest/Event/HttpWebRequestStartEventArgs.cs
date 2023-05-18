@@ -8,23 +8,17 @@
 
 using GameFramework;
 using GameFramework.Event;
-using UnityEngine;
 using UnityGameFramework.Runtime;
 
 namespace CustomGameFramework.Runtime
 {
     /// <summary>
-    /// Web 请求开始事件。
+    ///     Web 请求开始事件。
     /// </summary>
     public sealed class HttpWebRequestStartEventArgs : GameEventArgs
     {
         /// <summary>
-        /// Web 请求开始事件编号。
-        /// </summary>
-        public int EventId { get; private set; }
-
-        /// <summary>
-        /// 初始化 Web 请求开始事件的新实例。
+        ///     初始化 Web 请求开始事件的新实例。
         /// </summary>
         public HttpWebRequestStartEventArgs()
         {
@@ -35,61 +29,44 @@ namespace CustomGameFramework.Runtime
         }
 
         /// <summary>
-        /// 获取 Web 请求开始事件编号。
+        ///     Web 请求开始事件编号。
         /// </summary>
-        public override int Id
-        {
-            get
-            {
-                return EventId;
-            }
-        }
+        public int EventId { get; private set; }
 
         /// <summary>
-        /// 获取用户自定义数据的UID。
+        ///     获取 Web 请求开始事件编号。
         /// </summary>
-        public string UID
-        {
-            get;
-            private set;
-        }
-        
-        /// <summary>
-        /// 获取 Web 请求任务的序列编号。
-        /// </summary>
-        public int SerialId
-        {
-            get;
-            private set;
-        }
+        public override int Id => EventId;
 
         /// <summary>
-        /// 获取 Web 请求地址。
+        ///     获取用户自定义数据的UID。
         /// </summary>
-        public string WebRequestUri
-        {
-            get;
-            private set;
-        }
+        public string UID { get; private set; }
 
         /// <summary>
-        /// 获取用户自定义数据。
+        ///     获取 Web 请求任务的序列编号。
         /// </summary>
-        public object UserData
-        {
-            get;
-            private set;
-        }
+        public int SerialId { get; private set; }
 
         /// <summary>
-        /// 创建 Web 请求开始事件。
+        ///     获取 Web 请求地址。
+        /// </summary>
+        public string WebRequestUri { get; private set; }
+
+        /// <summary>
+        ///     获取用户自定义数据。
+        /// </summary>
+        public object UserData { get; private set; }
+
+        /// <summary>
+        ///     创建 Web 请求开始事件。
         /// </summary>
         /// <param name="e">内部事件。</param>
         /// <returns>创建的 Web 请求开始事件。</returns>
-        public static HttpWebRequestStartEventArgs Create(UnityGameFramework.Runtime.WebRequestStartEventArgs e)
+        public static HttpWebRequestStartEventArgs Create(WebRequestStartEventArgs e)
         {
-            HttpWebRequestInfo requestInfo = (HttpWebRequestInfo)e.UserData;
-            HttpWebRequestStartEventArgs httpWebRequestStartEventArgs = ReferencePool.Acquire<HttpWebRequestStartEventArgs>();
+            var requestInfo = (HttpWebRequestInfo)e.UserData;
+            var httpWebRequestStartEventArgs = ReferencePool.Acquire<HttpWebRequestStartEventArgs>();
             httpWebRequestStartEventArgs.SerialId = e.SerialId;
             httpWebRequestStartEventArgs.WebRequestUri = e.WebRequestUri;
             httpWebRequestStartEventArgs.UserData = requestInfo;
@@ -99,7 +76,7 @@ namespace CustomGameFramework.Runtime
         }
 
         /// <summary>
-        /// 清理 Web 请求开始事件。
+        ///     清理 Web 请求开始事件。
         /// </summary>
         public override void Clear()
         {
@@ -110,4 +87,3 @@ namespace CustomGameFramework.Runtime
         }
     }
 }
-

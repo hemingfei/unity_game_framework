@@ -6,7 +6,6 @@
 //------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using GameFramework;
 using GameFramework.Resource;
@@ -18,31 +17,28 @@ using Object = UnityEngine.Object;
 namespace CustomGameFramework.Runtime
 {
     /// <summary>
-    /// 资源组件。
+    ///     资源组件。
     /// </summary>
     [DisallowMultipleComponent]
     [AddComponentMenu("Game Framework/Resource")]
     [RequireComponent(typeof(FrameworkResourceComponent))]
     public sealed class ResourceComponent : GameFrameworkComponent
     {
-        [SerializeField]
-        private IResourceMode m_ResourceMode = IResourceMode.EditorSimulateMode;
-        
-        [SerializeField]
-        private string m_ResourceHelperTypeName = "CustomGameFramework.Runtime.ResourceHelperBase";
+        [SerializeField] private IResourceMode m_ResourceMode = IResourceMode.EditorSimulateMode;
 
-        [SerializeField]
-        private ResourceHelperBase m_CustomResourceHelper = null;
+        [SerializeField] private string m_ResourceHelperTypeName = "CustomGameFramework.Runtime.ResourceHelperBase";
 
-        private IResourceHelper m_ResourceHelper = null;
+        [SerializeField] private ResourceHelperBase m_CustomResourceHelper;
 
         private EventComponent Event;
+
+        private IResourceHelper m_ResourceHelper;
 
         private void Start()
         {
             Event = GameEntry.GetComponent<EventComponent>();
-            
-            ResourceHelperBase resourceHelper = Helper.CreateHelper(m_ResourceHelperTypeName, m_CustomResourceHelper);
+
+            var resourceHelper = Helper.CreateHelper(m_ResourceHelperTypeName, m_CustomResourceHelper);
             if (resourceHelper == null)
             {
                 Log.Error("Can not create resource helper.");
@@ -50,7 +46,7 @@ namespace CustomGameFramework.Runtime
             }
 
             resourceHelper.name = "Resource Helper";
-            Transform transform = resourceHelper.transform;
+            var transform = resourceHelper.transform;
             transform.SetParent(this.transform);
             transform.localScale = Vector3.one;
 
@@ -59,24 +55,22 @@ namespace CustomGameFramework.Runtime
 
         public void Init()
         {
-            IResourceMode mode = GetRuntimeResourceMode();
+            var mode = GetRuntimeResourceMode();
             m_ResourceHelper.Init(mode,
                 () => Event.Fire(this, ResourceInitSuccessEventArgs.Create()),
-                (msg) => Event.Fire(this, ResourceInitFailEventArgs.Create(msg)));
+                msg => Event.Fire(this, ResourceInitFailEventArgs.Create(msg)));
         }
 
         private IResourceMode GetRuntimeResourceMode()
         {
-            IResourceMode mode = IResourceMode.HostPlayMode;
+            var mode = IResourceMode.HostPlayMode;
             if (m_ResourceMode != IResourceMode.EditorSimulateMode)
-            {
-                mode =  m_ResourceMode;
-            }
+                mode = m_ResourceMode;
             else
-            {
                 mode = Application.platform is RuntimePlatform.OSXEditor or RuntimePlatform.LinuxEditor
-                    or RuntimePlatform.WindowsEditor ? m_ResourceMode : IResourceMode.OfflinePlayMode;
-            }
+                    or RuntimePlatform.WindowsEditor
+                    ? m_ResourceMode
+                    : IResourceMode.OfflinePlayMode;
 
             return mode;
         }
@@ -85,7 +79,7 @@ namespace CustomGameFramework.Runtime
         {
             m_ResourceHelper.UpdateVersionAndManifest(
                 () => Event.Fire(this, ResourceUpdateManifestSuccessEventArgs.Create()),
-                (msg) => Event.Fire(this, ResourceUpdateManifestFailEventArgs.Create(msg)));
+                msg => Event.Fire(this, ResourceUpdateManifestFailEventArgs.Create(msg)));
         }
 
         public long GetDownloadSize()
@@ -95,7 +89,7 @@ namespace CustomGameFramework.Runtime
 
         public void StartDownload()
         {
-            var progressReporter = ProgressReporter.Create((progress) =>
+            var progressReporter = ProgressReporter.Create(progress =>
             {
                 Event.Fire(this, ResourceDownloadProgressEventArgs.Create(progress));
             });
@@ -105,7 +99,7 @@ namespace CustomGameFramework.Runtime
                     Event.Fire(this, ResourceDownloadSuccessEventArgs.Create());
                     ReferencePool.Release(progressReporter);
                 },
-                (msg) =>
+                msg =>
                 {
                     Event.Fire(this, ResourceDownloadFailEventArgs.Create(msg));
                     ReferencePool.Release(progressReporter);
@@ -119,14 +113,15 @@ namespace CustomGameFramework.Runtime
         }
 
         #region 加载资源对象
+
         public async UniTask<T> LoadAssetAsync<T>(string location) where T : Object
         {
             return await m_ResourceHelper.LoadAssetAsync<T>(location);
         }
-        
+
         public void LoadAssetAsync<T>(string location, Action<T> callback) where T : Object
         {
-            m_ResourceHelper.LoadAssetAsync<T>(location, callback);
+            m_ResourceHelper.LoadAssetAsync(location, callback);
         }
 
         public T LoadAssetSync<T>(string location) where T : Object
@@ -138,10 +133,11 @@ namespace CustomGameFramework.Runtime
         {
             m_ResourceHelper.ReleaseAsset(obj);
         }
-        
+
         #endregion
 
         #region 加载 gameobject
+
         public async UniTask<GameObject> LoadGameObjectAsync(string location, Transform parentTransform = null)
         {
             return await m_ResourceHelper.LoadGameObjectAsync(location, parentTransform);
@@ -156,8 +152,9 @@ namespace CustomGameFramework.Runtime
         {
             m_ResourceHelper.ReleaseGameObject(go);
         }
+
         #endregion
-        
+
         #region 加载场景
 
         public async UniTask<int> LoadSceneAsync(string location, IProgress<float> progress,
@@ -165,7 +162,7 @@ namespace CustomGameFramework.Runtime
         {
             return await m_ResourceHelper.LoadSceneAsync(location, progress, sceneMode, activateOnLoad);
         }
-        
+
         public void LoadSceneAsync(string location, IProgress<float> progress, Action<int> callback,
             LoadSceneMode sceneMode = LoadSceneMode.Single, bool activateOnLoad = true)
         {
@@ -176,13 +173,14 @@ namespace CustomGameFramework.Runtime
         {
             m_ResourceHelper.UnloadSceneAsync(sceneId);
         }
-        
+
         #endregion
-        
+
         #region 框架内部使用的加载卸载方法
-        
+
         // gf框架内部使用的加载资源
-        internal async void LoadAsset(string assetName, int priority, LoadAssetCallbacks loadAssetCallbacks, object userData)
+        internal async void LoadAsset(string assetName, int priority, LoadAssetCallbacks loadAssetCallbacks,
+            object userData)
         {
             try
             {
@@ -194,14 +192,15 @@ namespace CustomGameFramework.Runtime
                 Log.Error(e);
                 loadAssetCallbacks.LoadAssetFailureCallback?.Invoke(assetName, LoadResourceStatus.AssetError, e.Message,
                     userData);
-            } 
+            }
         }
-        
+
         // gf框架内部使用的卸载资源
         internal void UnloadAsset(object asset)
         {
             ReleaseAsset((Object)asset);
         }
+
         #endregion
     }
 }

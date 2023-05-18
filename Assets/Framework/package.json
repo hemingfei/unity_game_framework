@@ -1,18 +1,18 @@
 {
-    "name": "com.hegametech.gameframework",
-    "displayName": "GameFramework",
-    "version": "1.0.10",
-    "unity": "2021.3",
-    "description": "",
-    "author": {
-        "name": "hemingfei",
-        "url": "https://github.com/hemingfei/unity_game_framework"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/hemingfei/unity_game_framework.git"
-    },
-    "relatedPackages": {},
-    "dependencies": {
-    }
+  "name": "com.hegametech.gameframework",
+  "displayName": "GameFramework",
+  "version": "1.0.10",
+  "unity": "2021.3",
+  "description": "",
+  "author": {
+    "name": "hemingfei",
+    "url": "https://github.com/hemingfei/unity_game_framework"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hemingfei/unity_game_framework.git"
+  },
+  "relatedPackages": {},
+  "dependencies": {
+  }
 }

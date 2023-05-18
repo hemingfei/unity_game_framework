@@ -6,15 +6,14 @@
 //  Copyright (c) 2021 hegametech.com 
 //
 
-using System.Collections;
+using System;
 using System.Collections.Generic;
+using System.Reflection;
+using CustomGameFramework.Runtime;
+using Doozy.Engine.UI;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
-using System.Reflection;
-using System;
-using CustomGameFramework.Runtime;
-using Doozy.Engine.UI;
 
 namespace CustomGameFramework.Editor
 {
@@ -22,19 +21,19 @@ namespace CustomGameFramework.Editor
     [CustomEditor(typeof(UIWindowBase), true)]
     public class UIWindowBaseComponmentEditor : UnityEditor.Editor
     {
-        UIWindowBase m_ui;
-        Canvas canvas;
-        string[] list;
-        int selectIndex = 0;
-
-        private string[] m_HelperTypeNames;
+        private Canvas canvas;
+        private string[] list;
+        private bool m_hasUIAnimView;
         private string m_HelperTypeName;
         private int m_HelperTypeNameIndex;
-        private bool m_hasUIAnimView = false;
 
-        private List<GameObject> m_objectNeedScaleAccording2Screen = new List<GameObject>();
+        private string[] m_HelperTypeNames;
 
         private bool m_isLock = true;
+
+        private List<GameObject> m_objectNeedScaleAccording2Screen = new();
+        private UIWindowBase m_ui;
+        private int selectIndex;
 
         public void OnEnable()
         {
@@ -46,20 +45,11 @@ namespace CustomGameFramework.Editor
 
         public override void OnInspectorGUI()
         {
-            if (m_ui == null)
-            {
-                m_ui = (UIWindowBase)target;
-            }
+            if (m_ui == null) m_ui = (UIWindowBase)target;
 
-            if (canvas == null)
-            {
-                canvas = m_ui.gameObject.GetComponent<Canvas>();
-            }
+            if (canvas == null) canvas = m_ui.gameObject.GetComponent<Canvas>();
 
-            if (m_hasUIAnimView == false)
-            {
-                DrawUIAnimViewButton();
-            }
+            if (m_hasUIAnimView == false) DrawUIAnimViewButton();
 
             list = UIManager.GetCameraNames();
             selectIndex = GetIndex(m_ui.cameraKey);
@@ -68,10 +58,7 @@ namespace CustomGameFramework.Editor
             EditorGUILayout.LabelField("UI相机", EditorStyles.whiteLargeLabel);
             selectIndex = EditorGUILayout.Popup("Camera Key", selectIndex, list);
 
-            if (list.Length != 0)
-            {
-                m_ui.cameraKey = list[selectIndex];
-            }
+            if (list.Length != 0) m_ui.cameraKey = list[selectIndex];
 
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("组件绑定", EditorStyles.whiteLargeLabel);
@@ -88,9 +75,9 @@ namespace CustomGameFramework.Editor
 
             if (m_isLock)
             {
-                UnityEngine.GUI.enabled = false;
+                GUI.enabled = false;
                 DrawDefaultInspector();
-                UnityEngine.GUI.enabled = true;
+                GUI.enabled = true;
             }
             else
             {
@@ -108,18 +95,11 @@ namespace CustomGameFramework.Editor
 
         public int GetIndex(string current)
         {
-            if (string.IsNullOrEmpty(current))
-            {
-                return 0;
-            }
+            if (string.IsNullOrEmpty(current)) return 0;
 
-            for (int i = 0; i < list.Length; i++)
-            {
+            for (var i = 0; i < list.Length; i++)
                 if (current.Equals(list[i]))
-                {
                     return i;
-                }
-            }
 
             return 0;
         }
@@ -139,7 +119,7 @@ namespace CustomGameFramework.Editor
         }
 
         /// <summary>
-        /// 绘制辅助器选择框
+        ///     绘制辅助器选择框
         /// </summary>
         private void DrawHelperSelect()
         {
@@ -149,28 +129,24 @@ namespace CustomGameFramework.Editor
             {
                 m_HelperTypeName = m_ui.RuleHelper.GetType().Name;
 
-                for (int i = 0; i < m_HelperTypeNames.Length; i++)
-                {
+                for (var i = 0; i < m_HelperTypeNames.Length; i++)
                     if (m_HelperTypeName == m_HelperTypeNames[i])
-                    {
                         m_HelperTypeNameIndex = i;
-                    }
-                }
             }
             else
             {
-                IAutoBindRuleHelper helper = (IAutoBindRuleHelper)CreateHelperInstance(m_HelperTypeName,
+                var helper = (IAutoBindRuleHelper)CreateHelperInstance(m_HelperTypeName,
                     UIEditorConstant.S_AutoBindRuleHelperAssemblyNames);
                 m_ui.RuleHelper = helper;
             }
 
-            foreach (GameObject go in Selection.gameObjects)
+            foreach (var go in Selection.gameObjects)
             {
-                UIWindowBase autoBindTool = go.GetComponent<UIWindowBase>();
-                
+                var autoBindTool = go.GetComponent<UIWindowBase>();
+
                 if (autoBindTool != null && autoBindTool.RuleHelper == null)
                 {
-                    IAutoBindRuleHelper helper = (IAutoBindRuleHelper)CreateHelperInstance(m_HelperTypeName,
+                    var helper = (IAutoBindRuleHelper)CreateHelperInstance(m_HelperTypeName,
                         UIEditorConstant.S_AutoBindRuleHelperAssemblyNames);
                     autoBindTool.RuleHelper = helper;
                 }
@@ -178,55 +154,49 @@ namespace CustomGameFramework.Editor
 
             var showNames = m_HelperTypeNames;
 
-            for (int i = 0; i < showNames.Length; i++)
+            for (var i = 0; i < showNames.Length; i++)
             {
                 var s = showNames[i].Split('.');
 
-                if (s.Length > 1)
-                {
-                    showNames[i] = s[s.Length - 1];
-                }
+                if (s.Length > 1) showNames[i] = s[s.Length - 1];
             }
 
-            int selectedIndex = EditorGUILayout.Popup("Rule Helper Class", m_HelperTypeNameIndex, showNames);
+            var selectedIndex = EditorGUILayout.Popup("Rule Helper Class", m_HelperTypeNameIndex, showNames);
 
             if (selectedIndex != m_HelperTypeNameIndex)
             {
                 m_HelperTypeNameIndex = selectedIndex;
                 m_HelperTypeName = m_HelperTypeNames[selectedIndex];
-                IAutoBindRuleHelper helper = (IAutoBindRuleHelper)CreateHelperInstance(m_HelperTypeName,
+                var helper = (IAutoBindRuleHelper)CreateHelperInstance(m_HelperTypeName,
                     UIEditorConstant.S_AutoBindRuleHelperAssemblyNames);
                 m_ui.RuleHelper = helper;
             }
         }
 
         /// <summary>
-        /// 创建辅助器实例
+        ///     创建辅助器实例
         /// </summary>
         private object CreateHelperInstance(string helperTypeName, string[] assemblyNames)
         {
-            foreach (string assemblyName in assemblyNames)
+            foreach (var assemblyName in assemblyNames)
             {
-                Assembly assembly = Assembly.Load(assemblyName);
-                object instance = assembly.CreateInstance(helperTypeName);
+                var assembly = Assembly.Load(assemblyName);
+                var instance = assembly.CreateInstance(helperTypeName);
 
-                if (instance != null)
-                {
-                    return instance;
-                }
+                if (instance != null) return instance;
             }
 
             return null;
         }
 
         /// <summary>
-        /// 获取指定基类在指定程序集中的所有子类名称
+        ///     获取指定基类在指定程序集中的所有子类名称
         /// </summary>
         private string[] GetTypeNames(Type typeBase, string[] assemblyNames)
         {
-            List<string> typeNames = new List<string>();
+            var typeNames = new List<string>();
 
-            foreach (string assemblyName in assemblyNames)
+            foreach (var assemblyName in assemblyNames)
             {
                 Assembly assembly = null;
 
@@ -239,20 +209,13 @@ namespace CustomGameFramework.Editor
                     continue;
                 }
 
-                if (assembly == null)
-                {
-                    continue;
-                }
+                if (assembly == null) continue;
 
-                Type[] types = assembly.GetTypes();
+                var types = assembly.GetTypes();
 
-                foreach (Type type in types)
-                {
+                foreach (var type in types)
                     if (type.IsClass && !type.IsAbstract && typeBase.IsAssignableFrom(type))
-                    {
                         typeNames.Add(type.FullName);
-                    }
-                }
             }
 
             typeNames.Sort();
@@ -260,16 +223,13 @@ namespace CustomGameFramework.Editor
         }
 
         /// <summary>
-        /// 绘制顶部按钮
+        ///     绘制顶部按钮
         /// </summary>
         private void DrawTopButton()
         {
             EditorGUILayout.BeginHorizontal();
 
-            if (GUILayout.Button("全部删除"))
-            {
-                ClearObjectList();
-            }
+            if (GUILayout.Button("全部删除")) ClearObjectList();
 
             if (GUILayout.Button("自动绑定组件"))
             {
@@ -277,15 +237,9 @@ namespace CustomGameFramework.Editor
                 Sort();
             }
 
-            if (GUILayout.Button("排序&去重"))
-            {
-                Sort();
-            }
+            if (GUILayout.Button("排序&去重")) Sort();
 
-            if (GUILayout.Button("生成绑定代码"))
-            {
-                GenerateComponentCode();
-            }
+            if (GUILayout.Button("生成绑定代码")) GenerateComponentCode();
 
             EditorGUILayout.EndHorizontal();
 
@@ -312,33 +266,28 @@ namespace CustomGameFramework.Editor
         }
 
         /// <summary>
-        /// 自动绑定组件
+        ///     自动绑定组件
         /// </summary>
         private void AutoBindComponent()
         {
             m_ui.m_objectList.Clear();
-            List<string> m_TempFiledNames = new List<string>();
-            List<string> m_TempComponentTypeNames = new List<string>();
-            Transform[] childs = m_ui.gameObject.GetComponentsInChildren<Transform>(true);
+            var m_TempFiledNames = new List<string>();
+            var m_TempComponentTypeNames = new List<string>();
+            var childs = m_ui.gameObject.GetComponentsInChildren<Transform>(true);
 
-            foreach (Transform child in childs)
+            foreach (var child in childs)
             {
                 m_TempFiledNames.Clear();
                 m_TempComponentTypeNames.Clear();
 
                 if (m_ui.RuleHelper.IsValidBind(child, m_TempFiledNames, m_TempComponentTypeNames))
-                {
                     m_ui.m_objectList.Add(child.gameObject);
-                }
             }
         }
 
         private void DrawAutoFixPart()
         {
-            if (GUILayout.Button("自动获取带有 auto_ 的字段"))
-            {
-                AutoBindAutoScaleComponent();
-            }
+            if (GUILayout.Button("自动获取带有 auto_ 的字段")) AutoBindAutoScaleComponent();
 
             var serializedObject = new SerializedObject(m_ui);
             var property = serializedObject.FindProperty("m_objectNeedAutoScaleWithScreen");
@@ -350,19 +299,13 @@ namespace CustomGameFramework.Editor
         private void AutoBindAutoScaleComponent()
         {
             m_ui.m_objectNeedAutoScaleWithScreen.Clear();
-            List<string> m_TempFiledNames = new List<string>();
-            List<string> m_TempComponentTypeNames = new List<string>();
-            Transform[] childs = m_ui.gameObject.GetComponentsInChildren<Transform>(true);
+            var m_TempFiledNames = new List<string>();
+            var m_TempComponentTypeNames = new List<string>();
+            var childs = m_ui.gameObject.GetComponentsInChildren<Transform>(true);
 
-            foreach (Transform child in childs)
-            {
+            foreach (var child in childs)
                 if (child.name.Contains("auto_"))
-                {
                     m_ui.m_objectNeedAutoScaleWithScreen.Add(child.gameObject);
-                }
-            }
         }
-
     }
 }
-

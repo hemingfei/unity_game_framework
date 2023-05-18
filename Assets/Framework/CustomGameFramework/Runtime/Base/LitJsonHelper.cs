@@ -6,17 +6,16 @@
 //  Copyright (c) 2021 hegametech.com 
 //
 
-using LitJson;
 using System;
-using System.ComponentModel;
 using GameFramework;
+using LitJson;
 
 namespace CustomGameFramework.Runtime
 {
-    public class LitJsonHelper: Utility.Json.IJsonHelper
+    public class LitJsonHelper : Utility.Json.IJsonHelper
     {
         /// <summary>
-        /// 将对象序列化为 JSON 字符串。
+        ///     将对象序列化为 JSON 字符串。
         /// </summary>
         /// <param name="obj">要序列化的对象。</param>
         /// <returns>序列化后的 JSON 字符串。</returns>
@@ -26,7 +25,7 @@ namespace CustomGameFramework.Runtime
         }
 
         /// <summary>
-        /// 将 JSON 字符串反序列化为对象。
+        ///     将 JSON 字符串反序列化为对象。
         /// </summary>
         /// <typeparam name="T">对象类型。</typeparam>
         /// <param name="json">要反序列化的 JSON 字符串。</param>
@@ -37,7 +36,7 @@ namespace CustomGameFramework.Runtime
         }
 
         /// <summary>
-        /// 将 JSON 字符串反序列化为对象。
+        ///     将 JSON 字符串反序列化为对象。
         /// </summary>
         /// <param name="objectType">对象类型。</param>
         /// <param name="json">要反序列化的 JSON 字符串。</param>
