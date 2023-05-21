@@ -90,6 +90,16 @@ namespace CustomGameFramework.Runtime
         {
             return await Handle_LoadScene(sceneLocation, true, progress);
         }
+        
+        /// <summary>
+        ///     手动加载场景，自己管理。例如 .Completed 监听成功失败等
+        /// </summary>
+        /// <param name="sceneLocation"></param>
+        public async void Handle_LoadScene(string sceneLocation, Action<int> callback, ProgressReporter progress = null)
+        {
+            int sceneId = await Handle_LoadScene(sceneLocation, true, progress);
+            callback?.Invoke(sceneId);
+        }
 
         /// <summary>
         ///     手动加载场景，自己管理。例如 .Completed 监听成功失败等
