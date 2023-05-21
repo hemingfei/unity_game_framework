@@ -142,6 +142,11 @@ namespace CustomGameFramework.Runtime
         {
             return await m_ResourceHelper.LoadGameObjectAsync(location, parentTransform);
         }
+        
+        public void LoadGameObjectAsync(string location, Action<GameObject> callback, Transform parentTransform = null)
+        {
+            m_ResourceHelper.LoadGameObjectAsync(location, callback, parentTransform);
+        }
 
         public GameObject LoadGameObjectSync(string location, Transform parentTransform = null)
         {
