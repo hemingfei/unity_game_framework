@@ -2,6 +2,14 @@
 
 All notable changes to this package will be documented in this file.
 
+## [1.0.11] - 2023-05-21
+
+### Changed
+
+- Custom WebRequest changed name to Http WebRequest
+- Format and Clean Code
+- Resource Component Load Gameobject Async has callback function
+
 ## [1.0.10] - 2023-05-17
 
 ### Added
