@@ -8,22 +8,22 @@ namespace Doozy.Engine.UI.Animation
     public enum AnimationAction
     {
         /// <summary>
-        ///     Move Animation
+        /// Move Animation
         /// </summary>
         Move,
-
+        
         /// <summary>
-        ///     Rotate Animation
+        /// Rotate Animation
         /// </summary>
         Rotate,
-
+        
         /// <summary>
-        ///     Scale Animation
+        /// Scale Animation
         /// </summary>
         Scale,
-
+        
         /// <summary>
-        ///     Fade Animation
+        /// Fade Animation
         /// </summary>
         Fade
     }

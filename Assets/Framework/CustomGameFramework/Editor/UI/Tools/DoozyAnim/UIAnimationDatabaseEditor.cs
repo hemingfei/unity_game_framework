@@ -1,17 +1,22 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using DG.DOTweenEditor;
+using Doozy.Editor.UI.Animation;
+using Doozy.Engine.UI;
 using Doozy.Engine.UI.Animation;
-using UnityEditor;
 using UnityEngine;
-
+using UnityEditor;
+using UnityEditor.AnimatedValues;
 namespace Doozy.Editor.UI
 {
     [CustomEditor(typeof(UIAnimationDatabase))]
-    public class UIAnimationDatabaseEditor : UnityEditor.Editor
+    public class UIAnimationDatabaseEditor:UnityEditor.Editor
     {
         private UIAnimationDatabase m_target;
-
         private void OnEnable()
         {
-            m_target = target as UIAnimationDatabase;
+            m_target=target as UIAnimationDatabase;
         }
 
         public override void OnInspectorGUI()

@@ -5,13 +5,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+//using Doozy.Engine.Utils;
 using UnityEngine;
 using Object = UnityEngine.Object;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
-//using Doozy.Engine.Utils;
 
 // ReSharper disable UnusedMember.Local
 // ReSharper disable UnusedMethodReturnValue.Global
@@ -21,8 +17,7 @@ namespace Doozy.Engine.UI.Animation
 {
     /// <inheritdoc />
     /// <summary>
-    ///     NamesDatabaseType of database that contains references to UIAnimationData assets, used by the system to save and
-    ///     load animation presets
+    ///     NamesDatabaseType of database that contains references to UIAnimationData assets, used by the system to save and load animation presets
     /// </summary>
     [Serializable]
     public class UIAnimationDatabase : ScriptableObject
@@ -40,10 +35,10 @@ namespace Doozy.Engine.UI.Animation
         #region Public Variables
 
         /// <summary> List of all the UIAnimationData animation names that this database contains </summary>
-        public List<string> AnimationNames = new();
+        public List<string> AnimationNames = new List<string>();
 
         /// <summary> List of references to UIAnimationData assets </summary>
-        public List<UIAnimationData> Database = new();
+        public List<UIAnimationData> Database = new List<UIAnimationData>();
 
         /// <summary> The database name </summary>
         public string DatabaseName;
@@ -55,10 +50,7 @@ namespace Doozy.Engine.UI.Animation
 
         #region Public Methods
 
-        /// <summary>
-        ///     [Editor Only] Adds a new entry, a UIAnimationData, to the database. Returns TRUE if the operation was
-        ///     successful
-        /// </summary>
+        /// <summary> [Editor Only] Adds a new entry, a UIAnimationData, to the database. Returns TRUE if the operation was successful </summary>
         /// <param name="animation"> The UIAnimation that contains the animation settings to add to the database </param>
         /// <param name="animationName"> The animation (preset) name to add to the database </param>
         /// <param name="saveAssets"> Write all unsaved asset changes to disk? </param>
@@ -80,10 +72,7 @@ namespace Doozy.Engine.UI.Animation
             return true;
         }
 
-        /// <summary>
-        ///     [Editor Only] Adds the 'Default' preset name to the database if it's missing. Returns a reference to the
-        ///     UIAnimationData for the 'Default' preset
-        /// </summary>
+        /// <summary> [Editor Only] Adds the 'Default' preset name to the database if it's missing. Returns a reference to the UIAnimationData for the 'Default' preset </summary>
         /// <param name="saveAssets"> Write all unsaved asset changes to disk? </param>
         public UIAnimationData AddDefaultData(bool saveAssets)
         {
@@ -102,42 +91,24 @@ namespace Doozy.Engine.UI.Animation
 
         /// <summary> Returns TRUE if the animation name has been found in the database </summary>
         /// <param name="animationName"> Target animation name to search for </param>
-        public bool Contains(string animationName)
-        {
-            return Contains(Get(animationName));
-        }
+        public bool Contains(string animationName) { return Contains(Get(animationName)); }
 
         /// <summary> Returns TRUE if the UIAnimationData has been found in the database </summary>
         /// <param name="data"> UIAnimationData to search for </param>
-        public bool Contains(UIAnimationData data)
-        {
-            return data != null && Database.Contains(data);
-        }
+        public bool Contains(UIAnimationData data) { return data != null && Database.Contains(data); }
 
         /// <summary> [Editor Only] Creates a new preset with the given preset name and UIAnimation settings </summary>
         /// <param name="newPresetName"> The animation name for the new preset </param>
         /// <param name="animation"> The animation settings for the new preset </param>
         /// <param name="saveAssets"> Write all unsaved asset changes to disk? </param>
-        public bool CreatePreset(string newPresetName, UIAnimation animation, bool saveAssets = true)
-        {
-            return Add(animation, newPresetName, saveAssets);
-        }
+        public bool CreatePreset(string newPresetName, UIAnimation animation, bool saveAssets = true) {return Add(animation, newPresetName, saveAssets); }
 
-        /// <summary>
-        ///     [Editor Only] Iterates through the database to look for the animation name. If found, deletes the entry and
-        ///     the asset file and returns TRUE
-        /// </summary>
+        /// <summary> [Editor Only] Iterates through the database to look for the animation name. If found, deletes the entry and the asset file and returns TRUE </summary>
         /// <param name="animationName"> The animation name to search for </param>
         /// <param name="saveAssets"> Write all unsaved asset changes to disk? </param>
-        public bool Delete(string animationName, bool saveAssets)
-        {
-            return Delete(Get(animationName), saveAssets);
-        }
+        public bool Delete(string animationName, bool saveAssets) { return Delete(Get(animationName), saveAssets); }
 
-        /// <summary>
-        ///     [Editor Only] Iterates through the database to look for the UIAnimationData. If found, deletes the entry and
-        ///     the asset file and returns TRUE
-        /// </summary>
+        /// <summary> [Editor Only] Iterates through the database to look for the UIAnimationData. If found, deletes the entry and the asset file and returns TRUE </summary>
         /// <param name="data"> UIAnimationData to search for </param>
         /// <param name="saveAssets"> Write all unsaved asset changes to disk? </param>
         public bool Delete(UIAnimationData data, bool saveAssets)
@@ -151,14 +122,11 @@ namespace Doozy.Engine.UI.Animation
             return true;
         }
 
-        /// <summary>
-        ///     Iterates through the database to look for the animation name. If found, returns a reference to the
-        ///     corresponding UIAnimationData, else it returns null
-        /// </summary>
+        /// <summary> Iterates through the database to look for the animation name. If found, returns a reference to the corresponding UIAnimationData, else it returns null </summary>
         /// <param name="animationName"> The animation name to search for </param>
         public UIAnimationData Get(string animationName)
         {
-            foreach (var data in Database)
+            foreach (UIAnimationData data in Database)
                 if (data.Name.Equals(animationName))
                     return data;
             return null;
@@ -166,8 +134,8 @@ namespace Doozy.Engine.UI.Animation
 
         public int GetIndex(string animationName)
         {
-            var index = 0;
-            foreach (var data in Database)
+            int index = 0;
+            foreach (UIAnimationData data in Database)
             {
                 if (data.Name.Equals(animationName))
                     return index;
@@ -176,11 +144,7 @@ namespace Doozy.Engine.UI.Animation
 
             return 0;
         }
-
-        /// <summary>
-        ///     Refreshes the entire database by removing nulls, renaming the preset file names to their animation names,
-        ///     sorting the database and updating the animation names list
-        /// </summary>
+        /// <summary> Refreshes the entire database by removing nulls, renaming the preset file names to their animation names, sorting the database and updating the animation names list </summary>
         /// <param name="saveAssets"> Write all unsaved asset changes to disk? </param>
         public void RefreshDatabase(bool saveAssets)
         {
@@ -190,7 +154,7 @@ namespace Doozy.Engine.UI.Animation
 
             if (DatabaseName.Equals(UIAnimations.DEFAULT_DATABASE_NAME))
             {
-                var defaultData = AddDefaultData(true);
+                UIAnimationData defaultData = AddDefaultData(true);
                 Database.Remove(defaultData);
                 Database.Insert(0, defaultData);
             }
@@ -211,14 +175,14 @@ namespace Doozy.Engine.UI.Animation
         public void SetDirty(bool saveAssets)
         {
             //DoozyUtils.SetDirty(this, saveAssets);
-#if UNITY_EDITOR
-            EditorUtility.SetDirty(this);
-#endif
+            #if UNITY_EDITOR
+            UnityEditor.EditorUtility.SetDirty(this);
+            #endif
             if (saveAssets)
             {
-#if UNITY_EDITOR
-                AssetDatabase.SaveAssets();
-#endif
+                #if UNITY_EDITOR
+                UnityEditor.AssetDatabase.SaveAssets();
+                #endif
             }
         }
 
@@ -234,9 +198,9 @@ namespace Doozy.Engine.UI.Animation
         public void UndoRecord(string undoMessage)
         {
             //DoozyUtils.UndoRecordObject(this, undoMessage);
-#if UNITY_EDITOR
-            Undo.RecordObject(this, undoMessage);
-#endif
+            #if UNITY_EDITOR
+            UnityEditor.Undo.RecordObject(this,undoMessage);
+            #endif
         }
 
         /// <summary> Updates the list of animation names found in the database </summary>
@@ -245,7 +209,7 @@ namespace Doozy.Engine.UI.Animation
         {
             if (AnimationNames == null) AnimationNames = new List<string>();
             AnimationNames.Clear();
-            foreach (var data in Database)
+            foreach (UIAnimationData data in Database)
                 AnimationNames.Add(data.Name);
 
             SetDirty(saveAssets);
@@ -260,22 +224,25 @@ namespace Doozy.Engine.UI.Animation
         private void AddObjectToAsset(Object objectToAdd)
         {
             //DoozyUtils.AddObjectToAsset(objectToAdd, this);
-#if UNITY_EDITOR
-            if (objectToAdd == null) return;
+            #if UNITY_EDITOR
+            if (objectToAdd == null)
+            {
+                return;
+            }
 
-            if (!EditorUtility.IsPersistent(objectToAdd)) AssetDatabase.AddObjectToAsset(objectToAdd, this);
-#endif
+            if (!UnityEditor.EditorUtility.IsPersistent(objectToAdd))
+            {
+                UnityEditor.AssetDatabase.AddObjectToAsset(objectToAdd,this);
+            }
+            #endif
         }
 
-        /// <summary>
-        ///     [Editor Only] Renames an UIAnimationData animation name (including the asset filename). Returns TRUE if the
-        ///     operation was successful
-        /// </summary>
+        /// <summary> [Editor Only] Renames an UIAnimationData animation name (including the asset filename). Returns TRUE if the operation was successful </summary>
         /// <param name="oldAnimationName"> The previous animation name</param>
         /// <param name="newAnimationName"> The new animation name </param>
         private void Rename(string oldAnimationName, string newAnimationName)
         {
-            var data = Get(oldAnimationName);
+            UIAnimationData data = Get(oldAnimationName);
             if (data == null) return;
             newAnimationName = newAnimationName.Trim();
             if (Contains(newAnimationName)) return;
@@ -293,8 +260,8 @@ namespace Doozy.Engine.UI.Animation
         /// </summary>
         private void RenameAssetFileNamesToReflectAnimationNames()
         {
-            var assetRenamed = false;
-            foreach (var data in Database)
+            bool assetRenamed = false;
+            foreach (UIAnimationData data in Database)
             {
                 if (data == null || data.name.Equals(data.Name)) continue;
                 data.name = data.Name;

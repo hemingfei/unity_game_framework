@@ -1,18 +1,53 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using DG.DOTweenEditor;
 using Doozy.Editor.UI.Animation;
 using Doozy.Engine.UI;
 using Doozy.Engine.UI.Animation;
-using UnityEditor;
 using UnityEngine;
+using UnityEditor;
+using UnityEditor.AnimatedValues;
 
 namespace Doozy.Editor.UI
 {
     [CustomEditor(typeof(UIAnimView))]
     public class UIAnimViewEditor : UnityEditor.Editor
     {
-        private SerializedProperty m_StartBehavior;
         private UIAnimView m_UIView;
+        private SerializedProperty m_StartBehavior;
+        #region OnShow
+        
+        private UIAnimationData databaseOnShow;
+        private bool isMoveEnabledOnShow, isRotateEnabledOnShow, isScaleEnabledOnShow, isFadeEnabledOnShow;
+        private bool isEditorNewOnShowAnimation;
+        private int selectIndexOnShowPresetCategory;
+        private int selectIndexOnShowPresetName;
 
+        private SerializedProperty m_OnShowPresetCategory,
+            m_OnShowPresetName,
+            m_MoveOnShow,
+            m_RotateOnShow,
+            m_ScaleOnShow,
+            m_FadeOnShow;
+        
+        #endregion
+        #region OnHide
+        
+        private UIAnimationData databaseOnHide;
+        private bool isMoveEnabledOnHide, isRotateEnabledOnHide, isScaleEnabledOnHide, isFadeEnabledOnHide;
+        private bool isEditorNewOnHideAnimation;
+        private int selectIndexOnHidePresetCategory;
+        private int selectIndexOnHidePresetName;
+
+        private SerializedProperty m_OnHidePresetCategory,
+            m_OnHidePresetName,
+            m_MoveOnHide,
+            m_RotateOnHide,
+            m_ScaleOnHide,
+            m_FadeOnHide;
+        
+        #endregion
         private void OnEnable()
         {
             m_UIView = target as UIAnimView;
@@ -25,21 +60,25 @@ namespace Doozy.Editor.UI
             m_RotateOnShow = serializedObject.FindProperty("RotateOnShow");
             m_ScaleOnShow = serializedObject.FindProperty("ScaleOnShow");
             m_FadeOnShow = serializedObject.FindProperty("FadeOnShow");
-
+            
             m_OnHidePresetCategory = serializedObject.FindProperty("OnHidePresetCategory");
             m_OnHidePresetName = serializedObject.FindProperty("OnHidePresetName");
             m_MoveOnHide = serializedObject.FindProperty("MoveOnHide");
             m_RotateOnHide = serializedObject.FindProperty("RotateOnHide");
             m_ScaleOnHide = serializedObject.FindProperty("ScaleOnHide");
             m_FadeOnHide = serializedObject.FindProperty("FadeOnHide");
-
+            
             try
             {
                 if (string.IsNullOrEmpty(m_UIView.OnShowPresetCategory))
+                {
                     selectIndexOnShowPresetCategory = 0;
+                }
                 else
+                {
                     selectIndexOnShowPresetCategory =
                         UIAnimations.Instance.Show.DatabaseNames.FindIndex(t => t == m_UIView.OnShowPresetCategory);
+                }
             }
             catch
             {
@@ -49,23 +88,31 @@ namespace Doozy.Editor.UI
             try
             {
                 if (string.IsNullOrEmpty(m_UIView.OnShowPresetName))
+                {
                     selectIndexOnShowPresetName = 0;
+                }
                 else
+                {
                     selectIndexOnShowPresetName = UIAnimations.Instance.Show.Databases[selectIndexOnShowPresetCategory]
                         .AnimationNames.FindIndex(t => t == m_UIView.OnShowPresetName);
+                }
             }
             catch
             {
                 selectIndexOnShowPresetName = 0;
             }
-
+            
             try
             {
                 if (string.IsNullOrEmpty(m_UIView.OnHidePresetCategory))
+                {
                     selectIndexOnHidePresetCategory = 0;
+                }
                 else
+                {
                     selectIndexOnHidePresetCategory =
                         UIAnimations.Instance.Hide.DatabaseNames.FindIndex(t => t == m_UIView.OnHidePresetCategory);
+                }
             }
             catch
             {
@@ -75,10 +122,14 @@ namespace Doozy.Editor.UI
             try
             {
                 if (string.IsNullOrEmpty(m_UIView.OnHidePresetName))
+                {
                     selectIndexOnHidePresetName = 0;
+                }
                 else
+                {
                     selectIndexOnHidePresetName = UIAnimations.Instance.Hide.Databases[selectIndexOnHidePresetCategory]
                         .AnimationNames.FindIndex(t => t == m_UIView.OnHidePresetName);
+                }
             }
             catch
             {
@@ -106,7 +157,6 @@ namespace Doozy.Editor.UI
                 LoadOnShowPreset();
                 Debug.LogError(e);
             }
-
             try
             {
                 if (selectIndexOnHidePresetCategory == 0 && selectIndexOnHidePresetName == 0)
@@ -139,6 +189,7 @@ namespace Doozy.Editor.UI
             EditorGUILayout.PropertyField(m_StartBehavior);
             GUILayout.Space(15);
             if (GUILayoutHelper.DrawHeader("OnShow", "UIView", true, false))
+            {
                 try
                 {
                     DrawOnShow();
@@ -149,9 +200,11 @@ namespace Doozy.Editor.UI
                     selectIndexOnShowPresetName = 0;
                     LoadOnShowPreset();
                 }
+            }
 
             GUILayout.Space(30);
             if (GUILayoutHelper.DrawHeader("OnHide", ""))
+            {
                 try
                 {
                     DrawOnHide();
@@ -162,40 +215,52 @@ namespace Doozy.Editor.UI
                     selectIndexOnHidePresetName = 0;
                     LoadOnHidePreset();
                 }
+            }
         }
 
-        private void DrawOnShow()
+       private void DrawOnShow()
         {
+
             GUILayout.BeginVertical();
             {
-                var selectIndex = selectIndexOnShowPresetCategory;
+                int selectIndex = selectIndexOnShowPresetCategory;
                 selectIndexOnShowPresetCategory = EditorGUILayout.Popup("Preset Category", selectIndex,
                     UIAnimations.Instance.Show.DatabaseNames.ToArray(),
                     GUILayout.ExpandWidth(true));
                 if (selectIndex != selectIndexOnShowPresetCategory)
+                {
                     m_UIView.OnShowPresetCategory =
                         UIAnimations.Instance.Show.DatabaseNames[selectIndexOnShowPresetCategory];
+                }
 
                 if (!isEditorNewOnShowAnimation)
                 {
-                    var selectIndex2 = selectIndexOnShowPresetName;
+                    int selectIndex2 = selectIndexOnShowPresetName;
                     if (selectIndex2 >= UIAnimations.Instance.Show.Databases[selectIndexOnShowPresetCategory]
                             .AnimationNames.Count)
+                    {
                         selectIndex2 = 0;
+                    }
 
                     selectIndexOnShowPresetName = EditorGUILayout.Popup("Preset Name", selectIndex2,
                         UIAnimations.Instance.Show.Databases[selectIndexOnShowPresetCategory].AnimationNames.ToArray());
                 }
 
-                var selectOnShowPresetName = UIAnimations.Instance.Show
+                string selectOnShowPresetName = UIAnimations.Instance.Show
                     .Databases[selectIndexOnShowPresetCategory]
                     .AnimationNames[selectIndexOnShowPresetName];
                 if (m_UIView.OnShowPresetName != null && m_UIView.OnShowPresetName != selectOnShowPresetName)
+                {
                     if (!isEditorNewOnShowAnimation)
+                    {
                         m_UIView.OnShowPresetName = selectOnShowPresetName;
+                    }
+                }
 
                 if (isEditorNewOnShowAnimation)
-                    EditorGUILayout.PropertyField(m_OnShowPresetName, new GUIContent("Preset Name"));
+                {
+                    EditorGUILayout.PropertyField(m_OnShowPresetName,new GUIContent("Preset Name"));
+                }
 
                 GUILayout.BeginHorizontal();
                 {
@@ -228,34 +293,36 @@ namespace Doozy.Editor.UI
                         //         selectIndexOnShowPresetCategory = 0;
                         //     }
                         // }
-                        if (GUILayout.Button("Save New")) isEditorNewOnShowAnimation = true;
+                        if (GUILayout.Button("Save New"))
+                        {
+                            isEditorNewOnShowAnimation = true;
+                        }
                     }
                     else
                     {
-                        if (GUILayout.Button("Save"))
+                        if(GUILayout.Button("Save"))
                         {
                             // bool isSucess=UIAnimations.Instance.Show.Databases[selectIndexOnShowPresetCategory]
                             //     .CreatePreset(m_UIView.OnShowPresetName,new UIAnimation(AnimationType.Show, m_UIView.MoveOnShow, 
                             //         m_UIView.RotateOnShow, m_UIView.ScaleOnShow, m_UIView.FadeOnShow));
                             if (UIAnimations.Instance.Show.Get("Custom") == null)
+                            {
                                 UIAnimations.Instance.Show.AddTheCustomUIAnimationDatabase();
-                            var isSucess = UIAnimations.Instance.Show.Get("Custom")
-                                .CreatePreset(m_UIView.OnShowPresetName, new UIAnimation(AnimationType.Show,
-                                    m_UIView.MoveOnShow,
-                                    m_UIView.RotateOnShow, m_UIView.ScaleOnShow, m_UIView.FadeOnShow));
+                            }
+                            bool isSucess=UIAnimations.Instance.Show.Get("Custom")
+                                .CreatePreset(m_UIView.OnShowPresetName,new UIAnimation(AnimationType.Show, m_UIView.MoveOnShow, 
+                                m_UIView.RotateOnShow, m_UIView.ScaleOnShow, m_UIView.FadeOnShow));
                             if (isSucess)
                             {
                                 selectIndexOnShowPresetCategory = UIAnimations.Instance.Show.GetIndex("Custom");
                                 m_UIView.OnShowPresetCategory =
                                     UIAnimations.Instance.Show.DatabaseNames[selectIndexOnShowPresetCategory];
-                                selectIndexOnShowPresetName = UIAnimations.Instance.Show
-                                    .Databases[selectIndexOnShowPresetCategory].GetIndex(m_UIView.OnShowPresetName);
+                                selectIndexOnShowPresetName = UIAnimations.Instance.Show.Databases[selectIndexOnShowPresetCategory].GetIndex(m_UIView.OnShowPresetName);
                             }
                             else
                             {
-                                Debug.LogError("命名重复：" + m_UIView.OnShowPresetName);
+                                Debug.LogError("命名重复："+m_UIView.OnShowPresetName);
                             }
-
                             AssetDatabase.Refresh();
                             EditorUtility.SetDirty(m_UIView);
                             isEditorNewOnShowAnimation = false;
@@ -267,11 +334,14 @@ namespace Doozy.Editor.UI
                             m_UIView.OnShowPresetName = selectOnShowPresetName;
                         }
                     }
+                    
                 }
                 GUILayout.EndHorizontal();
                 if (GUILayout.Button("预览"))
-                    UIAnimatorUtils.PreviewViewAnimation(m_UIView, new UIAnimation(AnimationType.Show,
+                {
+                    UIAnimatorUtils.PreviewViewAnimation(m_UIView,new UIAnimation(AnimationType.Show, 
                         m_UIView.MoveOnShow, m_UIView.RotateOnShow, m_UIView.ScaleOnShow, m_UIView.FadeOnShow));
+                }
                 OnShowAnimationData();
                 // 保存序列化数据，否则会出现设置数据丢失情况
                 serializedObject.ApplyModifiedProperties();
@@ -281,36 +351,47 @@ namespace Doozy.Editor.UI
 
         private void DrawOnHide()
         {
+
             GUILayout.BeginVertical();
             {
-                var selectIndex = selectIndexOnHidePresetCategory;
+                int selectIndex = selectIndexOnHidePresetCategory;
                 selectIndexOnHidePresetCategory = EditorGUILayout.Popup("Preset Category", selectIndex,
                     UIAnimations.Instance.Hide.DatabaseNames.ToArray(),
                     GUILayout.ExpandWidth(true));
                 if (selectIndex != selectIndexOnHidePresetCategory)
+                {
                     m_UIView.OnHidePresetCategory =
                         UIAnimations.Instance.Hide.DatabaseNames[selectIndexOnHidePresetCategory];
+                }
 
                 if (!isEditorNewOnHideAnimation)
                 {
-                    var selectIndex2 = selectIndexOnHidePresetName;
+                    int selectIndex2 = selectIndexOnHidePresetName;
                     if (selectIndex2 >= UIAnimations.Instance.Hide.Databases[selectIndexOnHidePresetCategory]
                             .AnimationNames.Count)
+                    {
                         selectIndex2 = 0;
+                    }
 
                     selectIndexOnHidePresetName = EditorGUILayout.Popup("Preset Name", selectIndex2,
                         UIAnimations.Instance.Hide.Databases[selectIndexOnHidePresetCategory].AnimationNames.ToArray());
                 }
 
-                var selectOnHidePresetName = UIAnimations.Instance.Hide
+                string selectOnHidePresetName = UIAnimations.Instance.Hide
                     .Databases[selectIndexOnHidePresetCategory]
                     .AnimationNames[selectIndexOnHidePresetName];
                 if (m_UIView.OnHidePresetName != null && m_UIView.OnHidePresetName != selectOnHidePresetName)
+                {
                     if (!isEditorNewOnHideAnimation)
+                    {
                         m_UIView.OnHidePresetName = selectOnHidePresetName;
+                    }
+                }
 
                 if (isEditorNewOnHideAnimation)
-                    EditorGUILayout.PropertyField(m_OnHidePresetName, new GUIContent("Preset Name"));
+                {
+                    EditorGUILayout.PropertyField(m_OnHidePresetName,new GUIContent("Preset Name"));
+                }
 
                 GUILayout.BeginHorizontal();
                 {
@@ -342,34 +423,36 @@ namespace Doozy.Editor.UI
                         //         selectIndexOnHidePresetCategory = 0;
                         //     }
                         // }
-                        if (GUILayout.Button("Save New")) isEditorNewOnHideAnimation = true;
+                        if (GUILayout.Button("Save New"))
+                        {
+                            isEditorNewOnHideAnimation = true;
+                        }
                     }
                     else
                     {
-                        if (GUILayout.Button("Save"))
+                        if(GUILayout.Button("Save"))
                         {
                             // bool isSucess=UIAnimations.Instance.Hide.Databases[selectIndexOnHidePresetCategory]
                             //     .CreatePreset(m_UIView.OnHidePresetName,new UIAnimation(AnimationType.Hide, m_UIView.MoveOnHide, 
                             //         m_UIView.RotateOnHide, m_UIView.ScaleOnHide, m_UIView.FadeOnHide));
                             if (UIAnimations.Instance.Hide.Get("Custom") == null)
+                            {
                                 UIAnimations.Instance.Hide.AddTheCustomUIAnimationDatabase();
-                            var isSucess = UIAnimations.Instance.Hide.Get("Custom")
-                                .CreatePreset(m_UIView.OnHidePresetName, new UIAnimation(AnimationType.Hide,
-                                    m_UIView.MoveOnHide,
-                                    m_UIView.RotateOnHide, m_UIView.ScaleOnHide, m_UIView.FadeOnHide));
+                            }
+                            bool isSucess=UIAnimations.Instance.Hide.Get("Custom")
+                                .CreatePreset(m_UIView.OnHidePresetName,new UIAnimation(AnimationType.Hide, m_UIView.MoveOnHide, 
+                                m_UIView.RotateOnHide, m_UIView.ScaleOnHide, m_UIView.FadeOnHide));
                             if (isSucess)
                             {
                                 selectIndexOnHidePresetCategory = UIAnimations.Instance.Hide.GetIndex("Custom");
                                 m_UIView.OnHidePresetCategory =
                                     UIAnimations.Instance.Hide.DatabaseNames[selectIndexOnHidePresetCategory];
-                                selectIndexOnHidePresetName = UIAnimations.Instance.Hide
-                                    .Databases[selectIndexOnHidePresetCategory].GetIndex(m_UIView.OnHidePresetName);
+                                selectIndexOnHidePresetName = UIAnimations.Instance.Hide.Databases[selectIndexOnHidePresetCategory].GetIndex(m_UIView.OnHidePresetName);
                             }
                             else
                             {
-                                Debug.LogError("命名重复：" + m_UIView.OnHidePresetName);
+                                Debug.LogError("命名重复："+m_UIView.OnHidePresetName);
                             }
-
                             AssetDatabase.Refresh();
                             EditorUtility.SetDirty(m_UIView);
                             isEditorNewOnHideAnimation = false;
@@ -381,18 +464,20 @@ namespace Doozy.Editor.UI
                             m_UIView.OnHidePresetName = selectOnHidePresetName;
                         }
                     }
+                    
                 }
                 GUILayout.EndHorizontal();
                 if (GUILayout.Button("预览"))
-                    UIAnimatorUtils.PreviewViewAnimation(m_UIView, new UIAnimation(AnimationType.Hide,
+                {
+                    UIAnimatorUtils.PreviewViewAnimation(m_UIView,new UIAnimation(AnimationType.Hide, 
                         m_UIView.MoveOnHide, m_UIView.RotateOnHide, m_UIView.ScaleOnHide, m_UIView.FadeOnHide));
+                }
                 OnHideAnimationData();
                 // 保存序列化数据，否则会出现设置数据丢失情况
                 serializedObject.ApplyModifiedProperties();
             }
             GUILayout.EndVertical();
         }
-
         private void LoadOnShowPreset()
         {
             databaseOnShow = UIAnimations.Instance.Show.Databases[selectIndexOnShowPresetCategory]
@@ -406,10 +491,9 @@ namespace Doozy.Editor.UI
             m_UIView.ScaleOnShow = databaseOnShow.Animation.Scale.Copy();
             m_UIView.FadeOnShow = databaseOnShow.Animation.Fade.Copy();
             m_UIView.OnShowPresetCategory = UIAnimations.Instance.Show.DatabaseNames[selectIndexOnShowPresetCategory];
-            m_UIView.OnShowPresetName = UIAnimations.Instance.Show.Databases[selectIndexOnShowPresetCategory]
-                .AnimationNames[selectIndexOnShowPresetName];
+            m_UIView.OnShowPresetName = UIAnimations.Instance.Show.Databases[selectIndexOnShowPresetCategory].AnimationNames[selectIndexOnShowPresetName];
         }
-
+        
         private void LoadOnHidePreset()
         {
             databaseOnHide = UIAnimations.Instance.Hide.Databases[selectIndexOnHidePresetCategory]
@@ -423,10 +507,9 @@ namespace Doozy.Editor.UI
             m_UIView.ScaleOnHide = databaseOnHide.Animation.Scale.Copy();
             m_UIView.FadeOnHide = databaseOnHide.Animation.Fade.Copy();
             m_UIView.OnHidePresetCategory = UIAnimations.Instance.Hide.DatabaseNames[selectIndexOnHidePresetCategory];
-            m_UIView.OnHidePresetName = UIAnimations.Instance.Hide.Databases[selectIndexOnHidePresetCategory]
-                .AnimationNames[selectIndexOnHidePresetName];
-        }
+            m_UIView.OnHidePresetName = UIAnimations.Instance.Hide.Databases[selectIndexOnHidePresetCategory].AnimationNames[selectIndexOnHidePresetName];
 
+        }
         private void OnShowAnimationData()
         {
             GUILayout.BeginVertical();
@@ -439,7 +522,6 @@ namespace Doozy.Editor.UI
                     }
                     GUILayout.EndHorizontal();
                 }
-
                 if (isRotateEnabledOnShow)
                 {
                     GUILayout.BeginHorizontal();
@@ -448,7 +530,6 @@ namespace Doozy.Editor.UI
                     }
                     GUILayout.EndHorizontal();
                 }
-
                 if (isScaleEnabledOnShow)
                 {
                     GUILayout.BeginHorizontal();
@@ -457,7 +538,6 @@ namespace Doozy.Editor.UI
                     }
                     GUILayout.EndHorizontal();
                 }
-
                 if (isFadeEnabledOnShow)
                 {
                     GUILayout.BeginHorizontal();
@@ -469,7 +549,7 @@ namespace Doozy.Editor.UI
             }
             GUILayout.EndVertical();
         }
-
+        
         private void OnHideAnimationData()
         {
             GUILayout.BeginVertical();
@@ -482,7 +562,6 @@ namespace Doozy.Editor.UI
                     }
                     GUILayout.EndHorizontal();
                 }
-
                 if (isRotateEnabledOnHide)
                 {
                     GUILayout.BeginHorizontal();
@@ -491,7 +570,6 @@ namespace Doozy.Editor.UI
                     }
                     GUILayout.EndHorizontal();
                 }
-
                 if (isScaleEnabledOnHide)
                 {
                     GUILayout.BeginHorizontal();
@@ -500,7 +578,6 @@ namespace Doozy.Editor.UI
                     }
                     GUILayout.EndHorizontal();
                 }
-
                 if (isFadeEnabledOnHide)
                 {
                     GUILayout.BeginHorizontal();
@@ -512,39 +589,5 @@ namespace Doozy.Editor.UI
             }
             GUILayout.EndVertical();
         }
-
-        #region OnShow
-
-        private UIAnimationData databaseOnShow;
-        private bool isMoveEnabledOnShow, isRotateEnabledOnShow, isScaleEnabledOnShow, isFadeEnabledOnShow;
-        private bool isEditorNewOnShowAnimation;
-        private int selectIndexOnShowPresetCategory;
-        private int selectIndexOnShowPresetName;
-
-        private SerializedProperty m_OnShowPresetCategory,
-            m_OnShowPresetName,
-            m_MoveOnShow,
-            m_RotateOnShow,
-            m_ScaleOnShow,
-            m_FadeOnShow;
-
-        #endregion
-
-        #region OnHide
-
-        private UIAnimationData databaseOnHide;
-        private bool isMoveEnabledOnHide, isRotateEnabledOnHide, isScaleEnabledOnHide, isFadeEnabledOnHide;
-        private bool isEditorNewOnHideAnimation;
-        private int selectIndexOnHidePresetCategory;
-        private int selectIndexOnHidePresetName;
-
-        private SerializedProperty m_OnHidePresetCategory,
-            m_OnHidePresetName,
-            m_MoveOnHide,
-            m_RotateOnHide,
-            m_ScaleOnHide,
-            m_FadeOnHide;
-
-        #endregion
     }
 }

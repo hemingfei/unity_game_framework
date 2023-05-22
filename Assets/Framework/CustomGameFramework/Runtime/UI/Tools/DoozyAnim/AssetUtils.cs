@@ -5,6 +5,7 @@
 using System;
 using System.IO;
 using UnityEngine;
+
 #if UNITY_EDITOR
 using System.Collections.Generic;
 using UnityEditor;
@@ -15,9 +16,8 @@ namespace Doozy.Engine.Utils
     public static class AssetUtils
     {
         /// <summary>
-        ///     Returns a reference to a scriptable object of type T with the given fileName at the relative resourcesPath.
-        ///     <para />
-        ///     If the asset is not found, one will get created automatically (in the Editor only)
+        /// Returns a reference to a scriptable object of type T with the given fileName at the relative resourcesPath.
+        /// <para/> If the asset is not found, one will get created automatically (in the Editor only) 
         /// </summary>
         /// <param name="fileName"></param>
         /// <param name="resourcesPath"></param>
@@ -26,9 +26,9 @@ namespace Doozy.Engine.Utils
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public static T GetScriptableObject<T>(string fileName,
-            string resourcesPath,
-            bool saveAssetDatabase,
-            bool refreshAssetDatabase)
+                                               string resourcesPath,
+                                               bool saveAssetDatabase,
+                                               bool refreshAssetDatabase)
             where T : ScriptableObject
         {
             if (string.IsNullOrEmpty(resourcesPath)) return null;
@@ -38,16 +38,13 @@ namespace Doozy.Engine.Utils
 //            resourcesPath = resourcesPath.Replace(@"\", "/");
             resourcesPath = CleanPath(resourcesPath);
 
-            var obj = (T)Resources.Load(fileName, typeof(T));
+            var obj = (T) Resources.Load(fileName, typeof(T));
 
             if (obj == null)
             {
-                var simpleResourcesPath =
-                    resourcesPath.Replace(
-                        resourcesPath.Substring(0, resourcesPath.LastIndexOf("Resources", StringComparison.Ordinal)),
-                        "");
+                string simpleResourcesPath = resourcesPath.Replace(resourcesPath.Substring(0, resourcesPath.LastIndexOf("Resources", StringComparison.Ordinal)), "");
                 simpleResourcesPath = simpleResourcesPath.Replace("Resources", "").Remove(0, 1);
-                obj = (T)Resources.Load(Path.Combine(simpleResourcesPath, fileName), typeof(T));
+                obj = (T) Resources.Load(Path.Combine(simpleResourcesPath, fileName), typeof(T));
             }
 
 #if UNITY_EDITOR
@@ -66,7 +63,7 @@ namespace Doozy.Engine.Utils
 //            if (!resourcesPath[resourcesPath.Length - 1].Equals(@"\")) resourcesPath += @"\";
 //            resourcesPath = resourcesPath.Replace(@"\", "/");
 
-            return (T)Resources.Load(resourcesPath + fileName, typeof(T));
+            return (T) Resources.Load(resourcesPath + fileName, typeof(T));
         }
 
         public static string CleanPath(string path)
@@ -80,10 +77,10 @@ namespace Doozy.Engine.Utils
 
 #if UNITY_EDITOR
         public static T CreateAsset<T>(string relativePath,
-            string fileName,
-            string extension = ".asset",
-            bool saveAssetDatabase = true,
-            bool refreshAssetDatabase = true)
+                                       string fileName,
+                                       string extension = ".asset",
+                                       bool saveAssetDatabase = true,
+                                       bool refreshAssetDatabase = true)
             where T : ScriptableObject
         {
             if (string.IsNullOrEmpty(relativePath)) return null;
@@ -103,8 +100,8 @@ namespace Doozy.Engine.Utils
         public static List<T> GetAssets<T>() where T : ScriptableObject
         {
             var list = new List<T>();
-            var guids = AssetDatabase.FindAssets("t:" + typeof(T).Name);
-            foreach (var guid in guids)
+            string[] guids = AssetDatabase.FindAssets("t:" + typeof(T).Name);
+            foreach (string guid in guids)
             {
                 var asset = AssetDatabase.LoadAssetAtPath<T>(AssetDatabase.GUIDToAssetPath(guid));
                 if (asset == null) continue;
@@ -113,9 +110,9 @@ namespace Doozy.Engine.Utils
 
             return list;
         }
-
+        
         public static void MoveAssetToTrash(string relativePath, string fileName, bool saveAssetDatabase = true,
-            bool refreshAssetDatabase = true, bool printDebugMessage = true)
+                                            bool refreshAssetDatabase = true, bool printDebugMessage = true)
         {
             if (string.IsNullOrEmpty(relativePath)) return;
             if (string.IsNullOrEmpty(fileName)) return;

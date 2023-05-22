@@ -23,12 +23,12 @@ namespace Doozy.Engine.UI.Animation
                 switch (AnimationType)
                 {
                     case AnimationType.Undefined: return false;
-                    case AnimationType.Show: return Move.Enabled || Rotate.Enabled || Scale.Enabled || Fade.Enabled;
-                    case AnimationType.Hide: return Move.Enabled || Rotate.Enabled || Scale.Enabled || Fade.Enabled;
-                    case AnimationType.Loop: return Move.Enabled || Rotate.Enabled || Scale.Enabled || Fade.Enabled;
-                    case AnimationType.Punch: return Move.Enabled || Rotate.Enabled || Scale.Enabled;
-                    case AnimationType.State: return Move.Enabled || Rotate.Enabled || Scale.Enabled || Fade.Enabled;
-                    default: return false;
+                    case AnimationType.Show:      return Move.Enabled || Rotate.Enabled || Scale.Enabled || Fade.Enabled;
+                    case AnimationType.Hide:      return Move.Enabled || Rotate.Enabled || Scale.Enabled || Fade.Enabled;
+                    case AnimationType.Loop:      return Move.Enabled || Rotate.Enabled || Scale.Enabled || Fade.Enabled;
+                    case AnimationType.Punch:     return Move.Enabled || Rotate.Enabled || Scale.Enabled;
+                    case AnimationType.State:     return Move.Enabled || Rotate.Enabled || Scale.Enabled || Fade.Enabled;
+                    default:                      return false;
                 }
             }
         }
@@ -40,18 +40,23 @@ namespace Doozy.Engine.UI.Animation
             {
                 if (!Enabled) return 0;
                 return Mathf.Min(Move.Enabled ? Move.StartDelay : 10000,
-                    Rotate.Enabled ? Rotate.StartDelay : 10000,
-                    Scale.Enabled ? Scale.StartDelay : 10000,
-                    Fade.Enabled ? Fade.StartDelay : 10000);
+                                 Rotate.Enabled ? Rotate.StartDelay : 10000,
+                                 Scale.Enabled ? Scale.StartDelay : 10000,
+                                 Fade.Enabled ? Fade.StartDelay : 10000);
             }
         }
-
+        
         /// <summary> Returns the maximum duration (including start delay) of the animation </summary>
-        public float TotalDuration =>
-            Mathf.Max(Move.Enabled ? Move.TotalDuration : 0,
-                Rotate.Enabled ? Rotate.TotalDuration : 0,
-                Scale.Enabled ? Scale.TotalDuration : 0,
-                Fade.Enabled ? Fade.TotalDuration : 0);
+        public float TotalDuration
+        {
+            get
+            {
+                return Mathf.Max(Move.Enabled ? Move.TotalDuration : 0,
+                                 Rotate.Enabled ? Rotate.TotalDuration : 0,
+                                 Scale.Enabled ? Scale.TotalDuration : 0,
+                                 Fade.Enabled ? Fade.TotalDuration : 0);
+            }
+        }
 
         #endregion
 
@@ -78,10 +83,7 @@ namespace Doozy.Engine.UI.Animation
 
         /// <summary> Initializes a new instance of the <see cref="UIAnimation" /> class </summary>
         /// <param name="animationType"> The animation type that determines the behavior of this animation </param>
-        public UIAnimation(AnimationType animationType)
-        {
-            Reset(animationType);
-        }
+        public UIAnimation(AnimationType animationType) { Reset(animationType); }
 
         /// <inheritdoc />
         /// <summary> Initializes a new instance of the <see cref="UIAnimation" /> class </summary>
@@ -90,8 +92,7 @@ namespace Doozy.Engine.UI.Animation
         /// <param name="rotate"> Rotate animation settings </param>
         /// <param name="scale"> Scale animation settings </param>
         /// <param name="fade"> Fade animation settings </param>
-        public UIAnimation(AnimationType animationType, Move move, Rotate rotate, Scale scale, Fade fade) : this(
-            animationType)
+        public UIAnimation(AnimationType animationType, Move move, Rotate rotate, Scale scale, Fade fade) : this(animationType)
         {
             Move = move;
             Rotate = rotate;
@@ -118,13 +119,13 @@ namespace Doozy.Engine.UI.Animation
         public UIAnimation Copy()
         {
             return new UIAnimation(AnimationType)
-            {
-                AnimationType = AnimationType,
-                Move = Move.Copy(),
-                Rotate = Rotate.Copy(),
-                Scale = Scale.Copy(),
-                Fade = Fade.Copy()
-            };
+                   {
+                       AnimationType = AnimationType,
+                       Move = Move.Copy(),
+                       Rotate = Rotate.Copy(),
+                       Scale = Scale.Copy(),
+                       Fade = Fade.Copy()
+                   };
         }
 
         #endregion

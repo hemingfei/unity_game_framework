@@ -13,8 +13,12 @@ namespace Doozy.Engine.UI.Animation
 {
     public static partial class UIAnimator
     {
-        public const float DEFAULT_START_ALPHA = 1f;
 
+        public static Vector3 DEFAULT_START_POSITION = Vector3.zero;
+        public static Vector3 DEFAULT_START_ROTATION = Vector3.zero;
+        public static Vector3 DEFAULT_START_SCALE = Vector3.one;
+        public const float DEFAULT_START_ALPHA = 1f;
+        
         /// <summary> Default animation enabled state set to an animation </summary>
         public const bool DefaultAnimationEnabledState = false;
 
@@ -42,19 +46,13 @@ namespace Doozy.Engine.UI.Animation
         /// <summary> Default loops set to a loop animation (-1 means infinite loops) </summary>
         public const int DefaultNumberOfLoops = -1;
 
-        /// <summary>
-        ///     Default reset duration after a punch animation. This reset is needed to be sure the animation's initial
-        ///     values are restored
-        /// </summary>
+        /// <summary> Default reset duration after a punch animation. This reset is needed to be sure the animation's initial values are restored </summary>
         public const float DefaultDurationOnComplete = 0.05f;
 
         /// <summary> Default loop setup duration. This is the time a loop animation is setup for its cycle to start </summary>
         public const float DefaultDurationInitLoop = 0.2f;
 
-        /// <summary>
-        ///     Default target reset. This is the time a 'target' (RectTransfrom) is reset to its start values (runtime
-        ///     values)
-        /// </summary>
+        /// <summary> Default target reset. This is the time a 'target' (RectTransfrom) is reset to its start values (runtime values) </summary>
         public const float DefaultDurationResetTarget = 0.1f;
 
         /// <summary> The default vibrato value. Used by the punch animations </summary>
@@ -62,9 +60,5 @@ namespace Doozy.Engine.UI.Animation
 
         /// <summary> The default elasticity value. Used by the punch animations </summary>
         public const float DefaultElasticity = 1;
-
-        public static Vector3 DEFAULT_START_POSITION = Vector3.zero;
-        public static Vector3 DEFAULT_START_ROTATION = Vector3.zero;
-        public static Vector3 DEFAULT_START_SCALE = Vector3.one;
     }
 }
