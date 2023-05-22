@@ -10,6 +10,10 @@ using Doozy.Engine.Utils;
 #if UNITY_EDITOR
 using UnityEditor;
 
+#else
+using UnityEngine;
+using Object = UnityEngine.Object;
+
 #endif
 
 namespace Doozy.Engine.UI.Animation
