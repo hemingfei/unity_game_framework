@@ -2,6 +2,16 @@
 
 All notable changes to this package will be documented in this file.
 
+## [1.0.12] - 2023-05-22
+
+### Changed
+
+- Scene Component add handle_loadscene callback
+
+### Fixed
+
+- ui anim compile error
+
 ## [1.0.11] - 2023-05-21
 
 ### Changed
