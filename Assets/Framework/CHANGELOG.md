@@ -2,6 +2,12 @@
 
 All notable changes to this package will be documented in this file.
 
+## [1.0.13] - 2023-05-22
+
+### Added
+
+- Http Web Request Editor Auto Generate Code
+  
 ## [1.0.12] - 2023-05-22
 
 ### Changed
