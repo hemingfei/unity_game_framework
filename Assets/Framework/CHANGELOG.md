@@ -2,6 +2,12 @@
 
 All notable changes to this package will be documented in this file.
 
+## [1.0.14] - 2023-05-26
+
+### Added
+
+- UI Show/HideOthers now can ignore some custom uis
+
 ## [1.0.13] - 2023-05-22
 
 ### Added

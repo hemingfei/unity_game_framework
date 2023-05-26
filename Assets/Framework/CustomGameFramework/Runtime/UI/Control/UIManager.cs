@@ -32,6 +32,7 @@ namespace CustomGameFramework.Runtime
 
         public static Dictionary<string, int> s_uiRestrict = new(); // 限制窗口最大个数
         public static Dictionary<string, string> s_uiCustomPath = new(); // 自定义窗口的加载路径
+        public static List<string> s_ignoredShowHideOtherUIs = new(); // 忽略显示隐藏的UI
 
         public static Dictionary<GameObject, Object> s_resourceUIs = new();
 
@@ -702,8 +703,14 @@ namespace CustomGameFramework.Runtime
                 var list = s_UIs[keys[i]];
 
                 for (var j = 0; j < list.Count; j++)
+                {
                     if (list[j].UIName != UIName)
+                    {
+                        if (s_ignoredShowHideOtherUIs.Contains(list[j].UIName))
+                            continue;
                         ShowUI(list[j]);
+                    }
+                }
             }
         }
 
@@ -716,8 +723,14 @@ namespace CustomGameFramework.Runtime
                 var list = s_UIs[keys[i]];
 
                 for (var j = 0; j < list.Count; j++)
+                {
                     if (list[j].UIName != UIName)
+                    {
+                        if (s_ignoredShowHideOtherUIs.Contains(list[j].UIName))
+                            continue;
                         HideUI(list[j]);
+                    }
+                }
             }
         }
 
