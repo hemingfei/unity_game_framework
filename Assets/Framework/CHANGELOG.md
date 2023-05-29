@@ -2,6 +2,12 @@
 
 All notable changes to this package will be documented in this file.
 
+## [1.0.15] - 2023-05-29
+
+### Changed
+
+- YooAsset Init Status
+
 ## [1.0.14] - 2023-05-26
 
 ### Added

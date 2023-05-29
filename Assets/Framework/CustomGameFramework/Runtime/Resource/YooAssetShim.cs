@@ -232,7 +232,7 @@ namespace CustomGameFramework.Runtime
         /// <summary>
         ///     初始化 package
         /// </summary>
-        public static async UniTask InitializePackageAsync(this ResourcePackage package, EPlayMode playMode,
+        public static async UniTask<InitializationOperation> InitializePackageAsync(this ResourcePackage package, EPlayMode playMode,
             string cdnURL,
             IQueryServices queryServices,
             IDecryptionServices decryptionServices = null)
@@ -256,7 +256,9 @@ namespace CustomGameFramework.Runtime
                 },
                 _ => throw new ArgumentOutOfRangeException(nameof(playMode), playMode, null)
             };
-            await package.InitializeAsync(parameters).ToUniTask();
+            var initializeOperation = package.InitializeAsync(parameters);
+            await initializeOperation.ToUniTask();
+            return initializeOperation;
         }
 
         /// <summary>

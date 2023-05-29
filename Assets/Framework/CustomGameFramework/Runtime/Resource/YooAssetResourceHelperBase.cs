@@ -46,8 +46,8 @@ namespace CustomGameFramework.Runtime
 
             try
             {
-                await _package.InitializePackageAsync(emode, GetUrl(), GetQueryServices(), GetDecryptionServices());
-                if (_package.InitializeStatus == EOperationStatus.Succeed)
+                var initializeOperation = await _package.InitializePackageAsync(emode, GetUrl(), GetQueryServices(), GetDecryptionServices());
+                if (initializeOperation.Status == EOperationStatus.Succeed)
                     success();
                 else
                     fail("");
