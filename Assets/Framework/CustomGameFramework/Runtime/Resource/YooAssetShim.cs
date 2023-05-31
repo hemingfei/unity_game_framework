@@ -26,17 +26,12 @@ namespace CustomGameFramework.Runtime
 
         private static int _SCENE_ID;
 
-        private static ResourceDownloaderOperation _DOWNLOADER;
+        private static Dictionary<string, ResourceDownloaderOperation> _PACKAGE_DOWNLOADER = new();
 
-        public static void UnloadUnusedAssets(this ResourcePackage package)
-        {
-            package.UnloadUnusedAssets();
-        }
-
-        public static async UniTask<T> LoadAssetAsync<T>(string location)
+        public static async UniTask<T> LoadAssetAsync<T>(ResourcePackage package, string location)
             where T : Object
         {
-            var handle = YooAssets.LoadAssetAsync<T>(location);
+            var handle = package.LoadAssetAsync<T>(location);
 
             await handle.ToUniTask();
 
@@ -47,10 +42,10 @@ namespace CustomGameFramework.Runtime
             return handle.AssetObject as T;
         }
 
-        public static void LoadAssetAsync<T>(string location, Action<T> callback)
+        public static void LoadAssetAsync<T>(ResourcePackage package, string location, Action<T> callback)
             where T : Object
         {
-            var handle = YooAssets.LoadAssetAsync<T>(location);
+            var handle = package.LoadAssetAsync<T>(location);
 
             handle.Completed += operation =>
             {
@@ -61,10 +56,10 @@ namespace CustomGameFramework.Runtime
             };
         }
 
-        public static T LoadAssetSync<T>(string location)
+        public static T LoadAssetSync<T>(ResourcePackage package, string location)
             where T : Object
         {
-            var handle = YooAssets.LoadAssetSync<T>(location);
+            var handle = package.LoadAssetSync<T>(location);
 
             if (!handle.IsValid) throw new Exception($"[YooAssetShim] Failed to load asset: {location}");
 
@@ -85,10 +80,10 @@ namespace CustomGameFramework.Runtime
             }
         }
 
-        public static async UniTask<GameObject> LoadGameObjectAsync(string location,
+        public static async UniTask<GameObject> LoadGameObjectAsync(ResourcePackage package, string location,
             Transform parentTransform = null)
         {
-            var handle = YooAssets.LoadAssetAsync<GameObject>(location);
+            var handle = package.LoadAssetAsync<GameObject>(location);
 
             await handle.ToUniTask();
 
@@ -109,10 +104,10 @@ namespace CustomGameFramework.Runtime
             return go;
         }
 
-        public static void LoadGameObjectAsync(string location, Action<GameObject> callback,
+        public static void LoadGameObjectAsync(ResourcePackage package, string location, Action<GameObject> callback,
             Transform parentTransform = null)
         {
-            var handle = YooAssets.LoadAssetAsync<GameObject>(location);
+            var handle = package.LoadAssetAsync<GameObject>(location);
 
             handle.Completed += operation =>
             {
@@ -134,9 +129,9 @@ namespace CustomGameFramework.Runtime
             };
         }
 
-        public static GameObject LoadGameObjectSync(string location, Transform parentTransform = null)
+        public static GameObject LoadGameObjectSync(ResourcePackage package, string location, Transform parentTransform = null)
         {
-            var handle = YooAssets.LoadAssetSync<GameObject>(location);
+            var handle = package.LoadAssetSync<GameObject>(location);
 
             if (!handle.IsValid) throw new Exception($"[YooAssetShim] Failed to load asset: {location}");
 
@@ -166,10 +161,10 @@ namespace CustomGameFramework.Runtime
             ReleaseAsset(obj);
         }
 
-        public static async UniTask<int> LoadSceneAsync(string location, IProgress<float> progress,
+        public static async UniTask<int> LoadSceneAsync(ResourcePackage package, string location, IProgress<float> progress,
             LoadSceneMode sceneMode = LoadSceneMode.Single, bool activateOnLoad = true)
         {
-            var handle = YooAssets.LoadSceneAsync(location, sceneMode, activateOnLoad);
+            var handle = package.LoadSceneAsync(location, sceneMode, activateOnLoad);
 
             await handle.ToUniTask(progress);
 
@@ -182,10 +177,10 @@ namespace CustomGameFramework.Runtime
             return sceneId;
         }
 
-        public static async void LoadSceneAsync(string location, IProgress<float> progress, Action<int> callback,
+        public static async void LoadSceneAsync(ResourcePackage package, string location, IProgress<float> progress, Action<int> callback,
             LoadSceneMode sceneMode = LoadSceneMode.Single, bool activateOnLoad = true)
         {
-            var handle = YooAssets.LoadSceneAsync(location, sceneMode, activateOnLoad);
+            var handle = package.LoadSceneAsync(location, sceneMode, activateOnLoad);
 
             await handle.ToUniTask(progress);
 
@@ -212,18 +207,28 @@ namespace CustomGameFramework.Runtime
         /// <summary>
         ///     初始化 yooasset 并设置默认 package
         /// </summary>
-        public static ResourcePackage InitializeYooAsset(string defaultPackageName = "DefaultPackage")
+        public static void InitializeYooAsset()
         {
             // 初始化资源系统
             YooAssets.Initialize();
             YooAssets.SetOperationSystemMaxTimeSlice(30);
+        }
+        
+        /// <summary>
+        ///     获取 package
+        /// </summary>
+        public static ResourcePackage GetPackage(string packageName, bool isSetDefaultPackageWhenCreate = false)
+        {
             // 创建默认的资源包
-            var defaultPackage = YooAssets.TryGetPackage(defaultPackageName);
+            var defaultPackage = YooAssets.TryGetPackage(packageName);
             if (defaultPackage == null)
             {
-                defaultPackage = YooAssets.CreatePackage(defaultPackageName);
-                // 设置该资源包为默认的资源包，可以使用YooAssets相关加载接口加载该资源包内容。
-                YooAssets.SetDefaultPackage(defaultPackage);
+                defaultPackage = YooAssets.CreatePackage(packageName);
+                if (isSetDefaultPackageWhenCreate)
+                {
+                    // 设置该资源包为默认的资源包，可以使用YooAssets相关加载接口加载该资源包内容。
+                    YooAssets.SetDefaultPackage(defaultPackage);
+                }
             }
 
             return defaultPackage;
@@ -232,7 +237,7 @@ namespace CustomGameFramework.Runtime
         /// <summary>
         ///     初始化 package
         /// </summary>
-        public static async UniTask<InitializationOperation> InitializePackageAsync(this ResourcePackage package, EPlayMode playMode,
+        public static async UniTask<InitializationOperation> InitializePackageAsync(ResourcePackage package, EPlayMode playMode,
             string cdnURL,
             IQueryServices queryServices,
             IDecryptionServices decryptionServices = null)
@@ -264,9 +269,9 @@ namespace CustomGameFramework.Runtime
         /// <summary>
         ///     更新版本号
         /// </summary>
-        public static async UniTask<string> UpdateStaticVersion(this ResourcePackage package, int time_out = 60)
+        public static async UniTask<string> UpdateStaticVersion(ResourcePackage package, int time_out = 60)
         {
-            var operation = package.UpdatePackageVersionAsync(true, time_out);
+            var operation = package.UpdatePackageVersionAsync(false, time_out);
 
             await operation.ToUniTask();
 
@@ -278,7 +283,7 @@ namespace CustomGameFramework.Runtime
         /// <summary>
         ///     更新 manifest
         /// </summary>
-        public static async UniTask<bool> UpdateManifest(this ResourcePackage package, string packageVersion,
+        public static async UniTask<bool> UpdateManifest(ResourcePackage package, string packageVersion,
             int timeOut = 30)
         {
             var operation = package.UpdatePackageManifestAsync(packageVersion, true, timeOut);
@@ -291,28 +296,40 @@ namespace CustomGameFramework.Runtime
         /// <summary>
         ///     获取更新下载内容的大小
         /// </summary>
-        public static long GetDownloadSize(int downloadingMaxNum = 10, int failedTryAgain = 3)
+        public static long GetDownloadSize(ResourcePackage package, int downloadingMaxNum = 10, int failedTryAgain = 3)
         {
-            _DOWNLOADER = YooAssets.CreateResourceDownloader(downloadingMaxNum, failedTryAgain);
-
-            return _DOWNLOADER.TotalDownloadCount == 0 ? 0 : _DOWNLOADER.TotalDownloadBytes;
+            var downloader = package.CreateResourceDownloader(downloadingMaxNum, failedTryAgain);
+            string packageName = package.PackageName;
+            if (!_PACKAGE_DOWNLOADER.ContainsKey(packageName))
+            {
+                _PACKAGE_DOWNLOADER.Add(packageName, downloader);
+            }
+            else
+            {
+                _PACKAGE_DOWNLOADER[packageName] = downloader;
+            }
+            return _PACKAGE_DOWNLOADER[packageName].TotalDownloadCount == 0 ? 0 : _PACKAGE_DOWNLOADER[packageName].TotalDownloadBytes;
         }
 
         /// <summary>
         ///     开始下载
         /// </summary>
-        public static async UniTask<bool> Download(IProgress<float> progress = null)
+        public static async UniTask<bool> Download(ResourcePackage package, IProgress<float> progress = null)
         {
-            if (_DOWNLOADER is null) return false;
+            string packageName = package.PackageName;
+            if (!_PACKAGE_DOWNLOADER.ContainsKey(packageName) || _PACKAGE_DOWNLOADER[packageName] is null)
+            {
+                return false;
+            }
 
-            _DOWNLOADER.BeginDownload();
+            _PACKAGE_DOWNLOADER[packageName].BeginDownload();
 
-            await _DOWNLOADER.ToUniTask(progress);
+            await _PACKAGE_DOWNLOADER[packageName].ToUniTask(progress);
 
-            return _DOWNLOADER.Status == EOperationStatus.Succeed;
+            return _PACKAGE_DOWNLOADER[packageName].Status == EOperationStatus.Succeed;
         }
 
-        public static async UniTask<bool> ClearCache(this ResourcePackage package)
+        public static async UniTask<bool> ClearCache(ResourcePackage package)
         {
             var operation = package.ClearUnusedCacheFilesAsync();
             await operation.ToUniTask();

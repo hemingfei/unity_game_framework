@@ -17,19 +17,25 @@ namespace CustomGameFramework.Runtime
 {
     public abstract class YooAssetResourceHelperBase : ResourceHelperBase
     {
-        private ResourcePackage _package;
+        private ResourcePackage _defaultPackage;
         public abstract string GetUrl();
         public abstract IQueryServices GetQueryServices();
         public abstract IDecryptionServices GetDecryptionServices();
 
+        public virtual string GetDefaultPackageName()
+        {
+            return "DefaultPackage";
+        }
+
         public override void UnloadUnusedAssets()
         {
-            _package?.UnloadUnusedAssets();
+            _defaultPackage?.UnloadUnusedAssets();
         }
 
         public override async void Init(IResourceMode mode, Action success, Action<string> fail)
         {
-            _package = YooAssetShim.InitializeYooAsset();
+            YooAssetShim.InitializeYooAsset();
+            _defaultPackage = YooAssetShim.GetPackage(GetDefaultPackageName(), true);
             var emode = EPlayMode.EditorSimulateMode;
             switch (mode)
             {
@@ -46,7 +52,7 @@ namespace CustomGameFramework.Runtime
 
             try
             {
-                var initializeOperation = await _package.InitializePackageAsync(emode, GetUrl(), GetQueryServices(), GetDecryptionServices());
+                var initializeOperation = await YooAssetShim.InitializePackageAsync(_defaultPackage, emode, GetUrl(), GetQueryServices(), GetDecryptionServices());
                 if (initializeOperation.Status == EOperationStatus.Succeed)
                     success();
                 else
@@ -62,9 +68,9 @@ namespace CustomGameFramework.Runtime
         {
             try
             {
-                var version = await _package.UpdateStaticVersion();
+                var version = await YooAssetShim.UpdateStaticVersion(_defaultPackage);
 
-                var isSuccess = await _package.UpdateManifest(version);
+                var isSuccess = await YooAssetShim.UpdateManifest(_defaultPackage, version);
 
                 if (isSuccess)
                     success();
@@ -79,17 +85,17 @@ namespace CustomGameFramework.Runtime
 
         public override long GetDownloadSize()
         {
-            return YooAssetShim.GetDownloadSize();
+            return YooAssetShim.GetDownloadSize(_defaultPackage);
         }
 
         public override async void StartDownload(Action success, Action<string> fail, IProgress<float> progress = null)
         {
             try
             {
-                var isSuccess = await YooAssetShim.Download(progress);
+                var isSuccess = await YooAssetShim.Download(_defaultPackage, progress);
                 if (isSuccess)
                 {
-                    await _package.ClearCache();
+                    await YooAssetShim.ClearCache(_defaultPackage);
                     success();
                 }
                 else
@@ -105,17 +111,17 @@ namespace CustomGameFramework.Runtime
 
         public override async UniTask<T> LoadAssetAsync<T>(string location)
         {
-            return await YooAssetShim.LoadAssetAsync<T>(location);
+            return await YooAssetShim.LoadAssetAsync<T>(_defaultPackage, location);
         }
 
         public override void LoadAssetAsync<T>(string location, Action<T> callback)
         {
-            YooAssetShim.LoadAssetAsync(location, callback);
+            YooAssetShim.LoadAssetAsync(_defaultPackage, location, callback);
         }
 
         public override T LoadAssetSync<T>(string location)
         {
-            return YooAssetShim.LoadAssetSync<T>(location);
+            return YooAssetShim.LoadAssetSync<T>(_defaultPackage, location);
         }
 
         public override void ReleaseAsset(Object obj)
@@ -125,18 +131,18 @@ namespace CustomGameFramework.Runtime
 
         public override async UniTask<GameObject> LoadGameObjectAsync(string location, Transform parentTransform = null)
         {
-            return await YooAssetShim.LoadGameObjectAsync(location, parentTransform);
+            return await YooAssetShim.LoadGameObjectAsync(_defaultPackage, location, parentTransform);
         }
 
         public override void LoadGameObjectAsync(string location, Action<GameObject> callback,
             Transform parentTransform = null)
         {
-            YooAssetShim.LoadGameObjectAsync(location, callback, parentTransform);
+            YooAssetShim.LoadGameObjectAsync(_defaultPackage, location, callback, parentTransform);
         }
 
         public override GameObject LoadGameObjectSync(string location, Transform parentTransform = null)
         {
-            return YooAssetShim.LoadGameObjectSync(location, parentTransform);
+            return YooAssetShim.LoadGameObjectSync(_defaultPackage, location, parentTransform);
         }
 
         public override void ReleaseGameObject(GameObject go)
@@ -147,13 +153,13 @@ namespace CustomGameFramework.Runtime
         public override async UniTask<int> LoadSceneAsync(string location, IProgress<float> progress,
             LoadSceneMode sceneMode = LoadSceneMode.Single, bool activateOnLoad = true)
         {
-            return await YooAssetShim.LoadSceneAsync(location, progress, sceneMode, activateOnLoad);
+            return await YooAssetShim.LoadSceneAsync(_defaultPackage, location, progress, sceneMode, activateOnLoad);
         }
 
         public override void LoadSceneAsync(string location, IProgress<float> progress, Action<int> callback,
             LoadSceneMode sceneMode = LoadSceneMode.Single, bool activateOnLoad = true)
         {
-            YooAssetShim.LoadSceneAsync(location, progress, callback, sceneMode, activateOnLoad);
+            YooAssetShim.LoadSceneAsync(_defaultPackage, location, progress, callback, sceneMode, activateOnLoad);
         }
 
         public override void UnloadSceneAsync(int sceneId)
