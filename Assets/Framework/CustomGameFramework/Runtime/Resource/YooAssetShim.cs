@@ -269,9 +269,9 @@ namespace CustomGameFramework.Runtime
         /// <summary>
         ///     更新版本号
         /// </summary>
-        public static async UniTask<string> UpdateStaticVersion(ResourcePackage package, int time_out = 60)
+        public static async UniTask<string> UpdateStaticVersion(ResourcePackage package, bool urlAppendTimeTicks = false, int time_out = 60)
         {
-            var operation = package.UpdatePackageVersionAsync(false, time_out);
+            var operation = package.UpdatePackageVersionAsync(urlAppendTimeTicks, time_out);
 
             await operation.ToUniTask();
 

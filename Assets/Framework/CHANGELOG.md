@@ -2,6 +2,13 @@
 
 All notable changes to this package will be documented in this file.
 
+## [1.0.16] - 2023-06-01
+
+### Changed
+
+- YooAsset Resource Helper Support Control Specific Package
+- YooAsset Update Package Version Not Append TimeTicks After URL
+
 ## [1.0.15] - 2023-05-29
 
 ### Changed

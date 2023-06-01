@@ -32,7 +32,7 @@ namespace CustomGameFramework.Runtime
         {
             return _currentPackage?.PackageName;
         }
-        
+
         public ResourcePackage GetCurrentPackage()
         {
             return _currentPackage;
@@ -55,7 +55,8 @@ namespace CustomGameFramework.Runtime
         /// <summary>
         /// 初始化特定的资源包，一个helper只能操控一个package
         /// </summary>
-        public async UniTask<bool> InitializeHelperPackage(string packageName, IResourceMode mode, Action success, Action<string> fail, bool isSetDefaultPackage = false)
+        public async UniTask<bool> InitializeHelperPackage(string packageName, IResourceMode mode, Action success,
+            Action<string> fail, bool isSetDefaultPackage = false)
         {
             _currentPackage = YooAssetShim.GetPackage(packageName, isSetDefaultPackage);
             var emode = EPlayMode.EditorSimulateMode;
@@ -74,7 +75,8 @@ namespace CustomGameFramework.Runtime
 
             try
             {
-                var initializeOperation = await YooAssetShim.InitializePackageAsync(_currentPackage, emode, GetUrl(), GetQueryServices(), GetDecryptionServices());
+                var initializeOperation = await YooAssetShim.InitializePackageAsync(_currentPackage, emode, GetUrl(),
+                    GetQueryServices(), GetDecryptionServices());
                 if (initializeOperation.Status == EOperationStatus.Succeed)
                 {
                     success();
@@ -93,7 +95,7 @@ namespace CustomGameFramework.Runtime
                 return false;
             }
         }
-        
+
         public override async void UpdateVersionAndManifest(Action success, Action<string> fail)
         {
             try
