@@ -2,6 +2,12 @@
 
 All notable changes to this package will be documented in this file.
 
+## [1.0.17] - 2023-06-02
+
+### Fixed
+
+- UniTask Timer Helper infinit repeat count not work
+
 ## [1.0.16] - 2023-06-01
 
 ### Changed

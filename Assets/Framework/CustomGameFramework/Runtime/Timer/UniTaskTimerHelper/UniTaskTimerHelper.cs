@@ -41,15 +41,19 @@ namespace CustomGameFramework.Runtime
         private async void StartTimerTask(int timerId, CancellationTokenSource token, Action<int> callback, float delay,
             bool isTimeScaled, int repeatCount)
         {
-            for (var i = 0; i < repeatCount + 1; i++)
+            int callbackCount = 0;
+            while (true)
             {
-                var count = i + 1;
-
                 var isCanceled = await UniTask
                     .Delay(TimeSpan.FromSeconds(delay), !isTimeScaled, cancellationToken: token.Token)
                     .SuppressCancellationThrow();
                 if (isCanceled) break;
-                callback?.Invoke(count);
+                
+                callback?.Invoke(++callbackCount);
+
+                if (repeatCount == 0) break;
+
+                if (repeatCount > 0) --repeatCount;
             }
 
             if (_tokens.ContainsKey(timerId))
