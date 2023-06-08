@@ -14,7 +14,6 @@ All notable changes to this package will be documented in this file.
 - GF Menu Name Changed To Tools
 - RaycastTargetChecker and ReplaceFont Back
 
-
 ## [1.0.18] - 2023-06-08
 
 ### Added
