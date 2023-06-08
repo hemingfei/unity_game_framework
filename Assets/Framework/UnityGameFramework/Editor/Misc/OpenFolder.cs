@@ -20,7 +20,7 @@ namespace UnityGameFramework.Editor
         /// <summary>
         /// 打开 Data Path 文件夹。
         /// </summary>
-        [MenuItem("Game Framework/Open Folder/Data Path", false, 10)]
+        [MenuItem("Tools/Game Framework/Open Folder/Data Path")]
         public static void OpenFolderDataPath()
         {
             Execute(Application.dataPath);
@@ -29,7 +29,7 @@ namespace UnityGameFramework.Editor
         /// <summary>
         /// 打开 Persistent Data Path 文件夹。
         /// </summary>
-        [MenuItem("Game Framework/Open Folder/Persistent Data Path", false, 11)]
+        [MenuItem("Tools/Game Framework/Open Folder/Persistent Data Path")]
         public static void OpenFolderPersistentDataPath()
         {
             Execute(Application.persistentDataPath);
@@ -38,7 +38,7 @@ namespace UnityGameFramework.Editor
         /// <summary>
         /// 打开 Streaming Assets Path 文件夹。
         /// </summary>
-        [MenuItem("Game Framework/Open Folder/Streaming Assets Path", false, 12)]
+        [MenuItem("Tools/Game Framework/Open Folder/Streaming Assets Path")]
         public static void OpenFolderStreamingAssetsPath()
         {
             Execute(Application.streamingAssetsPath);
@@ -47,7 +47,7 @@ namespace UnityGameFramework.Editor
         /// <summary>
         /// 打开 Temporary Cache Path 文件夹。
         /// </summary>
-        [MenuItem("Game Framework/Open Folder/Temporary Cache Path", false, 13)]
+        [MenuItem("Tools/Game Framework/Open Folder/Temporary Cache Path")]
         public static void OpenFolderTemporaryCachePath()
         {
             Execute(Application.temporaryCachePath);
@@ -58,7 +58,7 @@ namespace UnityGameFramework.Editor
         /// <summary>
         /// 打开 Console Log Path 文件夹。
         /// </summary>
-        [MenuItem("Game Framework/Open Folder/Console Log Path", false, 14)]
+        [MenuItem("Tools/Game Framework/Open Folder/Console Log Path")]
         public static void OpenFolderConsoleLogPath()
         {
             Execute(System.IO.Path.GetDirectoryName(Application.consoleLogPath));

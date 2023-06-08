@@ -15,13 +15,13 @@ namespace UnityGameFramework.Editor
     /// </summary>
     public static class Help
     {
-        [MenuItem("Game Framework/Documentation", false, 90)]
+        [MenuItem("Tools/Game Framework/Documentation")]
         public static void ShowDocumentation()
         {
             ShowHelp("https://gameframework.cn/document/");
         }
 
-        [MenuItem("Game Framework/API Reference", false, 91)]
+        [MenuItem("Tools/Game Framework/API Reference")]
         public static void ShowApiReference()
         {
             ShowHelp("https://gameframework.cn/api/");
