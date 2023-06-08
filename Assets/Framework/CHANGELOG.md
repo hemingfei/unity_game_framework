@@ -2,6 +2,19 @@
 
 All notable changes to this package will be documented in this file.
 
+## [1.0.19] - 2023-06-08
+
+### Added
+
+- Sprite Atlas User Config Can Show Sprites Size Details
+- DataTable Add Open Excel Folder Menu
+
+### Changed
+
+- GF Menu Name Changed To Tools
+- RaycastTargetChecker and ReplaceFont Back
+
+
 ## [1.0.18] - 2023-06-08
 
 ### Added
