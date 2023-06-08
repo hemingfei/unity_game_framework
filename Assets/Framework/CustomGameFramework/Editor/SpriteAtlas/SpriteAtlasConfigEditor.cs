@@ -48,7 +48,7 @@ namespace CustomGameFramework.Editor.SpriteAtlas
             return _instance;
         }
         
-        [MenuItem("Tools/SpriteAtlas Builder \t 配置图集", false, 40)]
+        [MenuItem("Tools/Config SpriteAtlas \t 配置图集", false, 40)]
         public static void BuildProjectConfig()
         {
             SpriteAtlasConfig data = null;

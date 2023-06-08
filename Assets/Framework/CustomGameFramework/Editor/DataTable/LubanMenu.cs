@@ -6,9 +6,11 @@
 *	功能：暂无
 *****************************************************/
 
+using System.Diagnostics;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace CustomGameFramework.Editor.DataTable
 {
@@ -17,13 +19,28 @@ namespace CustomGameFramework.Editor.DataTable
         public const string GenBatFile = "gen.bat";
         public const string GenShFile = "gen.sh";
 
-        [MenuItem("Tools/DataTable Generate \t 生成数据表", false, 50)]
+        [MenuItem("Tools/Generate DataTable \t 生成数据表", false, 50)]
         public static void RunDataTableGenerate()
         {
             if (Application.platform is RuntimePlatform.OSXEditor or RuntimePlatform.LinuxEditor)
                 RunDataTableGenerate(GenShFile);
             else
                 RunDataTableGenerate(GenBatFile);
+        }
+        
+        [MenuItem("Tools/Open Excel Folder \t 打开Excel目录", false, 51)]
+        public static void OpenDataTableExcel()
+        {
+            var path = RunBatchTool.FormatPath(Path.GetFullPath(Application.dataPath + "/../Luban/DataTable/Datas/"));
+            if (Directory.Exists(path))
+            {
+                Process.Start(path);
+                Debug.Log("Opened: " + path);
+            }
+            else
+            {
+                Debug.LogError("不存在目录: " + path);
+            }
         }
 
         public static void RunDataTableGenerate(string fileName)
