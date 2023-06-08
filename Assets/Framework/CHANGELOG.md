@@ -2,6 +2,12 @@
 
 All notable changes to this package will be documented in this file.
 
+## [1.0.18] - 2023-06-08
+
+### Added
+
+- Sprite Atlas Config Tools
+
 ## [1.0.17] - 2023-06-02
 
 ### Fixed
