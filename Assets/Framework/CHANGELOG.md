@@ -2,6 +2,12 @@
 
 All notable changes to this package will be documented in this file.
 
+## [1.0.20] - 2023-06-08
+
+### Added
+
+- Easy Build Tool
+
 ## [1.0.19] - 2023-06-08
 
 ### Added
