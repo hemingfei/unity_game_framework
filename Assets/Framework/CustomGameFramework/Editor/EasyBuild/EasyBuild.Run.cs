@@ -72,16 +72,15 @@ namespace CustomGameFramework.Editor
                 // delete Build folder
                 EasyBuild_Utility.DeleteFolder("Assets/../../Build");
                 await EasyBuild_Utility.WaitCompile();
-                
-                if (!Directory.Exists(outputDirPath))
-                {
-                    Directory.CreateDirectory(outputDirPath);
-                }
 
                 string finalOutputFilePath = "";
                 switch (buildTarget)
                 {
                     case BuildTarget.StandaloneWindows64:
+                        if (!Directory.Exists(outputDirPath))
+                        {
+                            Directory.CreateDirectory(outputDirPath);
+                        }
                         finalOutputFilePath = Path.Combine(outputDirPath, outputFileName) + ".exe";
                         EasyBuild_RunWindows.StartBuild(finalOutputFilePath, buildOption);
                         break;
