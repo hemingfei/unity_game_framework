@@ -90,8 +90,15 @@ namespace UnityGameFramework.Runtime
             webRequestFailureEventArgs.SerialId = e.SerialId;
             webRequestFailureEventArgs.WebRequestUri = e.WebRequestUri;
             webRequestFailureEventArgs.ErrorMessage = e.ErrorMessage;
-            webRequestFailureEventArgs.UserData = wwwFormInfo.UserData;
-            ReferencePool.Release(wwwFormInfo);
+            if (e.UserData != null && wwwFormInfo != null)
+            {
+                webRequestFailureEventArgs.UserData = wwwFormInfo.UserData;
+                ReferencePool.Release(wwwFormInfo);
+            }
+            else
+            {
+                webRequestFailureEventArgs.UserData = null;
+            }
             return webRequestFailureEventArgs;
         }
 

@@ -2,6 +2,13 @@
 
 All notable changes to this package will be documented in this file.
 
+## [1.0.21] - 2023-06-15
+
+### Fixed
+
+- Easy Build in Android Created usless Folder
+- Web Request Events cast null params
+
 ## [1.0.20] - 2023-06-08
 
 ### Added

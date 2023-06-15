@@ -79,7 +79,14 @@ namespace UnityGameFramework.Runtime
             WebRequestStartEventArgs webRequestStartEventArgs = ReferencePool.Acquire<WebRequestStartEventArgs>();
             webRequestStartEventArgs.SerialId = e.SerialId;
             webRequestStartEventArgs.WebRequestUri = e.WebRequestUri;
-            webRequestStartEventArgs.UserData = wwwFormInfo.UserData;
+            if (e.UserData != null && wwwFormInfo != null)
+            {
+                webRequestStartEventArgs.UserData = wwwFormInfo.UserData;
+            }
+            else
+            {
+                webRequestStartEventArgs.UserData = null;
+            }
             return webRequestStartEventArgs;
         }
 

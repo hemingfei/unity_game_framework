@@ -92,8 +92,15 @@ namespace UnityGameFramework.Runtime
             webRequestSuccessEventArgs.SerialId = e.SerialId;
             webRequestSuccessEventArgs.WebRequestUri = e.WebRequestUri;
             webRequestSuccessEventArgs.m_WebResponseBytes = e.GetWebResponseBytes();
-            webRequestSuccessEventArgs.UserData = wwwFormInfo.UserData;
-            ReferencePool.Release(wwwFormInfo);
+            if (e.UserData != null && wwwFormInfo != null)
+            {
+                webRequestSuccessEventArgs.UserData = wwwFormInfo.UserData;
+                ReferencePool.Release(wwwFormInfo);
+            }
+            else
+            {
+                webRequestSuccessEventArgs.UserData = null;
+            }
             return webRequestSuccessEventArgs;
         }
 

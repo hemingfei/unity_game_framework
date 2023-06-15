@@ -117,7 +117,7 @@ namespace CustomGameFramework.Runtime
             if (wwwFormInfo == null || wwwFormInfo.UserData == null ||
                 wwwFormInfo.UserData.GetType() != typeof(HttpWebRequestInfo))
             {
-                if (wwwFormInfo.WWWForm == null)
+                if (wwwFormInfo == null || wwwFormInfo.WWWForm == null)
                     m_UnityWebRequest = UnityWebRequest.Get(webRequestUri);
                 else
                     m_UnityWebRequest = UnityWebRequest.Post(webRequestUri, wwwFormInfo.WWWForm);
