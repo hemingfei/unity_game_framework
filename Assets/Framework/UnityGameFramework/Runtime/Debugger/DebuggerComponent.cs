@@ -87,6 +87,8 @@ namespace UnityGameFramework.Runtime
         private OperationsWindow m_OperationsWindow = new OperationsWindow();
 
         private FpsCounter m_FpsCounter = null;
+        
+        private string m_title = "Game Framework Debugger";
 
         /// <summary>
         /// 获取或设置调试器窗口是否激活。
@@ -267,7 +269,7 @@ namespace UnityGameFramework.Runtime
 
             if (m_ShowFullWindow)
             {
-                m_WindowRect = GUILayout.Window(0, m_WindowRect, DrawWindow, "<b>GAME FRAMEWORK DEBUGGER</b>");
+                m_WindowRect = GUILayout.Window(0, m_WindowRect, DrawWindow, "<b>" + m_title + "</b>");
             }
             else
             {
@@ -437,6 +439,11 @@ namespace UnityGameFramework.Runtime
             s_TextEditor.OnFocus();
             s_TextEditor.Copy();
             s_TextEditor.text = string.Empty;
+        }
+
+        public void SetDebuggerTitle(string title)
+        {
+            m_title = title;
         }
     }
 }
