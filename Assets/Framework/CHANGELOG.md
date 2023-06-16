@@ -2,6 +2,13 @@
 
 All notable changes to this package will be documented in this file.
 
+
+## [1.0.22] - 2023-06-16
+
+### Added
+
+- Debugger Can Set Custom Title
+
 ## [1.0.21] - 2023-06-15
 
 ### Fixed
