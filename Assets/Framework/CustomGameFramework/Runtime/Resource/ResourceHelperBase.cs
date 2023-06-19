@@ -16,8 +16,14 @@ namespace CustomGameFramework.Runtime
 {
     public abstract class ResourceHelperBase : MonoBehaviour, IResourceHelper
     {
-        public abstract void Init(IResourceMode mode, Action success, Action<string> fail);
+        public abstract void InitResourceSystem();
+        
+        public abstract void DestroyResourceSystem();
+        
+        public abstract void InitPackage(IResourceMode mode, Action success, Action<string> fail);
 
+        public abstract void DestroyPackage();
+        
         public abstract void UpdateVersionAndManifest(Action success, Action<string> fail);
 
         public abstract long GetDownloadSize();

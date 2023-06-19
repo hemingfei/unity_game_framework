@@ -16,7 +16,13 @@ namespace CustomGameFramework.Runtime
 {
     public interface IResourceHelper
     {
-        public void Init(IResourceMode mode, Action success, Action<string> fail);
+        public void InitResourceSystem();
+        
+        public void DestroyResourceSystem();
+        
+        public void InitPackage(IResourceMode mode, Action success, Action<string> fail);
+
+        public void DestroyPackage();
 
         public void UpdateVersionAndManifest(Action success, Action<string> fail);
 

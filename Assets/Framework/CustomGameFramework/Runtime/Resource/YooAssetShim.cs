@@ -204,6 +204,7 @@ namespace CustomGameFramework.Runtime
 
         #region 初始化、更新等
 
+        #region yooasset system
         /// <summary>
         ///     初始化 yooasset 并设置默认 package
         /// </summary>
@@ -213,7 +214,18 @@ namespace CustomGameFramework.Runtime
             YooAssets.Initialize();
             YooAssets.SetOperationSystemMaxTimeSlice(30);
         }
+
+        /// <summary>
+        ///     资源系统销毁
+        /// </summary>
+        public static void DestroyYooAsset()
+        {
+            // 资源系统销毁
+            YooAssets.Destroy();
+        }
+        #endregion
         
+        #region package
         /// <summary>
         ///     获取 package
         /// </summary>
@@ -266,6 +278,16 @@ namespace CustomGameFramework.Runtime
             return initializeOperation;
         }
 
+        /// <summary>
+        ///     销毁 package
+        /// </summary>
+        public static void DestroyPackage(string packageName)
+        {
+            YooAssets.DestroyPackage(packageName);
+        }
+        #endregion
+
+        #region update
         /// <summary>
         ///     更新版本号
         /// </summary>
@@ -335,6 +357,7 @@ namespace CustomGameFramework.Runtime
             await operation.ToUniTask();
             return operation.Status == EOperationStatus.Succeed;
         }
+        #endregion
 
         #endregion
     }

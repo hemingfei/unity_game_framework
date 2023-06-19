@@ -55,10 +55,16 @@ namespace CustomGameFramework.Runtime
 
         public void Init()
         {
+            m_ResourceHelper.InitResourceSystem();
             var mode = GetRuntimeResourceMode();
-            m_ResourceHelper.Init(mode,
+            m_ResourceHelper.InitPackage(mode,
                 () => Event.Fire(this, ResourceInitSuccessEventArgs.Create()),
                 msg => Event.Fire(this, ResourceInitFailEventArgs.Create(msg)));
+        }
+
+        public void Destroy()
+        {
+            m_ResourceHelper.DestroyResourceSystem();
         }
 
         private IResourceMode GetRuntimeResourceMode()

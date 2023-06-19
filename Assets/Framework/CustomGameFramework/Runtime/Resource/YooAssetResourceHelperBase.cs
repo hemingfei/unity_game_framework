@@ -43,13 +43,24 @@ namespace CustomGameFramework.Runtime
             _currentPackage?.UnloadUnusedAssets();
         }
 
-        /// <summary>
-        /// 初始化 YooAsset 和 默认资源包
-        /// </summary>
-        public override async void Init(IResourceMode mode, Action success, Action<string> fail)
+        public override void InitResourceSystem()
         {
             YooAssetShim.InitializeYooAsset();
+        }
+
+        public override void DestroyResourceSystem()
+        {
+            YooAssetShim.DestroyYooAsset();
+        }
+
+        public override async void InitPackage(IResourceMode mode, Action success, Action<string> fail)
+        {
             await InitializeHelperPackage(GetDefaultPackageName(), mode, success, fail, true);
+        }
+
+        public override void DestroyPackage()
+        {
+            DestroyHelperPackage();
         }
 
         /// <summary>
@@ -86,6 +97,7 @@ namespace CustomGameFramework.Runtime
                 else
                 {
                     fail("");
+                    _isInitPackage = false;
                     return false;
                 }
             }
@@ -96,8 +108,25 @@ namespace CustomGameFramework.Runtime
             }
         }
 
+        public void DestroyHelperPackage()
+        {
+            if (_currentPackage != null)
+            {
+                string packageName = _currentPackage.PackageName;
+                YooAssetShim.DestroyPackage(packageName);
+            }
+
+            _currentPackage = null;
+            _isInitPackage = false;
+        }
+
         public override async void UpdateVersionAndManifest(Action success, Action<string> fail)
         {
+            if (!_isInitPackage)
+            {
+                fail?.Invoke("package not initialized");
+                return;
+            }
             try
             {
                 var version = await YooAssetShim.UpdateStaticVersion(_currentPackage);
@@ -117,11 +146,20 @@ namespace CustomGameFramework.Runtime
 
         public override long GetDownloadSize()
         {
+            if (!_isInitPackage)
+            {
+                return 0;
+            }
             return YooAssetShim.GetDownloadSize(_currentPackage);
         }
 
         public override async void StartDownload(Action success, Action<string> fail, IProgress<float> progress = null)
         {
+            if (!_isInitPackage)
+            {
+                fail?.Invoke("package not initialized");
+                return;
+            }
             try
             {
                 var isSuccess = await YooAssetShim.Download(_currentPackage, progress);
