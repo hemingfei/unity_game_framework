@@ -2,6 +2,12 @@
 
 All notable changes to this package will be documented in this file.
 
+## [1.0.23] - 2023-06-19
+
+### Changed
+
+- BuildTool's build params are now from the AssetBundleBuilderSettingData.Setting
+- BuildTool add new build param 'AutoAnalyzeRedundancy' and 'SBPParameters'
 
 ## [1.0.22] - 2023-06-16
 

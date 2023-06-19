@@ -29,8 +29,7 @@ namespace CustomGameFramework.Editor
         public async Task StartBuild(BuildTarget buildTarget, 
             string buildVersion, int versionCode, EasyBuild.BuildMode buildMode,
             bool isRunDataTable, bool isRunSpriteAtlas, bool isRunAssetBundle, 
-            string packageVersion, string packageName,
-            IEncryptionServices encryptionServices, IShareAssetPackRule shareAssetPackRule,
+            string packageVersion, IEncryptionServices encryptionServices,
             bool isOutputFileAddTimestamp)
         {
             // 切换平台
@@ -69,7 +68,7 @@ namespace CustomGameFramework.Editor
             if (isRunAssetBundle)
             {
                 ShowLog("开始打资源包");
-                bool isAssetBundleSuccess = await EasyBuild.EasyBuild_Resource.RunAssetBundle(buildTarget, packageVersion, encryptionServices, shareAssetPackRule, packageName);
+                bool isAssetBundleSuccess = await EasyBuild.EasyBuild_Resource.RunAssetBundle(buildTarget, packageVersion, encryptionServices);
                 if(!isAssetBundleSuccess)
                 {
                     Debug.LogError("资源包构建失败");
