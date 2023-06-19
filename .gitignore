@@ -31,3 +31,6 @@ Assets/Resources.meta
 Assets/Framework/Customs.meta
 Assets/Framework/Tools.meta
 mono_crash.mem.53405.1.blob
+Library/
+Logs/
+Temp/
