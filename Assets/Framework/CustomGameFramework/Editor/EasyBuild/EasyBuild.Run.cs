@@ -99,8 +99,6 @@ namespace CustomGameFramework.Editor
             public static async Task CompressOutput(BuildTarget buildTarget, string outputFolderPath)
             {
                 await EasyBuild_Utility.WaitCompile();
-                await Task.Delay(2000);
-                await EasyBuild_Utility.WaitCompile();
                 string zipFilePath = outputFolderPath + ".zip";
                 if (File.Exists(zipFilePath))
                 {

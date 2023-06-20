@@ -8,6 +8,10 @@ All notable changes to this package will be documented in this file.
 
 - Easy Build Tool Params Settings will be set in config file instead of write in code
 
+### Fixed
+
+- BuildTool's compress process may pause and cannot finish in windows editor because of of max length of path
+
 ## [1.0.25] - 2023-06-20
 
 ### Fixed
