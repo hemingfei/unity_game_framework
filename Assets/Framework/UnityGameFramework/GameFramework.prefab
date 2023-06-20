@@ -155,7 +155,7 @@ MonoBehaviour:
   m_VersionHelperTypeName: UnityGameFramework.Runtime.DefaultVersionHelper
   m_LogHelperTypeName: UnityGameFramework.Runtime.DefaultLogHelper
   m_CompressionHelperTypeName: UnityGameFramework.Runtime.DefaultCompressionHelper
-  m_JsonHelperTypeName: UnityGameFramework.Runtime.DefaultJsonHelper
+  m_JsonHelperTypeName: CustomGameFramework.Runtime.LitJsonHelper
   m_FrameRate: 60
   m_GameSpeed: 1
   m_RunInBackground: 1
@@ -204,6 +204,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f05eaceeebe870a4595e51f998ed518b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_BtnNumPerLineInOperation: 2
   m_Skin: {fileID: 11400000, guid: a4c1cc1e6676f0e48a527bad48941f98, type: 2}
   m_ActiveWindow: 1
   m_ShowFullWindow: 0

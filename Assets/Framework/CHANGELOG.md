@@ -2,6 +2,12 @@
 
 All notable changes to this package will be documented in this file.
 
+## [1.0.28] - 2023-06-20
+
+### Changed
+
+- Support UNITY 2022.3
+
 ## [1.0.27] - 2023-06-20
 
 ### Added

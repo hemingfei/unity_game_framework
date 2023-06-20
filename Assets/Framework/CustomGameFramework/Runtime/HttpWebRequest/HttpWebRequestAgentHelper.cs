@@ -171,7 +171,11 @@ namespace CustomGameFramework.Runtime
             HttpWebRequestInfo info = null;
             if (wwwFormInfo.UserData.GetType() != typeof(HttpWebRequestInfo))
             {
-                m_UnityWebRequest = UnityWebRequest.Post(webRequestUri, Utility.Converter.GetString(postData));
+#if UNITY_2022_3_OR_NEWER
+                m_UnityWebRequest = UnityWebRequest.PostWwwForm(webRequestUri, Utility.Converter.GetString(postData));
+#else
+                m_UnityWebRequest = UnityWebRequest.Post(webRequestUri, Utility.Converter.GetString(postData)); 
+#endif
             }
             else
             {
