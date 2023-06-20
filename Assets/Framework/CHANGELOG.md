@@ -2,6 +2,12 @@
 
 All notable changes to this package will be documented in this file.
 
+## [1.0.25] - 2023-06-20
+
+### Fixed
+
+- BuildTool's compress process may pause and cannot finish
+
 ## [1.0.24] - 2023-06-20
 
 ### Added

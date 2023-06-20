@@ -96,8 +96,11 @@ namespace CustomGameFramework.Editor
                 await EasyBuild_Utility.WaitCompile();
             }
 
-            public static void CompressOutput(BuildTarget buildTarget, string outputFolderPath)
+            public static async Task CompressOutput(BuildTarget buildTarget, string outputFolderPath)
             {
+                await EasyBuild_Utility.WaitCompile();
+                await Task.Delay(2000);
+                await EasyBuild_Utility.WaitCompile();
                 string zipFilePath = outputFolderPath + ".zip";
                 if (File.Exists(zipFilePath))
                 {
@@ -116,6 +119,7 @@ namespace CustomGameFramework.Editor
                         break;
                 }
                 Debug.Log("Compress Finish, Output: " + zipFilePath);
+                await EasyBuild_Utility.WaitCompile();
             }
         }
     }

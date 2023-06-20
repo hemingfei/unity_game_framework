@@ -97,9 +97,15 @@ namespace CustomGameFramework.Editor
             await EasyBuild.Run.StartBuild(buildTarget, outputDir, outputFileName, buildOption);
             if (isCompressOutputFile)
             {
+                await EasyBuild.EasyBuild_Utility.WaitCompile();
+                if (buildTarget == BuildTarget.StandaloneWindows64)
+                {
+                    await Task.Delay(8000);
+                    await EasyBuild.EasyBuild_Utility.WaitCompile();
+                }
                 // 压缩输出文件夹
                 ShowLog("开始压缩文件");
-                EasyBuild.Run.CompressOutput(buildTarget, outputDir);
+                await EasyBuild.Run.CompressOutput(buildTarget, outputDir);
             }
             // 结束 BUILD
             await EasyBuild.EasyBuild_Utility.WaitCompile();
