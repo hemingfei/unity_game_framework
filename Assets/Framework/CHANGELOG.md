@@ -2,6 +2,16 @@
 
 All notable changes to this package will be documented in this file.
 
+## [1.0.27] - 2023-06-20
+
+### Added
+
+- Resource Component Can Get Package Version
+
+### Changed
+
+- YooAsset Resource Helper no longer need to new IQueryServices when Initialize, will use default inside GameQueryService
+
 ## [1.0.26] - 2023-06-20
 
 ### Changed
