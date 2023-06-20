@@ -2,6 +2,16 @@
 
 All notable changes to this package will be documented in this file.
 
+## [1.0.24] - 2023-06-20
+
+### Added
+
+- Resource Component add 'destroy pacakge' and 'destroy resource system' methods
+
+### Fixed
+
+- BuildTool's compress process may pause and cannot finish
+
 ## [1.0.23] - 2023-06-19
 
 ### Changed
