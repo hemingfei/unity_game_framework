@@ -81,6 +81,11 @@ namespace CustomGameFramework.Runtime
             return mode;
         }
 
+        public string GetPackageVersion()
+        {
+            return m_ResourceHelper.GetPackageVersion();
+        }
+
         public void UpdateVersionAndManifest()
         {
             m_ResourceHelper.UpdateVersionAndManifest(

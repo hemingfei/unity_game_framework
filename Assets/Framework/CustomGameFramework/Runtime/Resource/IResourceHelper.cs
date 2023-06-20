@@ -23,6 +23,8 @@ namespace CustomGameFramework.Runtime
         public void InitPackage(IResourceMode mode, Action success, Action<string> fail);
 
         public void DestroyPackage();
+        
+        public string GetPackageVersion();
 
         public void UpdateVersionAndManifest(Action success, Action<string> fail);
 

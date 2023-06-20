@@ -62,6 +62,11 @@ namespace CustomGameFramework.Runtime
             DestroyHelperPackage();
         }
 
+        public override string GetPackageVersion()
+        {
+            return _currentPackage?.GetPackageVersion();
+        }
+
         /// <summary>
         /// 初始化特定的资源包，一个helper只能操控一个package
         /// </summary>
