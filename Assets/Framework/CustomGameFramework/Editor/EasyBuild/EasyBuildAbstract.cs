@@ -17,11 +17,6 @@ namespace CustomGameFramework.Editor
 {
     public abstract class EasyBuildAbstract
     {
-        public abstract string GetKeystoreName();
-        public abstract string GetKeystorePass();
-        public abstract string GetKeyaliasName();
-        public abstract string GetKeyaliasPass();
-        public abstract string GetOutputNameWithoutExtension();
         public abstract void GetCommandLineArgs(ref string buildVersion, ref int versionCode, ref EasyBuild.BuildMode buildMode);
         
         public async Task StartBuild(BuildTarget buildTarget, 
@@ -48,7 +43,7 @@ namespace CustomGameFramework.Editor
             if (buildTarget == BuildTarget.Android)
             {
                 ShowLog("设置安卓密钥");
-                EasyBuild.Run.SetAndroidKeyStore(GetKeystoreName(), GetKeystorePass(), GetKeyaliasName(), GetKeyaliasPass());
+                EasyBuild.Run.SetAndroidKeyStore(EasyBuildSettingData.Setting.AndroidKeyStoreName, EasyBuildSettingData.Setting.AndroidKeyStorePass, EasyBuildSettingData.Setting.AndroidKeyAliasName, EasyBuildSettingData.Setting.AndroidKeyAliasPass);
                 await EasyBuild.EasyBuild_Utility.WaitCompile();
             }
             // 打表
@@ -82,10 +77,10 @@ namespace CustomGameFramework.Editor
             }
             // 设置输出文件路径
             string dirPath = EasyBuild.EasyBuild_Utility.GetOutputDir();
-            string outputFileName = GetOutputNameWithoutExtension();
+            string outputFileName = EasyBuildSettingData.Setting.OutputNameWithoutExtension;
             if (isOutputFileAddTimestamp)
             {
-                outputFileName = $"{GetOutputNameWithoutExtension()}-";
+                outputFileName = $"{EasyBuildSettingData.Setting.OutputNameWithoutExtension}-";
                 outputFileName += (buildMode == EasyBuild.BuildMode.DEVELOP? "develop-": "release-");
                 outputFileName += $"{buildVersion}-";
                 outputFileName += $"{versionCode}-";

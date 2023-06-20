@@ -2,6 +2,12 @@
 
 All notable changes to this package will be documented in this file.
 
+## [1.0.26] - 2023-06-20
+
+### Changed
+
+- Easy Build Tool Params Settings will be set in config file instead of write in code
+
 ## [1.0.25] - 2023-06-20
 
 ### Fixed
