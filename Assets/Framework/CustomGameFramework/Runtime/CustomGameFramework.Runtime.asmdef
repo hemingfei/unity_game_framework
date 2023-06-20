@@ -1,22 +1,23 @@
 {
-  "name": "CustomGameFramework.Runtime",
-  "rootNamespace": "CustomGameFramework.Runtime",
-  "references": [
-    "GUID:f34820f76f04e4d5fb50254f332ba35d",
-    "GUID:363c5eb08ff8e6a439b85e37b8c20d96",
-    "GUID:e34a5702dd353724aa315fb8011f08c3",
-    "GUID:f51ebe6a0ceec4240a699833d6309b23",
-    "GUID:44fbc25974ad4434198b76e3e909e974",
-    "GUID:4bedb437863633e42baa77bf74d2a791",
-    "GUID:27549b9575d50294aab915904ad52f24"
-  ],
-  "includePlatforms": [],
-  "excludePlatforms": [],
-  "allowUnsafeCode": false,
-  "overrideReferences": false,
-  "precompiledReferences": [],
-  "autoReferenced": true,
-  "defineConstraints": [],
-  "versionDefines": [],
-  "noEngineReferences": false
+    "name": "CustomGameFramework.Runtime",
+    "rootNamespace": "CustomGameFramework.Runtime",
+    "references": [
+        "GUID:f34820f76f04e4d5fb50254f332ba35d",
+        "GUID:363c5eb08ff8e6a439b85e37b8c20d96",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:44fbc25974ad4434198b76e3e909e974",
+        "GUID:4bedb437863633e42baa77bf74d2a791",
+        "GUID:27549b9575d50294aab915904ad52f24",
+        "GUID:e34a5702dd353724aa315fb8011f08c3",
+        "GUID:ae8d9dd950402402e858c54d5ab9c059"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

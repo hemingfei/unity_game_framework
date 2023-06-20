@@ -20,7 +20,6 @@ namespace CustomGameFramework.Runtime
         private ResourcePackage _currentPackage;
         private bool _isInitPackage = false;
         public abstract string GetUrl();
-        public abstract IQueryServices GetQueryServices();
         public abstract IDecryptionServices GetDecryptionServices();
 
         public virtual string GetDefaultPackageName()
@@ -86,8 +85,7 @@ namespace CustomGameFramework.Runtime
 
             try
             {
-                var initializeOperation = await YooAssetShim.InitializePackageAsync(_currentPackage, emode, GetUrl(),
-                    GetQueryServices(), GetDecryptionServices());
+                var initializeOperation = await YooAssetShim.InitializePackageAsync(_currentPackage, emode, GetUrl(),GetDecryptionServices());
                 if (initializeOperation.Status == EOperationStatus.Succeed)
                 {
                     success();

@@ -251,7 +251,6 @@ namespace CustomGameFramework.Runtime
         /// </summary>
         public static async UniTask<InitializationOperation> InitializePackageAsync(ResourcePackage package, EPlayMode playMode,
             string cdnURL,
-            IQueryServices queryServices,
             IDecryptionServices decryptionServices = null)
         {
             InitializeParameters parameters = playMode switch
@@ -266,7 +265,7 @@ namespace CustomGameFramework.Runtime
                 },
                 EPlayMode.HostPlayMode => new HostPlayModeParameters
                 {
-                    QueryServices = queryServices,
+                    QueryServices = new GameQueryServices(),
                     DecryptionServices = decryptionServices,
                     DefaultHostServer = cdnURL,
                     FallbackHostServer = cdnURL
