@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 using YooAsset;
-using YooAsset.Editor;
 
 namespace CustomGameFramework.Editor
 {
@@ -23,15 +22,16 @@ namespace CustomGameFramework.Editor
         public abstract string GetKeyaliasName();
         public abstract string GetKeyaliasPass();
         public abstract string GetOutputNameWithoutExtension();
-
         public abstract void GetCommandLineArgs(ref string buildVersion, ref int versionCode, ref EasyBuild.BuildMode buildMode);
         
         public async Task StartBuild(BuildTarget buildTarget, 
             string buildVersion, int versionCode, EasyBuild.BuildMode buildMode,
             bool isRunDataTable, bool isRunSpriteAtlas, bool isRunAssetBundle, 
             string packageVersion, IEncryptionServices encryptionServices,
-            bool isOutputFileAddTimestamp)
+            bool isOutputFileAddTimestamp, bool isCompressOutputFile)
         {
+            // 开始 BUILD
+            ShowLog("BUILD START");
             // 切换平台
             ShowLog($"切至打包平台");
             EasyBuild.Run.SwitchBuildTarget(buildTarget);
@@ -48,10 +48,9 @@ namespace CustomGameFramework.Editor
             if (buildTarget == BuildTarget.Android)
             {
                 ShowLog("设置安卓密钥");
-                await EasyBuild.EasyBuild_Utility.WaitCompile();
                 EasyBuild.Run.SetAndroidKeyStore(GetKeystoreName(), GetKeystorePass(), GetKeyaliasName(), GetKeyaliasPass());
+                await EasyBuild.EasyBuild_Utility.WaitCompile();
             }
-
             // 打表
             if (isRunDataTable)
             {
@@ -75,7 +74,6 @@ namespace CustomGameFramework.Editor
                     return;
                 }
             }
-            
             // 设置BuildOptions
             BuildOptions buildOption = BuildOptions.None;
             if (buildMode == EasyBuild.BuildMode.DEVELOP)
@@ -97,10 +95,15 @@ namespace CustomGameFramework.Editor
             // 开始打包
             ShowLog("开始打包构建");
             await EasyBuild.Run.StartBuild(buildTarget, outputDir, outputFileName, buildOption);
-            
-            // 压缩输出文件夹
-            ShowLog("开始压缩文件");
-            EasyBuild.Run.CompressOutput(buildTarget, outputDir);
+            if (isCompressOutputFile)
+            {
+                // 压缩输出文件夹
+                ShowLog("开始压缩文件");
+                EasyBuild.Run.CompressOutput(buildTarget, outputDir);
+            }
+            // 结束 BUILD
+            await EasyBuild.EasyBuild_Utility.WaitCompile();
+            ShowLog("BUILD FINISH");
         }
 
         public static void ShowLog(string msg)

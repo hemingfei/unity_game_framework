@@ -93,6 +93,7 @@ namespace CustomGameFramework.Editor
                         break;
                 }
                 Debug.Log("Build Finish, Output: " + finalOutputFilePath);
+                await EasyBuild_Utility.WaitCompile();
             }
 
             public static void CompressOutput(BuildTarget buildTarget, string outputFolderPath)
