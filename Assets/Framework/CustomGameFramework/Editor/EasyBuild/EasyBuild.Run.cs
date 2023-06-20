@@ -99,6 +99,9 @@ namespace CustomGameFramework.Editor
             public static async Task CompressOutput(BuildTarget buildTarget, string outputFolderPath)
             {
                 await EasyBuild_Utility.WaitCompile();
+#if UNITY_EDITOR_WIN
+                outputFolderPath = @"\\?\" + outputFolderPath;
+#endif
                 string zipFilePath = outputFolderPath + ".zip";
                 if (File.Exists(zipFilePath))
                 {
