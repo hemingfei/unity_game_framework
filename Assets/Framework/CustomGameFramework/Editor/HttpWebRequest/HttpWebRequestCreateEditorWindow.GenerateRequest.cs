@@ -261,8 +261,8 @@ namespace CustomGameFramework.Editor
                 sb.Append("\t\t{\n");
                 sb.Append("\t\t\theaders = AddCommonHeaders(headers);\n");
                 sb.Append("\t\t\tquery = AddCommonQuery(query);\n");
-                sb.Append(
-                    $"\t\t\treturn WebRequest.AddWebRequest(UrlRoot + {dataName}.GetUrl(), HttpWebRequestInfo.Create({dataName}.GetUID(), {dataName}.GetEventId_Start(), {dataName}.GetEventId_Success(), {dataName}.GetEventId_Failure(), HttpWebRequestInfo.HTTPType.{requestType}, headers, bodyJson, query));\n");
+                sb.Append("\t\t\tstring encryptionBody = EncryptBody(bodyJson);\n");
+                sb.Append($"\t\t\treturn WebRequest.AddWebRequest(UrlRoot + {dataName}.GetUrl(), HttpWebRequestInfo.Create({dataName}.GetUID(), {dataName}.GetEventId_Start(), {dataName}.GetEventId_Success(), {dataName}.GetEventId_Failure(), HttpWebRequestInfo.HTTPType.{requestType}, headers, encryptionBody, query));\n");
                 sb.Append("\t\t}\n");
 
                 sb.Append("\t}\n");
@@ -813,11 +813,20 @@ namespace CustomGameFramework.Editor
                 sb.Append("\t\t// 网络请求成功事件\n");
                 sb.Append($"\t\tprivate void OnHttpWebRequest_{dataName}_Success(object sender, GameEventArgs e)\n");
                 sb.Append("\t\t{\n");
-                sb.Append(
-                    $"\t\t\tvar returnData = HttpWebRequestMgr.HttpWebRequest.GetReturnData<{dataName}ReturnData>({dataName}.GetUID());\n");
+                sb.Append($"\t\t\tvar returnData = HttpWebRequestMgr.HttpWebRequest.GetReturnData<HttpMsgReturnEncryptData>({dataName}.GetUID());\n");
                 sb.Append("\t\t\tif (returnData != null && returnData.IsSuccess())\n");
                 sb.Append("\t\t\t{\n");
-                sb.Append("\t\t\t\tOnSuccess(returnData.resultData);\n");
+                sb.Append($"\t\t\t\tstring encryptResultData = returnData.resultData;\n");
+                sb.Append($"\t\t\t\tstring resultJsonData = HttpWebRequestMgr.DecryptResultData(encryptResultData);\n");
+                string resultDataTypeString = "";
+                if (resultDataType == "object")
+                    resultDataTypeString = $"{dataName}ResultData";
+                else if (resultDataType == "array")
+                    resultDataTypeString = $"List<{dataName}ResultData>";
+                else
+                    resultDataTypeString = $"{resultDataType}";
+                sb.Append($"\t\t\t\tvar resultData = Utility.Json.ToObject<{resultDataTypeString}>(resultJsonData);\n");
+                sb.Append("\t\t\t\tOnSuccess(resultData);\n");
                 sb.Append("\t\t\t}\n");
                 sb.Append("\t\t\telse\n");
                 sb.Append("\t\t\t{\n");
