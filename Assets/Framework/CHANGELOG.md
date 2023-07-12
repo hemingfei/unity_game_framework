@@ -2,6 +2,13 @@
 
 All notable changes to this package will be documented in this file.
 
+## [1.1.1] - 2023-07-12
+
+### Fixed
+
+- Custom Web Request Remove Encrypt Body
+- Custom Web Request ResultData's Type Are Correct Now
+  
 ## [1.1.0] - 2023-07-10
 
 ### Changed
