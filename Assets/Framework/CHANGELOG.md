@@ -2,6 +2,12 @@
 
 All notable changes to this package will be documented in this file.
 
+## [1.1.2] - 2023-07-14
+
+### Added
+
+- Log of Decrypt Result Data of Custom Web Request
+
 ## [1.1.1] - 2023-07-12
 
 ### Fixed
