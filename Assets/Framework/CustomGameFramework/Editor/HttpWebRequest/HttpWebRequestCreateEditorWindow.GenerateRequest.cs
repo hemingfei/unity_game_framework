@@ -811,34 +811,56 @@ namespace CustomGameFramework.Editor
                 sb.Append("\t\t// 网络请求成功事件\n");
                 sb.Append($"\t\tprivate void OnHttpWebRequest_{dataName}_Success(object sender, GameEventArgs e)\n");
                 sb.Append("\t\t{\n");
-                sb.Append($"\t\t\tvar returnData = HttpWebRequestMgr.HttpWebRequest.GetReturnData<HttpMsgReturnEncryptData>({dataName}.GetUID());\n");
-                sb.Append("\t\t\tif (returnData != null && returnData.IsSuccess())\n");
-                sb.Append("\t\t\t{\n");
-                sb.Append($"\t\t\t\tstring encryptResultData = returnData.resultData;\n");
-                sb.Append($"\t\t\t\tstring resultJsonData = HttpWebRequestMgr.DecryptResultData(encryptResultData);\n");
-
-                sb.Append("\t\t\t\tif (resultJsonData != encryptResultData)\n");
-                sb.Append("\t\t\t\t{\n");
-                sb.Append("\t\t\t\t\tvar args = (HttpWebRequestSuccessEventArgs)e;\n");
-                sb.Append("\t\t\t\t\tUnityGameFramework.Runtime.Log.Debug($\"CustomWebRequest [SerialId] {args.SerialId} Decrypt \\n\" +\n");
-                sb.Append("\t\t\t\t\t\t\t\t\t\t\t\t\t\t \"【ResultData】\" + resultJsonData +\n");
-                sb.Append("\t\t\t\t\t\t\t\t\t\t\t\t\t\t \"【UID】\" + args.UID);\n");
-                sb.Append("\t\t\t\t}\n");
                 
-                sb.Append($"\t\t\t\tvar resultData = Utility.Json.ToObject<{actionType}>(resultJsonData);\n");
-                sb.Append("\t\t\t\tOnSuccess(resultData);\n");
-                sb.Append("\t\t\t}\n");
-                sb.Append("\t\t\telse\n");
+                sb.Append("\t\t\tif(HttpWebRequestMgr.IsResultDataEncrypt)\n");
                 sb.Append("\t\t\t{\n");
-                sb.Append("\t\t\t\tif (returnData == null)\n");
+                
+                sb.Append($"\t\t\t\tvar returnData = HttpWebRequestMgr.HttpWebRequest.GetReturnData<HttpMsgReturnEncryptData>({dataName}.GetUID());\n");
+                sb.Append("\t\t\t\tif (returnData != null && returnData.IsSuccess())\n");
                 sb.Append("\t\t\t\t{\n");
-                sb.Append("\t\t\t\t\tOnFailure(\"-2\", \"接口映射错误\");\n");
+                sb.Append($"\t\t\t\t\tstring encryptResultData = returnData.resultData;\n");
+                sb.Append($"\t\t\t\t\tstring resultJsonData = HttpWebRequestMgr.DecryptResultData(encryptResultData);\n");
+                sb.Append("\t\t\t\t\tUnityGameFramework.Runtime.Log.Debug($\"CustomWebRequest [SerialId] {((HttpWebRequestSuccessEventArgs)e).SerialId} Decrypt \\n\" +\n");
+                sb.Append("\t\t\t\t\t\t\t\t\t\t\t\t\t\t \"【ResultData】\" + resultJsonData +\n");
+                sb.Append("\t\t\t\t\t\t\t\t\t\t\t\t\t\t \"【UID】\" + ((HttpWebRequestSuccessEventArgs)e).UID);\n");
+                sb.Append($"\t\t\t\t\tvar resultData = Utility.Json.ToObject<{actionType}>(resultJsonData);\n");
+                sb.Append("\t\t\t\t\tOnSuccess(resultData);\n");
                 sb.Append("\t\t\t\t}\n");
                 sb.Append("\t\t\t\telse\n");
                 sb.Append("\t\t\t\t{\n");
-                sb.Append("\t\t\t\t\tOnFailure(returnData.returnCode, returnData.message);\n");
+                sb.Append("\t\t\t\t\tif (returnData == null)\n");
+                sb.Append("\t\t\t\t\t{\n");
+                sb.Append("\t\t\t\t\t\tOnFailure(\"-2\", \"接口映射错误\");\n");
+                sb.Append("\t\t\t\t\t}\n");
+                sb.Append("\t\t\t\t\telse\n");
+                sb.Append("\t\t\t\t\t{\n");
+                sb.Append("\t\t\t\t\t\tOnFailure(returnData.returnCode, returnData.message);\n");
+                sb.Append("\t\t\t\t\t}\n");
                 sb.Append("\t\t\t\t}\n");
+                
                 sb.Append("\t\t\t}\n");
+                sb.Append("\t\t\telse\n");
+                sb.Append("\t\t\t{\n");
+                
+                sb.Append($"\t\t\t\tvar returnData = HttpWebRequestMgr.HttpWebRequest.GetReturnData<{dataName}ReturnData>({dataName}.GetUID());\n");
+                sb.Append("\t\t\t\tif (returnData != null && returnData.IsSuccess())\n");
+                sb.Append("\t\t\t\t{\n");
+                sb.Append("\t\t\t\t\tOnSuccess(returnData.resultData);\n");
+                sb.Append("\t\t\t\t}\n");
+                sb.Append("\t\t\t\telse\n");
+                sb.Append("\t\t\t\t{\n");
+                sb.Append("\t\t\t\t\tif (returnData == null)\n");
+                sb.Append("\t\t\t\t\t{\n");
+                sb.Append("\t\t\t\t\t\tOnFailure(\"-2\", \"接口映射错误\");\n");
+                sb.Append("\t\t\t\t\t}\n");
+                sb.Append("\t\t\t\t\telse\n");
+                sb.Append("\t\t\t\t\t{\n");
+                sb.Append("\t\t\t\t\t\tOnFailure(returnData.returnCode, returnData.message);\n");
+                sb.Append("\t\t\t\t\t}\n");
+                sb.Append("\t\t\t\t}\n");
+                
+                sb.Append("\t\t\t}\n");
+                
                 sb.Append("\t\t}\n\n");
 
                 sb.Append("\t\t// 网络请求失败事件\n");
@@ -862,7 +884,7 @@ namespace CustomGameFramework.Editor
                 sb.Append("\t\t// 未获取 ResultData\n");
                 sb.Append("\t\tprivate void OnFailure(string errorCode, string errorMessage)\n");
                 sb.Append("\t\t{\n");
-                sb.Append($"\t\t\tUnityGameFramework.Runtime.Log.Error($\"Create_{requestType}_{dataName} Failure: errorCode: {{errorCode}}, errorMessage: {{errorMessage}}\");\n");
+                sb.Append($"\t\t\tUnityGameFramework.Runtime.Log.Error($\"Create_{requestType}_{dataName} Failure, errorCode: {{errorCode}}, errorMessage: {{errorMessage}}\");\n");
                 sb.Append($"\t\t\tHttpWebRequestMgr.Event.Unsubscribe({dataName}.GetEventId_Success(), OnHttpWebRequest_{dataName}_Success);\n");
                 sb.Append($"\t\t\tHttpWebRequestMgr.Event.Unsubscribe({dataName}.GetEventId_Failure(), OnHttpWebRequest_{dataName}_Failure);\n");
                 sb.Append($"\t\t\t_onFailure_RESULT_{requestType}_{dataName}?.Invoke(errorCode, errorMessage);\n");

@@ -2,6 +2,12 @@
 
 All notable changes to this package will be documented in this file.
 
+## [1.1.4] - 2023-08-02
+
+### Changed
+
+- Custom Web Request Support Both Encrypt Or Not Encrypt ResultData
+
 ## [1.1.3] - 2023-08-02
 
 ### Added
