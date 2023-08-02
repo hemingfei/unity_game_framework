@@ -862,10 +862,9 @@ namespace CustomGameFramework.Editor
                 sb.Append("\t\t// 未获取 ResultData\n");
                 sb.Append("\t\tprivate void OnFailure(string errorCode, string errorMessage)\n");
                 sb.Append("\t\t{\n");
-                sb.Append(
-                    $"\t\t\tHttpWebRequestMgr.Event.Unsubscribe({dataName}.GetEventId_Success(), OnHttpWebRequest_{dataName}_Success);\n");
-                sb.Append(
-                    $"\t\t\tHttpWebRequestMgr.Event.Unsubscribe({dataName}.GetEventId_Failure(), OnHttpWebRequest_{dataName}_Failure);\n");
+                sb.Append($"\t\t\tUnityGameFramework.Runtime.Log.Error($\"Create_{requestType}_{dataName} Failure: errorCode: {{errorCode}}, errorMessage: {{errorMessage}}\");\n");
+                sb.Append($"\t\t\tHttpWebRequestMgr.Event.Unsubscribe({dataName}.GetEventId_Success(), OnHttpWebRequest_{dataName}_Success);\n");
+                sb.Append($"\t\t\tHttpWebRequestMgr.Event.Unsubscribe({dataName}.GetEventId_Failure(), OnHttpWebRequest_{dataName}_Failure);\n");
                 sb.Append($"\t\t\t_onFailure_RESULT_{requestType}_{dataName}?.Invoke(errorCode, errorMessage);\n");
                 sb.Append("\t\t\tReferencePool.Release(this);\n");
                 sb.Append("\t\t}\n");

@@ -2,6 +2,12 @@
 
 All notable changes to this package will be documented in this file.
 
+## [1.1.3] - 2023-08-02
+
+### Added
+
+- Log of Custom Web Request Error
+
 ## [1.1.2] - 2023-07-14
 
 ### Added
