@@ -2,6 +2,12 @@
 
 All notable changes to this package will be documented in this file.
 
+## [1.1.5] - 2023-08-03
+
+### Changed
+
+- Custom Web Request's Auto Generated Script Editor Tool Use SerialId to determine if the callback is the specific one
+
 ## [1.1.4] - 2023-08-02
 
 ### Changed

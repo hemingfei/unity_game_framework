@@ -690,6 +690,11 @@ namespace CustomGameFramework.Editor
                 sb.Append("\t/// </summary>\n");
                 sb.Append($"\tpublic class Create_{requestType}_{dataName} : IReference\n");
                 sb.Append("\t{\n");
+                
+                sb.Append("\t\t/// <summary>\n");
+                sb.Append("\t\t/// 请求序列ID\n");
+                sb.Append("\t\t/// </summary>\n");
+                sb.Append("\t\tprivate int _serialId;\n\n");
 
                 var actionType = resultDataType;
                 if (resultDataType is "object")
@@ -711,6 +716,7 @@ namespace CustomGameFramework.Editor
                 sb.Append("\t\t/// </summary>\n");
                 sb.Append("\t\tpublic void Clear()\n");
                 sb.Append("\t\t{\n");
+                sb.Append($"\t\t\t_serialId = -1;\n");
                 sb.Append($"\t\t\t_onSuccess_RESULT_{requestType}_{dataName} = null;\n");
                 sb.Append($"\t\t\t_onFailure_RESULT_{requestType}_{dataName} = null;\n");
                 sb.Append("\t\t}\n\n");
@@ -790,7 +796,7 @@ namespace CustomGameFramework.Editor
                     $"\t\t\tHttpWebRequestMgr.Event.Subscribe({dataName}.GetEventId_Success(), OnHttpWebRequest_{dataName}_Success);\n");
                 sb.Append(
                     $"\t\t\tHttpWebRequestMgr.Event.Subscribe({dataName}.GetEventId_Failure(), OnHttpWebRequest_{dataName}_Failure);\n");
-                sb.Append($"\t\t\tHttpWebRequestMgr.{requestType}_{dataName}({finalPublicInsideParam});\n");
+                sb.Append($"\t\t\t_serialId = HttpWebRequestMgr.{requestType}_{dataName}({finalPublicInsideParam});\n");
                 sb.Append("\t\t}\n\n");
 
                 sb.Append("\t\t// 创建发送，注册事件等。\n");
@@ -805,12 +811,17 @@ namespace CustomGameFramework.Editor
                     $"\t\t\tHttpWebRequestMgr.Event.Subscribe({dataName}.GetEventId_Success(), OnHttpWebRequest_{dataName}_Success);\n");
                 sb.Append(
                     $"\t\t\tHttpWebRequestMgr.Event.Subscribe({dataName}.GetEventId_Failure(), OnHttpWebRequest_{dataName}_Failure);\n");
-                sb.Append($"\t\t\tHttpWebRequestMgr.{requestType}_{dataName}_Handle({publicInsideParam});\n");
+                sb.Append($"\t\t\t_serialId = HttpWebRequestMgr.{requestType}_{dataName}_Handle({publicInsideParam});\n");
                 sb.Append("\t\t}\n\n");
 
                 sb.Append("\t\t// 网络请求成功事件\n");
                 sb.Append($"\t\tprivate void OnHttpWebRequest_{dataName}_Success(object sender, GameEventArgs e)\n");
                 sb.Append("\t\t{\n");
+                
+                sb.Append("\t\t\tif (_serialId != ((HttpWebRequestSuccessEventArgs)e).SerialId)\n");
+                sb.Append("\t\t\t{\n");
+                sb.Append("\t\t\t\treturn;\n");
+                sb.Append("\t\t\t}\n");
                 
                 sb.Append("\t\t\tif(HttpWebRequestMgr.IsResultDataEncrypt)\n");
                 sb.Append("\t\t\t{\n");
@@ -867,6 +878,12 @@ namespace CustomGameFramework.Editor
                 sb.Append($"\t\tprivate void OnHttpWebRequest_{dataName}_Failure(object sender, GameEventArgs e)\n");
                 sb.Append("\t\t{\n");
                 sb.Append("\t\t\tvar args = (HttpWebRequestFailureEventArgs)e;\n");
+                
+                sb.Append("\t\t\tif (_serialId != args.SerialId)\n");
+                sb.Append("\t\t\t{\n");
+                sb.Append("\t\t\t\treturn;\n");
+                sb.Append("\t\t\t}\n");
+                
                 sb.Append("\t\t\tOnFailure(\"-1\", args.ErrorMessage);\n");
                 sb.Append("\t\t}\n\n");
 
