@@ -2,6 +2,12 @@
 
 All notable changes to this package will be documented in this file.
 
+## [1.1.6] - 2023-08-04
+
+### Changed
+
+- Custom Web Request's Auto Generated Script Editor Tool Use Its Own Event Return Data Instead of The Global Newest Updated Data
+  
 ## [1.1.5] - 2023-08-03
 
 ### Changed

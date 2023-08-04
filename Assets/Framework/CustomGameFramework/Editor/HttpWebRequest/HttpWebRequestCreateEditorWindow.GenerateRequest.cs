@@ -818,15 +818,17 @@ namespace CustomGameFramework.Editor
                 sb.Append($"\t\tprivate void OnHttpWebRequest_{dataName}_Success(object sender, GameEventArgs e)\n");
                 sb.Append("\t\t{\n");
                 
-                sb.Append("\t\t\tif (_serialId != ((HttpWebRequestSuccessEventArgs)e).SerialId)\n");
+                sb.Append("\t\t\tvar args = (HttpWebRequestSuccessEventArgs)e;\n");
+                sb.Append("\t\t\tif (_serialId != args.SerialId)\n");
                 sb.Append("\t\t\t{\n");
                 sb.Append("\t\t\t\treturn;\n");
                 sb.Append("\t\t\t}\n");
-                
+                sb.Append("\t\t\tvar returnDataJson = Utility.Converter.GetString(args.GetWebResponseBytes());\n");
+
                 sb.Append("\t\t\tif(HttpWebRequestMgr.IsResultDataEncrypt)\n");
                 sb.Append("\t\t\t{\n");
                 
-                sb.Append($"\t\t\t\tvar returnData = HttpWebRequestMgr.HttpWebRequest.GetReturnData<HttpMsgReturnEncryptData>({dataName}.GetUID());\n");
+                sb.Append($"\t\t\t\tvar returnData = Utility.Json.ToObject<HttpMsgReturnEncryptData>(returnDataJson);\n");
                 sb.Append("\t\t\t\tif (returnData != null && returnData.IsSuccess())\n");
                 sb.Append("\t\t\t\t{\n");
                 sb.Append($"\t\t\t\t\tstring encryptResultData = returnData.resultData;\n");
@@ -853,7 +855,7 @@ namespace CustomGameFramework.Editor
                 sb.Append("\t\t\telse\n");
                 sb.Append("\t\t\t{\n");
                 
-                sb.Append($"\t\t\t\tvar returnData = HttpWebRequestMgr.HttpWebRequest.GetReturnData<{dataName}ReturnData>({dataName}.GetUID());\n");
+                sb.Append($"\t\t\t\tvar returnData = Utility.Json.ToObject<{dataName}ReturnData>(returnDataJson);\n");
                 sb.Append("\t\t\t\tif (returnData != null && returnData.IsSuccess())\n");
                 sb.Append("\t\t\t\t{\n");
                 sb.Append("\t\t\t\t\tOnSuccess(returnData.resultData);\n");
