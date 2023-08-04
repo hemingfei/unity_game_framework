@@ -153,16 +153,23 @@ namespace CustomGameFramework.Editor
             public static string GetOutputDir()
             {
                 string dirPath = Directory.GetCurrentDirectory() + "/../Build";
-#if UNITY_ANDROID
-                dirPath += "/Android";
-#elif UNITY_IOS
-                dirPath += "/iOS";
-#elif UNITY_STANDALONE_WIN
-                dirPath += "/PC";
-#elif UNITY_STANDALONE_OSX
-                dirPath += "/Mac";
-#endif
+                dirPath += ("/" + GetPlatformSubDir());
                 return dirPath;
+            }
+
+            public static string GetPlatformSubDir()
+            {
+                string subDir = "";
+#if UNITY_ANDROID
+                subDir = "Android";
+#elif UNITY_IOS
+                subDir = "iOS";
+#elif UNITY_STANDALONE_WIN
+                subDir = "PC";
+#elif UNITY_STANDALONE_OSX
+                subDir = "Mac";
+#endif
+                return subDir;
             }
         }
     }

@@ -2,6 +2,12 @@
 
 All notable changes to this package will be documented in this file.
 
+## [1.1.7] - 2023-08-04
+
+### Changed
+
+- Auto Build Tool Will Not Delete The Build Dir, instead, will delete the sub platform dir
+
 ## [1.1.6] - 2023-08-04
 
 ### Changed

@@ -70,7 +70,7 @@ namespace CustomGameFramework.Editor
             public static async Task StartBuild(BuildTarget buildTarget, string outputDirPath, string outputFileName, BuildOptions buildOption)
             {
                 // delete Build folder
-                EasyBuild_Utility.DeleteFolder("Assets/../../Build");
+                EasyBuild_Utility.DeleteFolder("Assets/../../Build/" + EasyBuild_Utility.GetPlatformSubDir());
                 await EasyBuild_Utility.WaitCompile();
 
                 string finalOutputFilePath = "";
