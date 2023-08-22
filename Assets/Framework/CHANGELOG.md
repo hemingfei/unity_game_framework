@@ -2,6 +2,12 @@
 
 All notable changes to this package will be documented in this file.
 
+## [1.1.8] - 2023-08-22
+
+### Changed
+
+- Auto Build Tool's Output Dir Changed (has the project's name)
+
 ## [1.1.7] - 2023-08-04
 
 ### Changed

@@ -150,12 +150,18 @@ namespace CustomGameFramework.Editor
                 EditorUtility.ClearProgressBar();
             }
             
-            public static string GetOutputDir()
+            public static string GetOutputDir(string rootDir = "")
             {
-                string dirPath = Directory.GetCurrentDirectory() + "/../Build";
+                if (string.IsNullOrEmpty(rootDir))
+                {
+                    rootDir = Directory.GetCurrentDirectory() + "/..";
+                }
+                string dirPath = rootDir + "/Build";
+                dirPath += ("/" + EasyBuildSettingData.Setting.OutputNameWithoutExtension);
                 dirPath += ("/" + GetPlatformSubDir());
                 return dirPath;
             }
+            
 
             public static string GetPlatformSubDir()
             {
