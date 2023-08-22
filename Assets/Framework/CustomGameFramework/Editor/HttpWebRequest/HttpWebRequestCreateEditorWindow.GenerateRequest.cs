@@ -836,7 +836,17 @@ namespace CustomGameFramework.Editor
                 sb.Append("\t\t\t\t\tUnityGameFramework.Runtime.Log.Debug($\"CustomWebRequest [SerialId] {((HttpWebRequestSuccessEventArgs)e).SerialId} Decrypt \\n\" +\n");
                 sb.Append("\t\t\t\t\t\t\t\t\t\t\t\t\t\t \"【ResultData】\" + resultJsonData +\n");
                 sb.Append("\t\t\t\t\t\t\t\t\t\t\t\t\t\t \"【UID】\" + ((HttpWebRequestSuccessEventArgs)e).UID);\n");
-                sb.Append($"\t\t\t\t\tvar resultData = Utility.Json.ToObject<{actionType}>(resultJsonData);\n");
+                if (resultDataType is "object" or "array")
+                {
+                    sb.Append($"\t\t\t\t\tvar resultData = Utility.Json.ToObject<{actionType}>(resultJsonData);\n");
+                }
+                else
+                {
+                    sb.Append(resultDataType == "string"
+                        ? $"\t\t\t\t\tvar resultData = resultJsonData;\n"
+                        : $"\t\t\t\t\tvar resultData = {resultDataType}.Parse(resultJsonData);\n");
+                }
+                
                 sb.Append("\t\t\t\t\tOnSuccess(resultData);\n");
                 sb.Append("\t\t\t\t}\n");
                 sb.Append("\t\t\t\telse\n");

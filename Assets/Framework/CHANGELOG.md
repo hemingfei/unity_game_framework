@@ -2,6 +2,12 @@
 
 All notable changes to this package will be documented in this file.
 
+## [1.1.9] - 2023-08-22
+
+### Fixed
+
+- Custom Web Request's Auto Generated Script Has The Type of Non-Object Result Datas Will Not Do The Json Convert Any More
+
 ## [1.1.8] - 2023-08-22
 
 ### Changed
